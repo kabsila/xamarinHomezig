@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeZig", "HomeZig\HomeZig.csproj", "{17CD886E-F2E7-463B-80F3-109FD76DA493}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeZig.Android", "Android\HomeZig.Android.csproj", "{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17CD886E-F2E7-463B-80F3-109FD76DA493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17CD886E-F2E7-463B-80F3-109FD76DA493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17CD886E-F2E7-463B-80F3-109FD76DA493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17CD886E-F2E7-463B-80F3-109FD76DA493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Android\HomeZig.Android.csproj
+	EndGlobalSection
+EndGlobal
