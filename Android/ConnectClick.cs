@@ -3,81 +3,44 @@ using WebSocket4Net;
 using Newtonsoft.Json;
 using Android.Util;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace HomeZig.Android
 
 {
-	public class AllDevice : HomePage
+	public class ConnectClick : HomePage
 	{
+		WebsocketManager websocketObject =  new WebsocketManager( wsUrlEditor.Text);
 
-
-
-		public AllDevice ()
+		public ConnectClick ()
 		{
-
-
-			//Activity.RunOnUiThread(() => {
-			//	button1.Text = "Method Complete";
-			//});
-
-
-		//	new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-				//Device.BeginInvokeOnMainThread (() => {
-
-					
-				//});
-			//}));
-			//await task;
-			//button1.BindingContext = new {Name = "John Doe", Company = "Xamarin"};
-			//Android.RunOnUiThread(() => button1.Text = "Updated from other thread");
-			//button1.Text = "SSSSS";
-			//button1.Clicked += delegate{Log.Info("ALLDEVICE", "CLICKED");};
-			button1.Clicked += button1_Click;
-			//Log.Info("ALLDEVICE2", button1.Text);
-
-			button2.Clicked += button2_Click;
-
+			ConnectButton.Clicked += ConnectButton_Click;
+			Disconnectbutton.Clicked += Disconnectbutton_Click;
 			//button1.Clicked += new EventHandler(delegate(object s, EventArgs args) {Log.Info("ALLDEVICE2", "CLICKED2");});
 
 		}
 
-		WebsocketManager wss =  new WebsocketManager();
-		public void button1_Click(object sender, EventArgs e)
+		public void ConnectButton_Click(object sender, EventArgs e)
 		{
+			websocketObject.websocketMaster.Open ();
 
 			//WebsocketManager wss =  new WebsocketManager();
 			//wss.websocket.Opened += new EventHandler(websocket_Opened);
-			wss.websocket.Open ();
-
 			//wss.websocket.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived2);
-
 			//App.Navigation.PushAsync (new Outlet());
-			Log.Info("ALLDEVICE", "CLICKED");
-
+			//Log.Info("ALLDEVICE", a.ToString());
 		}
 
-		public void button2_Click(object sender, EventArgs e)
+		public void Disconnectbutton_Click(object sender, EventArgs e)
 		{
-			wss.websocket.Send ("vvvvvvvvvvvvvvvvvvvvvvvv");
+			websocketObject.websocketMaster.Close ();
+			Log.Info("Disconnectbutton_Click", "WebsocketClosing");
 			//Page page = (Page)Activator.CreateInstance(typeof(Outlet));
 			//this.Navigation.PushAsync(page);
 			//App.Navigation.PushAsync (new Outlet());
-			Log.Info("button2_Click", "kk");
+
 
 		}
-
-		public void IWebsocket(string uri)
-		{
-			//ws = new WebSocket(uri);
-			//Log.Info ("CCCCC","AAAAAAAAAAAAAAAAAAAA");
-			//ws = new WebSocket("ws://echo.websocket.org");
-			//ws.Opened += new EventHandler(websocket_Opened);
-			//ws.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>(websocket_Error);
-			//ws.Closed += new EventHandler(websocket_Closed);
-			//ws.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived);
-			//ws.Open ();
-		}
-
 
 		public void websocket_Opened(object sender, EventArgs e)
 		{
@@ -129,3 +92,20 @@ namespace HomeZig.Android
 	}
 }
 
+
+//Activity.RunOnUiThread(() => {
+//	button1.Text = "Method Complete";
+//});
+
+
+//	new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+//Device.BeginInvokeOnMainThread (() => {
+
+
+//});
+//}));
+//await task;
+//button1.BindingContext = new {Name = "John Doe", Company = "Xamarin"};
+//Android.RunOnUiThread(() => button1.Text = "Updated from other thread");
+//button1.Text = "SSSSS";
+//button1.Clicked += delegate{Log.Info("ALLDEVICE", "CLICKED");};

@@ -11,24 +11,24 @@ namespace HomeZig
 	{
 
 
-		public static Button button1 = new Button
+		public static Button ConnectButton = new Button
 		{
-			Text = " Connect ",
+			Text = "Connect",
 			Font = Font.SystemFontOfSize(NamedSize.Large),
 			BorderWidth = 1	,
 			WidthRequest = 200
 		};
 
-		public static Button button2 = new Button
+		public static Button Disconnectbutton = new Button
 		{
-			Text = " Button2 ",
+			Text = "Disconnect",
 			Font = Font.SystemFontOfSize(NamedSize.Large),
 			BorderWidth = 1,
-			WidthRequest = 100
+			WidthRequest = 200
 
 		};
 
-		public Editor editor = new Editor
+		public static Editor wsUrlEditor = new Editor
 		{
 			Text = "ws://echo.websocket.org",
 			HorizontalOptions = LayoutOptions.Center
@@ -64,7 +64,7 @@ namespace HomeZig
 				Children = 
 				{
 					header,
-					editor,
+					wsUrlEditor,
 					new StackLayout
 					{
 						VerticalOptions = LayoutOptions.Start,
@@ -72,8 +72,8 @@ namespace HomeZig
 						HorizontalOptions = LayoutOptions.Center,
 						Children = 
 						{
-							button1,
-							button2
+							ConnectButton,
+							Disconnectbutton
 						}
 					}
 

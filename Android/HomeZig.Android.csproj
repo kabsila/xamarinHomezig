@@ -78,8 +78,9 @@
     <Compile Include="HomePage.cs" />
     <Compile Include="App.cs" />
     <Compile Include="IWebsocket.cs" />
-    <Compile Include="AllDevice.cs" />
     <Compile Include="Outlet_Click.cs" />
+    <Compile Include="ConnectClick.cs" />
+    <Compile Include="AllDeviveLoad.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
