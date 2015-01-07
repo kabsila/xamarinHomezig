@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace HomeZig
 {
-	public class Outlet : ContentPage
+	public class Outlet2 : ContentPage
 	{
 		public static Button button3 = new Button
 		{
@@ -21,7 +21,7 @@ namespace HomeZig
 			BorderWidth = 1	,
 		};
 
-		public Outlet ()
+		public Outlet2 ()
 		{
 			this.Content = new StackLayout
 			{

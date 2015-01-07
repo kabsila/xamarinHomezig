@@ -4,7 +4,7 @@ using WebSocket4Net;
 
 namespace HomeZig.Android
 {
-	public class Outlet_Click : Outlet
+	public class Outlet_Click : Outlet2
 	{
 		public Outlet_Click ()
 		{

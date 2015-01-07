@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Xamarin.Forms;
 
+
 namespace HomeZig.Android
 {
 	public class WebsocketManager
@@ -26,7 +27,8 @@ namespace HomeZig.Android
 			//phoneNumberText.Text = "Opened";
 			//websocket.Send("db_allnode");
 			//websocket.Send("{'employees': [{  'firstName':'John' , 'lastName':'Doe' },{  'firstName':'Anna' , 'lastName':'Smith' }, { 'firstName': 'Peter' ,  'lastName': 'Jones' }]}");
-			websocketMaster.Send ("{\"cmd_db_allnode\": [{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:ae]!\", \"node_status\": \"1\"},{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:kk]!\", \"node_status\": \"1\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:b2:16:5a]!\", \"node_status\": \"1\"}, {\"node_type\": \"0x0\", \"node_addr\": \"[00:13:a2:00:40:ad:57:e3]!\", \"node_status\": \"1\"}]}");
+			//websocketMaster.Send ("{\"cmd_db_allnode\": [{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:ae]!\", \"node_status\": \"1\"},{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:kk]!\", \"node_status\": \"1\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:b2:16:5a]!\", \"node_status\": \"1\"}, {\"node_type\": \"0x0\", \"node_addr\": \"[00:13:a2:00:40:ad:57:e3]!\", \"node_status\": \"1\"}]}");
+			websocketMaster.Send ("{\"cmd_db_allnode\":[{\"Outlet\":[{\"node_addr\":\"123\", \"node_status\":\"1\"},{\"node_addr\":\"456\", \"node_status\":\"0\"}],\n\"Camera\":[{\"node_addr\":\"789\", \"node_status\":\"0\"},{\"node_addr\":\"121\", \"node_status\":\"1\"}]}]}");
 			Log.Info ("websocket_Opened","WS Connected");
 
 		}
@@ -50,15 +52,18 @@ namespace HomeZig.Android
 
 			try
 			{
-				RootObject cmd = JsonConvert.DeserializeObject<RootObject>(e.Message);
+				//RootObject cmd = JsonConvert.DeserializeObject<RootObject>(e.Message);
 				//var htmlAttributes = JsonConvert.DeserializeObject<Dictionary<string, Db_allnode>>(e.Message); 
-				string[] getRoot = cmd.GetType().GetProperties().GetValue(0).ToString().Split(' ');
-				string RootElement = getRoot[1];
-				getRoot = null;
-				string name2 = cmd.cmd_db_allnode[0].node_addr;
+				//string[] getRoot = cmd.GetType().GetProperties().GetValue(0).ToString().Split(' ');
+				//string RootElement = getRoot[1];
+				//getRoot = null;
+				//string name2 = cmd.cmd_db_allnode[0].node_addr;
 				//Log.Info ("MessageReceived" , htmlAttributes["cmd_db_allnode"][1].node_addr);
 
-				switch (RootElement)
+				RootElement cmd = JsonConvert.DeserializeObject<RootElement>(e.Message);
+
+
+				switch ("cmd_db_allnode")
 				{
 					case "cmd_db_allnode":
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
@@ -66,11 +71,11 @@ namespace HomeZig.Android
 							App.Navigation.PushAsync(new AllDeviveLoad(cmd.cmd_db_allnode));
 							});
 						})).Start();
-						Log.Info ("MessageReceived" , RootElement);
+					//Log.Info ("MessageReceived" , typeof(CmdDbAllnode).GetProperties()[0].Name);
 						break;
 
 					case "io_command":
-						Log.Info ("MessageReceived" , RootElement);
+						Log.Info ("MessageReceived" , "");
 						break;
 
 					default:

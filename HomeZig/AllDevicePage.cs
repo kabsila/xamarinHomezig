@@ -6,9 +6,9 @@ namespace HomeZig
 {
 	public class AllDevicePage : ContentPage
 	{
-		public static ListView listView = new ListView
+		public static ListView AllDeviceListView = new ListView
 		{
-			RowHeight = 100
+			HasUnevenRows = true
 		};
 		public AllDevicePage ()
 		{
@@ -16,7 +16,7 @@ namespace HomeZig
 			this.Content = new StackLayout
 			{
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Children = { listView }
+				Children = { AllDeviceListView }
 			};
 
 

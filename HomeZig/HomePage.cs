@@ -39,7 +39,7 @@ namespace HomeZig
 			Label header = new Label
 			{
 				Text = "Entry",
-				Font = Font.SystemFontOfSize(50, FontAttributes.Bold),
+				Font = Font.SystemFontOfSize(NamedSize.Medium, FontAttributes.Bold),
 				HorizontalOptions = LayoutOptions.Center
 			};
 
