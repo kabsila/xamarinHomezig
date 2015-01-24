@@ -22,6 +22,15 @@ namespace HomeZig
 			} 
 		}
 
+		public string node_deviceType 
+		{ 
+			get
+			{
+				return String.Format ("{0}", this.GetType ().Name);
+			} 
+		}
+
+
 	}
 
 	public class Camera
@@ -41,6 +50,14 @@ namespace HomeZig
 				return String.Format ("{0}", node_status);
 			} 
 		}
+
+		public string node_deviceType 
+		{ 
+			get
+			{
+				return String.Format ("{0}", this.GetType ().Name);
+			} 
+		}
 	}
 
 	public class CmdDbAllnode
@@ -53,6 +70,7 @@ namespace HomeZig
 	{
 		public List<CmdDbAllnode> cmd_db_allnode { get; set; }
 	}
+
 
 
 }

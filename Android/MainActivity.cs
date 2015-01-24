@@ -9,7 +9,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-
+using Android.Gestures;
 using Android.Util;
 
 using WebSocket4Net;
@@ -24,7 +24,6 @@ namespace HomeZig.Android
 	[Activity (Label = "HomeZig.Android.Android", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : FormsApplicationActivity
 	{
-		//WebSocket websocket;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -43,5 +42,7 @@ namespace HomeZig.Android
 		}
 
 	}
+
+
 }
 

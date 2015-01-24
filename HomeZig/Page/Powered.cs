@@ -1,14 +1,13 @@
 ﻿using System;
-
 using Xamarin.Forms;
 
 namespace HomeZig
 {
-	public class Outlet2 : ContentPage
+	public class Powered : ContentPage
 	{
 		public static Button button3 = new Button
 		{
-			Text = " button3 ",
+			Text = " Power",
 			Font = Font.SystemFontOfSize(NamedSize.Large),
 			BorderWidth = 20,
 			BorderRadius = 5,
@@ -21,11 +20,11 @@ namespace HomeZig
 			BorderWidth = 1	,
 		};
 
-		public Outlet2 ()
+		public Powered ()
 		{
 			ToolbarItem Edit = new ToolbarItem
 			{
-				Text = "Outlet2",
+				Text = "Edit",
 				Order = ToolbarItemOrder.Primary
 			};
 
@@ -49,7 +48,7 @@ namespace HomeZig
 					button3,
 					connect
 				}
-			};
+				};
 		}
 	}
 }

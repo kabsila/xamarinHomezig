@@ -5,6 +5,8 @@ using Xamarin.Forms;
 using System.Reflection;
 using Android.Util;
 
+
+
 namespace HomeZig.Android
 {
 	public class AllDeviveLoad : AllDevicePage
@@ -12,12 +14,14 @@ namespace HomeZig.Android
 		//public AllDeviveLoad (List<Db_allnode> obj)
 		public AllDeviveLoad (List<CmdDbAllnode> obj)
 		{
+
 			var deviceType = new List<string>{ };
 			foreach (PropertyInfo p in typeof(CmdDbAllnode).GetProperties())
 			{
 				//string propertyName = p.Name;
 				deviceType.Add (p.Name);
 			}
+
 
 			/**for (int i = 0; i < obj.Count; i++) {
 				if (obj [i].node_type.Equals ("0x3ff90")) {
@@ -32,7 +36,7 @@ namespace HomeZig.Android
 			}**/		
 
 			//listView.ItemTemplate = new DataTemplate(typeof(TextCell));
-			//listView.ItemTemplate.SetBinding(TextCell.TextProperty, "node_addr");
+			//listView.ItemTemplate.SetBinding(TextCell.TextProperty, "node_addr");	
 
 			AllDeviceListView.ItemsSource = deviceType;
 			AllDeviceListView.ItemSelected += (sender, e) => {
@@ -43,24 +47,26 @@ namespace HomeZig.Android
 					HasUnevenRows = true
 				
 				};
-				try{
+				try
+				{
 					listView2.ItemTemplate = new DataTemplate(typeof(SwitchCell));
 					//listView2.ItemTemplate.SetBinding(TextCell.TextProperty, new Binding("node_addr"));
 					listView2.ItemTemplate.SetBinding(SwitchCell.TextProperty, "node_addr");
 					listView2.ItemTemplate.SetBinding(SwitchCell.OnProperty, "nodeStatusToString");
 
-				switch (e.SelectedItem.ToString())
+					switch (e.SelectedItem.ToString())
+					{
+						case "Outlet":
+						listView2.ItemsSource = obj[0].Outlet;
+						break;
+
+						case "Camera":
+						listView2.ItemsSource = obj[0].Camera;
+						break;
+					}
+
+				}catch (Exception ex)
 				{
-					case "Outlet":
-					listView2.ItemsSource = obj[0].Outlet;
-					break;
-
-					case "Camera":
-					listView2.ItemsSource = obj[0].Camera;
-					break;
-				}
-
-				}catch (Exception ex){
 					Log.Info ("MessageReceived" , ex.Message);
 				}
 
@@ -77,7 +83,39 @@ namespace HomeZig.Android
 
 
 			};
+
+			var listView3 = new ListView
+			{
+				HasUnevenRows = true
+
+			};
+			listView3.ItemTemplate = new DataTemplate(typeof(TextCell));
+			listView3.ItemTemplate.SetBinding(TextCell.TextProperty, new Binding("node_addr"));
+			Page aa = new ContentPage
+			{
+				Content = new StackLayout
+				{
+					VerticalOptions = LayoutOptions.FillAndExpand,
+					Children = { listView3 }
+				}
+			};
+
+			ToolbarItem addNewItem = new ToolbarItem
+			{
+				Text = "Edit",
+				Order = ToolbarItemOrder.Default
+			};
+
+			addNewItem.Activated += (sender, args) =>
+			{
+				Log.Info("toolbar","toolbar");
+				this.Navigation.PushAsync(new Outlet2());
+
+			};
+			this.ToolbarItems.Add(addNewItem);
 		}
+
+
 	}
 }
 

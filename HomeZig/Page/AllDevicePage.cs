@@ -8,11 +8,10 @@ namespace HomeZig
 	{
 		public static ListView AllDeviceListView = new ListView
 		{
-			HasUnevenRows = true
+			HasUnevenRows = true			
 		};
 		public AllDevicePage ()
 		{
-
 			this.Content = new StackLayout
 			{
 				VerticalOptions = LayoutOptions.FillAndExpand,
@@ -20,6 +19,12 @@ namespace HomeZig
 			};
 
 
+		}
+
+		protected async override void OnAppearing ()
+		{
+			base.OnAppearing ();
+			AllDeviceListView.ItemsSource = await App.Database.GetItems ();
 		}
 	}
 }
