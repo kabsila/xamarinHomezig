@@ -16,7 +16,7 @@ namespace HomeZig
 			//listView.ItemTemplate.SetBinding(SwitchCell.OnProperty, "nodeStatusToString");
 
 			listView.ItemSelected += (sender, e) => {
-				var todoItem = (Db_allnode)e.SelectedItem;
+				//var todoItem = (Db_allnode)e.SelectedItem;
 				//var todoPage = new DeviceItemPage();
 				//todoPage.BindingContext = todoItem;
 				//Navigation.PushAsync(todoPage);
@@ -47,6 +47,8 @@ namespace HomeZig
 			base.OnAppearing ();
 			listView.ItemsSource = await App.Database.GetItems ();
 		}
+
+
 	}
 }
 

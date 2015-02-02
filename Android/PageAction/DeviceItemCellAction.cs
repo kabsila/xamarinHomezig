@@ -2,6 +2,8 @@
 using Xamarin.Forms;
 using HomeZig.Android;
 using WebSocket4Net;
+using Newtonsoft.Json;
+
 
 [assembly: Dependency (typeof (DeviceItemCellAction))]
 
@@ -11,13 +13,17 @@ namespace HomeZig.Android
 	{
 		public DeviceItemCellAction ()
 		{
+
 		}
 
-		public void switcher_Toggled(object sender, ToggledEventArgs e)
+
+		public async void switcher_Toggled(object sender, ToggledEventArgs e)
 		{
-			System.Diagnostics.Debug.WriteLine("Switch is now {0}", e.Value);
-			
+			string jsonCommandIo = JsonConvert.SerializeObject(DeviceItemCell.NodeItem, Formatting.None);
+			System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json", jsonCommandIo);
+			//WebsocketManager.websocketMaster.Send (jsonCommandIo);
 		}
+
 	}
 }
 

@@ -10,7 +10,7 @@ namespace HomeZig.Android
 {
 	public class WebsocketManager
 	{
-		public WebSocket websocketMaster;
+		public static WebSocket websocketMaster;
 		public WebsocketManager(string wsUrl)
 		{
 			Log.Info ("WebsocketManager","Connecting");
@@ -59,7 +59,7 @@ namespace HomeZig.Android
 				//string RootElement = getRoot[1];
 				//getRoot = null;
 				//string name2 = cmd.cmd_db_allnode[0].node_addr;
-				//Log.Info ("MessageReceived" , htmlAttributes["cmd_db_allnode"][1].node_addr);
+				//Log.Info ("MessageReceived222222" , cmd.cmd_db_allnode[0].ToString());
 
 				//RootElement cmd = JsonConvert.DeserializeObject<RootElement>(e.Message);			
 
@@ -93,11 +93,11 @@ namespace HomeZig.Android
 					break;
 
 					case "io_command":
-					Log.Info ("MessageReceived" , "");
+					Log.Info ("MessageReceived3" , "");
 					break;
 
 					case "swipe":
-					Log.Info ("MessageReceived" , "swipe");
+					Log.Info ("MessageReceived3" , "swipe");
 
 					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 						Device.BeginInvokeOnMainThread (() => {
@@ -122,7 +122,7 @@ namespace HomeZig.Android
 			}
 			catch (Exception ex)
 			{
-				Log.Info ("MessageReceived" , ex.Message);
+				Log.Info ("ExceptionMessageReceived" , ex.Message);
 			}
 
 

@@ -79,6 +79,23 @@ namespace HomeZig
 			//}
 		}
 
+		public async Task<int> Update_Item (DeviceDatabaseTable item) 
+		{
+			return await database.UpdateAsync(item);
+		}
+
+		public async Task<int> Update_DBAllNode_Item (Db_allnode item) 
+		{
+			//System.Diagnostics.Debug.WriteLine("in Update_DBAllNode_Item method");
+			return await database.UpdateAsync(item);
+		}
+
+		public async Task<IEnumerable<Db_allnode>> Update_DBAllNode_Item2 (string node_status2, int ID2)
+		{
+			//lock (locker) {
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_status] = " + "'" + node_status2 + "'" + " WHERE [ID] = " + ID2);
+			//}
+		}
 
 		public  async Task<int> DeleteItem(int id)
 		{

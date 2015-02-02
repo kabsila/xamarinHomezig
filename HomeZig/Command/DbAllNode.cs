@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using SQLite.Net.Attributes;
 
 
+
 namespace HomeZig
 {
 	public class Db_allnode
 	{
+		string ns;
 		public Db_allnode ()
 		{
 		}
@@ -39,13 +41,17 @@ namespace HomeZig
 		{ 
 			get
 			{
-				if (node_status.Equals ("0")) { 
+				if (node_status.Equals ("0") || node_status.Equals ("false") || node_status.Equals ("False")) { 
 					node_status = "false";
 				} else {
 					node_status = "true";
 				}
 				return String.Format ("{0}", node_status);
 			} 
+			set
+			{
+				ns = value;
+			}
 		}
 
 	}

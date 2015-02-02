@@ -10,10 +10,12 @@ namespace HomeZig.Android
 {
 	public class ConnectClick : HomePage
 	{
-		WebsocketManager websocketObject =  new WebsocketManager( wsUrlEditor.Text);
+
 
 		public ConnectClick ()
 		{
+			WebsocketManager websocketObject =  new WebsocketManager( wsUrlEditor.Text);
+			//WebsocketManager.websocketMaster = new WebsocketManager( wsUrlEditor.Text);
 			ConnectButton.Clicked += ConnectButton_Click;
 			Disconnectbutton.Clicked += Disconnectbutton_Click;
 			//button1.Clicked += new EventHandler(delegate(object s, EventArgs args) {Log.Info("ALLDEVICE2", "CLICKED2");});
@@ -22,8 +24,8 @@ namespace HomeZig.Android
 
 		public void ConnectButton_Click(object sender, EventArgs e)
 		{
-			websocketObject.websocketMaster.Open ();
-
+			//websocketObject.websocketMaster.Open ();
+			WebsocketManager.websocketMaster.Open ();
 			//WebsocketManager wss =  new WebsocketManager();
 			//wss.websocket.Opened += new EventHandler(websocket_Opened);
 			//wss.websocket.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived2);
@@ -33,7 +35,8 @@ namespace HomeZig.Android
 
 		public void Disconnectbutton_Click(object sender, EventArgs e)
 		{
-			websocketObject.websocketMaster.Close ();
+			//websocketObject.websocketMaster.Close ();
+			WebsocketManager.websocketMaster.Close ();
 			Log.Info("Disconnectbutton_Click", "WebsocketClosing");
 			//Page page = (Page)Activator.CreateInstance(typeof(Outlet));
 			//this.Navigation.PushAsync(page);
