@@ -11,8 +11,10 @@ namespace HomeZig.Android
 	public class WebsocketManager
 	{
 		public static WebSocket websocketMaster;
-		public WebsocketManager(string wsUrl)
+		public static IPageManager ipm1;
+		public WebsocketManager(string wsUrl, IPageManager ipm2)
 		{
+			ipm1 = ipm2;
 			Log.Info ("WebsocketManager","Connecting");
 			websocketMaster = new WebSocket(wsUrl);
 			websocketMaster.Opened += new EventHandler(websocket_Opened);
@@ -27,8 +29,9 @@ namespace HomeZig.Android
 			//phoneNumberText.Text = "Opened";
 			//websocket.Send("db_allnode");
 			//websocket.Send("{'employees': [{  'firstName':'John' , 'lastName':'Doe' },{  'firstName':'Anna' , 'lastName':'Smith' }, { 'firstName': 'Peter' ,  'lastName': 'Jones' }]}");
-			websocketMaster.Send ("{\"cmd_db_allnode\": [{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:ae]!\", \"node_status\": \"1\"},{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:kk]!\", \"node_status\": \"1\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:b2:16:5a]!\", \"node_status\": \"0\"}, {\"node_type\": \"0x0\", \"node_addr\": \"[00:13:a2:00:40:ad:57:e3]!\", \"node_status\": \"0\"}]}");
+			//websocketMaster.Send ("{\"cmd_db_allnode\": [{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:ae]!\", \"node_status\": \"1\"},{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:kk]!\", \"node_status\": \"1\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:b2:16:5a]!\", \"node_status\": \"0\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:ad:57:e3]!\", \"node_status\": \"0\"}]}");
 			//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"Outlet\":[{\"node_addr\":\"123\", \"node_status\":\"1\"},{\"node_addr\":\"456\", \"node_status\":\"0\"}],\n\"Camera\":[{\"node_addr\":\"789\", \"node_status\":\"0\"},{\"node_addr\":\"121\", \"node_status\":\"1\"}]}]}");
+			websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff90\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"1\",\"node_io\":\"FC\"},{\"node_type\":\"0x3ff90\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"1\",\"node_io\":\"F8\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FE\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\"}]}");
 			Log.Info ("websocket_Opened","WS Connected");
 			new DeviceItemDatabase ();
 
@@ -75,10 +78,16 @@ namespace HomeZig.Android
 					}
 				}
 
+			/**	foreach(var i in await App.Database.GetItemsNotDone())
+				{
+					Log.Info ("From Database" , i.node_deviceType);
+				}**/
+
 				foreach(var i in await App.Database.GetItems())
 				{
-					Log.Info ("From Database" , i.node_addr);
+					Log.Info ("From Database" , i.node_deviceType);
 				}
+
 
 
 				switch ("swipe")
@@ -86,7 +95,7 @@ namespace HomeZig.Android
 					case "cmd_db_allnode":
 					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 						Device.BeginInvokeOnMainThread (() => {
-							App.Navigation.PushAsync(new DeviceListPage());
+							App.Navigation.PushAsync(new DeviceAddressListPage());
 						});
 					})).Start();
 					//Log.Info ("MessageReceived" , typeof(CmdDbAllnode).GetProperties()[0].Name);
@@ -104,9 +113,12 @@ namespace HomeZig.Android
 							//TabbedPage tw = new TabbedPage();
 							//tw.Children.Add (new AllDeviveLoad(cmd.cmd_db_allnode){Title = "test1"});
 							//tw.Children.Add (new Outlet2(){Title = "test2"});
-							App.Navigation.PushAsync(new MenuTabPage());
+							//App.Navigation.PushAsync(new MenuTabPage());
+							//App.Navigation.PushAsync(new NavigationPage(new MenuTabPage()));
+							ipm1.showMenuTabPage();
 						});
 					})).Start();
+
 
 					break;
 

@@ -34,16 +34,26 @@ namespace HomeZig
 			//lock (locker) {
 			//return  await (from i in database.Table<DeviceDatabaseTable>() select i).ToList();
 			//}
-			var aa = database.Table<Db_allnode> ().ToListAsync ();
-			return await aa;
+			//var aa = database.Table<Db_allnode> ().ToListAsync ();
+			return await  database.Table<Db_allnode> ().ToListAsync ();
 			//return await database.Table<DeviceDatabaseTable>().ToListAsync<IEnumerable<DeviceDatabaseTable>>();
 		}
 
-		public async Task<IEnumerable<DeviceDatabaseTable>> GetItemsNotDone ()
+		public async Task<IEnumerable<Db_allnode>> GetItemsNotDone ()
 		{
 			//lock (locker) {
-				return await database.QueryAsync<DeviceDatabaseTable>("SELECT * FROM [TodoItem] WHERE [Done] = 0");
+			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] GROUP BY [node_deviceType]");
 			//}
+		}
+
+		public async Task<IEnumerable<Db_allnode>> GetItemGroupByDeviceType ()
+		{
+			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] GROUP BY [node_deviceType]");
+		}
+
+		public async Task<IEnumerable<Db_allnode>> GetItemByDeviceType (string deviceType)
+		{
+			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] = " + "'" + deviceType + "'");
 		}
 
 		/**public async DeviceDatabaseTable GetItem (int id) 

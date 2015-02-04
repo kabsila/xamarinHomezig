@@ -31,7 +31,7 @@ namespace HomeZig
 
 			swCell.SetBinding(Switch.IsToggledProperty, "nodeStatusToString");
 			swCell.Toggled += switcher_Toggled;
-			swCell.Toggled += DependencyService.Get<IDeviceItemCell> ().switcher_Toggled;
+			//swCell.Toggled += DependencyService.Get<IDeviceCall> ().switcher_Toggled;
 
 			//DependencyService.Get<IDeviceItemCell> ().NodeItem2 = (Db_allnode)BindingContext;
 			/**this.Tapped += async (sender, e) => 

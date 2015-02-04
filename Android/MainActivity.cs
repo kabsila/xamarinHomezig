@@ -22,7 +22,7 @@ using Xamarin.Forms;
 namespace HomeZig.Android
 {
 	[Activity (Label = "HomeZig.Android.Android", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : FormsApplicationActivity
+	public class MainActivity : FormsApplicationActivity, IPageManager
 	{
 
 		protected override void OnCreate (Bundle bundle)
@@ -32,13 +32,18 @@ namespace HomeZig.Android
 			Xamarin.Forms.Forms.Init (this, bundle);
 
 			var page = App.GetMainPage();
-			App.Navigation = page.Navigation;
+			//App.Navigation = page.Navigation;
 			SetPage(page);
 			//SetPage (App.GetMainPage ());
-
+			//LoadApplication (page);
 			//this.RunOnUiThread (() => {new AllDevice("ssss");} );
-			new ConnectClick ();
+			new ConnectClick (this);
 
+		}
+
+		public void showMenuTabPage ()
+		{
+			SetPage (App.GetListMainPage ()); 
 		}
 
 	}

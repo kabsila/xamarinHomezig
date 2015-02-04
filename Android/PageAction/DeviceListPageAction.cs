@@ -2,7 +2,7 @@
 
 namespace HomeZig.Android
 {
-	public class DeviceListPageAction : DeviceListPage
+	public class DeviceListPageAction : DeviceAddressListPage
 	{
 		public DeviceListPageAction ()
 		{

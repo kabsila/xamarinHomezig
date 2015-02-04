@@ -12,9 +12,9 @@ namespace HomeZig.Android
 	{
 
 
-		public ConnectClick ()
+		public ConnectClick (IPageManager ipm)
 		{
-			WebsocketManager websocketObject =  new WebsocketManager( wsUrlEditor.Text);
+			WebsocketManager websocketObject =  new WebsocketManager( wsUrlEditor.Text, ipm);
 			//WebsocketManager.websocketMaster = new WebsocketManager( wsUrlEditor.Text);
 			ConnectButton.Clicked += ConnectButton_Click;
 			Disconnectbutton.Clicked += Disconnectbutton_Click;
@@ -45,7 +45,7 @@ namespace HomeZig.Android
 
 		}
 
-		public void websocket_Opened(object sender, EventArgs e)
+		/**public void websocket_Opened(object sender, EventArgs e)
 		{
 
 			string tag = "myapp";
@@ -90,7 +90,7 @@ namespace HomeZig.Android
 			}
 
 
-		}
+		}**/
 
 	}
 }
