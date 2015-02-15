@@ -1,14 +1,14 @@
 ﻿using System;
 using Xamarin.Forms;
 
-
 namespace HomeZig
 {
 	public class Node_io_ItemPage : ContentPage
 	{
-		SwitchCell switchCellLeft; 
-		SwitchCell switchCellRight;
+		static SwitchCell switchCellLeft; 
+		static SwitchCell switchCellRight;
 		public static Db_allnode item;
+		public static bool doSwitch = false;
 		public Node_io_ItemPage ()
 		{
 			Label header = new Label
@@ -20,6 +20,12 @@ namespace HomeZig
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.EndAndExpand
 			};
+
+			Button test = new Button 
+			{
+				Text = "Test"
+			};
+			test.Clicked += DependencyService.Get<IDeviceCall> ().testClick;
 
 			switchCellLeft = new SwitchCell
 			{
@@ -57,19 +63,36 @@ namespace HomeZig
 				//VerticalOptions = LayoutOptions.CenterAndExpand,
 				Children = 
 				{
-					header,
+					header,test,
 					tableView
 				}
 			};
 			Content = layout;
+
+			MessagingCenter.Subscribe<ContentPage> (this, "ChangeSwitch", (sender) => 
+			{
+				doSwitch = false;
+				item = (Db_allnode)BindingContext;
+				Device.BeginInvokeOnMainThread (() => {
+						setSwitchIo(item.node_addr);
+						//switchCellLeft.SetValue(SwitchCell.OnProperty,false);
+				});
+				
+			});
 		}
 
-		protected override void OnAppearing ()
+		async void setSwitchIo(string node_addr)
 		{
-			base.OnAppearing ();
-
-			item = (Db_allnode)BindingContext;
-			string state = NumberConversion.hex2binary (item.node_io);
+			foreach (var s in await App.Database.GetIoOfNode(node_addr)) {
+				if (s.node_addr == item.node_addr) {
+					SetSwitchByNodeIo (s.node_io);
+					break;
+				}
+			}
+		}
+		void SetSwitchByNodeIo(string io)
+		{
+			string state = NumberConversion.hex2binary (io);
 			string stateLeft = state.Substring(6, 1);
 			string stateRight = state.Substring(7, 1);
 			if (stateLeft.Equals ("0")) 
@@ -89,9 +112,18 @@ namespace HomeZig
 			{
 				stateRight = "true";
 			}
-
 			switchCellLeft.On = Convert.ToBoolean(stateLeft);
 			switchCellRight.On = Convert.ToBoolean(stateRight);
+			doSwitch = true;
+
+		}
+
+		protected override void OnAppearing ()
+		{
+			base.OnAppearing ();
+
+			item = (Db_allnode)BindingContext;
+			SetSwitchByNodeIo (item.node_io);
 			//addressListView.ItemsSource = await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
 		}
 

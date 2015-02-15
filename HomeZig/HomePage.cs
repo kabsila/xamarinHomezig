@@ -31,7 +31,16 @@ namespace HomeZig
 		public static Editor wsUrlEditor = new Editor
 		{
 			Text = "ws://echo.websocket.org",
+			//Text = "ws://homezigth.ddns.net:8888/ws",
+			//Text = "ws://101.51.220.93:8888/ws",
 			HorizontalOptions = LayoutOptions.Center
+		};
+
+		public static ActivityIndicator activityIndicator = new ActivityIndicator
+		{
+			Color = Device.OnPlatform(Color.Black, Color.Default, Color.Default),
+			//IsRunning = true,
+			HorizontalOptions = LayoutOptions.CenterAndExpand
 		};
 		public HomePage()
 		{
@@ -73,9 +82,10 @@ namespace HomeZig
 						Children = 
 						{
 							ConnectButton,
-							Disconnectbutton
+							Disconnectbutton,
 						}
-					}
+					},
+					activityIndicator
 
 				}
 			};

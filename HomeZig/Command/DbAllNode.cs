@@ -8,7 +8,7 @@ namespace HomeZig
 {
 	public class Db_allnode
 	{
-		string ns, nd, nt;
+		string ns, nd, nc, nbu;
 		public Db_allnode ()
 		{
 		}
@@ -20,14 +20,38 @@ namespace HomeZig
 		public string node_type { get; set; }
 		public string node_status { get; set; }
 		public string node_io { get; set; }
-		public string node_command { get; set; }
+		public string node_io_p { get; set; }
+		public string name_by_user 
+		{
+			get
+			{ 
+				return nbu;
+				//return String.Format ("{0}", node_addr);
+			}
+			set
+			{
+				nbu = value;
+			} 
+		}
+
+		public string node_command 
+		{
+			get
+			{ 
+				return nc;
+			}
+			set
+			{
+				nc = value;
+			}
+		}
 
 		public string node_deviceType {
 			get
 			{ 
-				if (node_type.Equals ("0x3ff90")) {
-					nd = "OutLet";
-				} else if (node_type.Equals ("0xa001a")) {
+				if (node_type.Equals ("0x3ff01")) {
+					nd = "In wall switch";
+				} else if (node_type.Equals ("0xa001c")) {
 					nd = "Camera";
 				} else {
 					nd = "Unknow2";

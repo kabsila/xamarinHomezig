@@ -10,7 +10,7 @@ namespace HomeZig
 {
 	public class DeviceItemDatabase 
 	{
-		static object locker = new object ();
+		//static object locker = new object ();
 
 		SQLiteAsyncConnection database;
 
@@ -48,13 +48,19 @@ namespace HomeZig
 
 		public async Task<IEnumerable<Db_allnode>> GetItemGroupByDeviceType ()
 		{
-			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] GROUP BY [node_deviceType]");
+			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] != 'Unknow2' GROUP BY [node_deviceType]");
 		}
 
 		public async Task<IEnumerable<Db_allnode>> GetItemByDeviceType (string deviceType)
 		{
 			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] = " + "'" + deviceType + "'");
 		}
+
+		public async Task<IEnumerable<Db_allnode>> GetIoOfNode (string deviceAddr)
+		{
+			return await database.QueryAsync<Db_allnode> ("SELECT * FROM [Db_allnode] WHERE [node_addr] = " + "'" + deviceAddr + "'");
+		}
+
 
 		/**public async DeviceDatabaseTable GetItem (int id) 
 		{
@@ -76,17 +82,8 @@ namespace HomeZig
 		}
 
 		public async Task<int> Save_DBAllNode_Item (Db_allnode item) 
-		{
-			//lock (locker) {
-			//if (item.ID != 0) {
-				//await database.UpdateAsync(item);
-				//return item.ID;
-				//return await database.UpdateAsync(item);
-			//} else {
-				
+		{				
 			return await database.InsertAsync(item);
-			//}
-			//}
 		}
 
 		public async Task<int> Update_Item (DeviceDatabaseTable item) 
@@ -105,6 +102,18 @@ namespace HomeZig
 			//lock (locker) {
 			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_status] = " + "'" + node_status2 + "'" + " WHERE [ID] = " + ID2);
 			//}
+		}
+
+		public async Task<IEnumerable<Db_allnode>> Update_Node_Io (string node_io, string addr)
+		{
+			//lock (locker) {
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = " + "'" + node_io + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
+			//}
+		}
+
+		public async Task<IEnumerable<Db_allnode>> Update_Node_NameByUser(string name, string addr)
+		{
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [name_by_user] = " + "'" + name + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
 		}
 
 		public  async Task<int> DeleteItem(int id)

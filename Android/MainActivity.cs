@@ -37,6 +37,7 @@ namespace HomeZig.Android
 			//SetPage (App.GetMainPage ());
 			//LoadApplication (page);
 			//this.RunOnUiThread (() => {new AllDevice("ssss");} );
+			new DeviceItemDatabase ();
 			new ConnectClick (this);
 
 		}

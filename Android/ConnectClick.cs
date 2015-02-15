@@ -25,6 +25,8 @@ namespace HomeZig.Android
 		public void ConnectButton_Click(object sender, EventArgs e)
 		{
 			//websocketObject.websocketMaster.Open ();
+			ConnectButton.IsEnabled = false;
+			activityIndicator.IsRunning = true;
 			WebsocketManager.websocketMaster.Open ();
 			//WebsocketManager wss =  new WebsocketManager();
 			//wss.websocket.Opened += new EventHandler(websocket_Opened);
