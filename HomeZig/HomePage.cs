@@ -42,6 +42,7 @@ namespace HomeZig
 			//IsRunning = true,
 			HorizontalOptions = LayoutOptions.CenterAndExpand
 		};
+
 		public HomePage()
 		{
 			//button1.SetBinding (Button.TextProperty, "Name");

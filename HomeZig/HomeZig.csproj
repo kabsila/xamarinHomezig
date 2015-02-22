@@ -42,7 +42,6 @@
     <Compile Include="Data\ISQLite.cs" />
     <Compile Include="Data\DeviceDatabaseTable.cs" />
     <Compile Include="Command\DbAllNode.cs" />
-    <Compile Include="Command\CommandIO.cs" />
     <Compile Include="Page\DeviceItemCell.cs" />
     <Compile Include="Page\DeviceItemPage.cs" />
     <Compile Include="Outlet2.cs" />

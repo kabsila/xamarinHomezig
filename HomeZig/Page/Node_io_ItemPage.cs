@@ -9,23 +9,24 @@ namespace HomeZig
 		static SwitchCell switchCellRight;
 		public static Db_allnode item;
 		public static bool doSwitch = false;
+		Label NameOfNode;
 		public Node_io_ItemPage ()
 		{
-			Label header = new Label
+			NameOfNode = new Label
 			{
 				Text = "Name of node",
-				//Font = Font.Default,
 				FontAttributes = FontAttributes.Bold,
 				FontSize = 40,
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.EndAndExpand
 			};
 
-			Button test = new Button 
+
+			/**Button test = new Button 
 			{
 				Text = "Test"
 			};
-			test.Clicked += DependencyService.Get<IDeviceCall> ().testClick;
+			test.Clicked += DependencyService.Get<IDeviceCall> ().testClick;**/
 
 			switchCellLeft = new SwitchCell
 			{
@@ -63,7 +64,8 @@ namespace HomeZig
 				//VerticalOptions = LayoutOptions.CenterAndExpand,
 				Children = 
 				{
-					header,test,
+					NameOfNode,
+					//test,
 					tableView
 				}
 			};
@@ -121,8 +123,8 @@ namespace HomeZig
 		protected override void OnAppearing ()
 		{
 			base.OnAppearing ();
-
 			item = (Db_allnode)BindingContext;
+			NameOfNode.Text = item.name_by_user;
 			SetSwitchByNodeIo (item.node_io);
 			//addressListView.ItemsSource = await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
 		}

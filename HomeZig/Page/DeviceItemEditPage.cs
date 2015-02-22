@@ -12,9 +12,8 @@ namespace HomeZig
 			//NavigationPage.SetHasNavigationBar (this, true);
 			var nameLabel = new Label { Text = "Name" };
 			var nameEntry = new Entry ();
-			nameEntry.Placeholder = "Type name of node for yourself";
 			nameLabel.FontSize = Device.GetNamedSize (NamedSize.Medium, typeof(Label));
-
+			nameEntry.Placeholder = "Type name of node for yourself";
 			nameEntry.SetBinding (Entry.TextProperty, "name_by_user");
 
 			var addrLabel = new Label { Text = "Node ID" };
@@ -29,14 +28,13 @@ namespace HomeZig
 				await App.Database.Update_Node_NameByUser(todoItem.name_by_user, todoItem.node_addr);
 				await Navigation.PopAsync();
 				//System.Diagnostics.Debug.WriteLine("kkkkkkkkkkkkkkkkkkkk {0}", todoItem.name_by_user);
-				MessagingCenter.Send<ContentPage> (new ContentPage(), "BackFromEdit");
+				//MessagingCenter.Send<ContentPage> (new ContentPage(), "BackFromEdit");
 			};
 
 			var cancelButton = new Button { Text = "Cancel" };
 			cancelButton.Clicked += async (sender, e) => {
 				var todoItem = (Db_allnode)BindingContext;
 				await Navigation.PopAsync();
-				MessagingCenter.Send<ContentPage> (new ContentPage(), "BackFromEdit");
 			};
 
 			Content = new StackLayout {
@@ -48,6 +46,12 @@ namespace HomeZig
 					saveButton, cancelButton
 				}
 			};
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing ();
+			MessagingCenter.Send<ContentPage> (new ContentPage(), "BackFromEdit");
 		}
 	}
 }

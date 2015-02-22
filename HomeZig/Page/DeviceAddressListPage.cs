@@ -5,18 +5,19 @@ namespace HomeZig
 {
 	public class DeviceAddressListPage : ContentPage
 	{
+
 		ListView addressListView;
 		ToolbarItem Edit;
 		public DeviceAddressListPage ()
 		{
 			//Title = "Powered";
-
+			//NavigationPage.SetHasNavigationBar (this, true);
+			//NavigationPage.SetBackButtonTitle (this., "back");
 			addressListView = new ListView ();
 			//listView.ItemTemplate = new DataTemplate(typeof (DeviceItemCell));
 			addressListView.ItemTemplate = new DataTemplate(typeof (TextCell));
-			addressListView.ItemTemplate.SetBinding(TextCell.TextProperty, "name_by_user");
-			//listView.ItemTemplate.SetBinding(SwitchCell.TextProperty, "node_addr");
-			//listView.ItemTemplate.SetBinding(SwitchCell.OnProperty, "nodeStatusToString");
+			addressListView.ItemTemplate.SetBinding (TextCell.TextProperty, "name_by_user");
+		
 
 			/**addressListView.ItemSelected += (sender, e) => {
 				var Item = (Db_allnode)e.SelectedItem;
@@ -87,8 +88,15 @@ namespace HomeZig
 				addressListView.ItemSelected += ItemClicked_Edit;
 			});
 			var deviceType = (Db_allnode)BindingContext;
-			addressListView.ItemsSource = await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
-
+			var dataSource =  await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
+			foreach (var data in dataSource) 
+			{
+				if (data.name_by_user == null) {
+					data.name_by_user = data.node_addr;
+					await App.Database.Update_DBAllNode_Item(data);
+				} 
+			}
+			addressListView.ItemsSource = dataSource;
 		}
 
 		void ItemClicked_1 (object sender, SelectedItemChangedEventArgs e)

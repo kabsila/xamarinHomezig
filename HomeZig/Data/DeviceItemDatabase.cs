@@ -86,10 +86,10 @@ namespace HomeZig
 			return await database.InsertAsync(item);
 		}
 
-		public async Task<int> Update_Item (DeviceDatabaseTable item) 
-		{
-			return await database.UpdateAsync(item);
-		}
+		//public async Task<int> Update_Item (DeviceDatabaseTable item) 
+		//{
+			//return await database.UpdateAsync(item);
+		//}
 
 		public async Task<int> Update_DBAllNode_Item (Db_allnode item) 
 		{
