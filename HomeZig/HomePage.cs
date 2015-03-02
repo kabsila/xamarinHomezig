@@ -32,7 +32,7 @@ namespace HomeZig
 		{
 			Text = "ws://echo.websocket.org",
 			//Text = "ws://homezigth.ddns.net:8888/ws",
-			//Text = "ws://101.51.220.93:8888/ws",
+			//Text = "ws://101.51.28.48:8888/ws",
 			HorizontalOptions = LayoutOptions.Center
 		};
 

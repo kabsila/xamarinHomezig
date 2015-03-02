@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using System.Reflection;
 using System.IO;
+
 namespace HomeZig.Android
 {
 	public class WebsocketManager
@@ -42,10 +43,10 @@ namespace HomeZig.Android
 				HomePage.ConnectButton.IsEnabled = false;
 				HomePage.activityIndicator.IsRunning = false;
 			});
-			websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"1\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"1\",\"node_io\":\"F8\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FF\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"db_allnode\"}]}");
-
+			websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"1\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"db_allnode\"}]}");
+			/**
 			#region FirstSendToGateway
-			/**Db_allnode db = new Db_allnode ();
+			Db_allnode db = new Db_allnode ();
 			db.node_command = "db_allnode";
 			db.ID = 0;
 			db.nodeStatusToString = "";
@@ -55,10 +56,10 @@ namespace HomeZig.Android
 			db.node_status = "";
 			db.node_type = "";
 			db.node_io_p = "";
-			db.name
+			//db.name;
 			var FirstSend = JsonConvert.SerializeObject(db);
-			websocketMaster.Send (FirstSend);**/
-			#endregion
+			websocketMaster.Send (FirstSend);
+			#endregion**/
 
 		}
 
@@ -76,6 +77,10 @@ namespace HomeZig.Android
 		public void websocket_Closed(object sender, EventArgs e)
 		{
 			Log.Info("websocket_Closed", "WebsocketClosed");
+			Device.BeginInvokeOnMainThread (() => {
+				HomePage.ConnectButton.IsEnabled = true;
+				HomePage.activityIndicator.IsRunning = false;
+			});
 		}
 
 		public async void websocket_MessageReceived(object sender, MessageReceivedEventArgs  e)
@@ -92,15 +97,20 @@ namespace HomeZig.Android
 
 				foreach(var data in cmd.cmd_db_allnode)
 				{
+					bool isUpdate = false;
 					try
 					{
 						await App.Database.Save_DBAllNode_Item(data);
-
 					}
 					catch (Exception exx)
 					{
-						App.Database.Update_Node_Io(data.node_io, data.node_addr);
+						isUpdate = true;
 						Log.Info ("Exception" , exx.ToString());
+					}
+
+					if (isUpdate)
+					{
+						await App.Database.Update_DBAllNode_All_Item(data);
 					}
 				}
 				// This is where we copy in the prepopulated database
@@ -143,7 +153,7 @@ namespace HomeZig.Android
 				//getRoot = null;
 				//string name2 = cmd.cmd_db_allnode[0].node_addr;
 				//Log.Info ("MessageReceived222222" , cmd.cmd_db_allnode[0].ToString());
-				//RootElement cmd = JsonConvert.DeserializeObject<RootElement>(e.Message);			
+				//RootElement cmd = JsonConvert.DeserializeObject<RootElement>(e.Message);	
 
 
 
@@ -155,10 +165,9 @@ namespace HomeZig.Android
 
 				foreach(var i in await App.Database.GetItems())
 				{
-					Log.Info ("From Database" , i.node_deviceType);
+					Log.Info ("From Database" , i.node_addr);
+					Log.Info ("From node_status" , i.node_status);
 				}
-
-
 
 				//switch ("db_allnode")
 				switch (cmd.cmd_db_allnode[0].node_command)
@@ -173,9 +182,8 @@ namespace HomeZig.Android
 					break;
 
 					case "command_io":
-					MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitch");
-
-					Log.Info ("MessageReceived3" , "aaaaaaaaaaaaaaaaaaaaaaaaa");
+					MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
+					Log.Info ("MessageReceived3" , "ChangeSwitchDetect");
 					break;
 
 					case "db_allnode":
@@ -191,8 +199,6 @@ namespace HomeZig.Android
 							ipm1.showMenuTabPage();
 						});
 					})).Start();
-
-
 					break;
 
 					default:

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using SQLite.Net.Attributes;
 
-
-
 namespace HomeZig
 {
 	public class Db_allnode
@@ -49,10 +47,12 @@ namespace HomeZig
 		public string node_deviceType {
 			get
 			{ 
-				if (node_type.Equals ("0x3ff01")) {
+				if (node_type.Equals ("0x3FF01") || node_type.Equals ("0x3ff01")) {
 					nd = "In wall switch";
-				} else if (node_type.Equals ("0xa001c")) {
+				} else if (node_type.Equals ("0xA001C") || node_type.Equals ("0xa001c")) {
 					nd = "Camera";
+				}else if (node_type.Equals ("0x3FF11") || node_type.Equals ("0x3ff11")) {
+					nd = "General purpose detector";
 				} else {
 					nd = "Unknow2";
 				}
@@ -70,11 +70,11 @@ namespace HomeZig
 			get
 			{
 				if (node_status.Equals ("0") || node_status.Equals ("false") || node_status.Equals ("False")) { 
-					node_status = "false";
+					ns = "false";
 				} else {
-					node_status = "true";
+					ns = "true";
 				}
-				return String.Format ("{0}", node_status);
+				return String.Format ("{0}", ns);
 			} 
 			set
 			{

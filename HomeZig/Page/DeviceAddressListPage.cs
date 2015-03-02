@@ -47,8 +47,8 @@ namespace HomeZig
 				var deviceType = (Db_allnode)BindingContext;
 				addressListView.ItemTemplate = new DataTemplate(typeof (DeviceItemEditCell));
 				addressListView.ItemsSource = await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
-				addressListView.ItemSelected -= ItemClicked_1;
-				addressListView.ItemSelected -= ItemClicked_Done;
+				addressListView.ItemTapped -= ItemClicked_1;
+				addressListView.ItemTapped -= ItemClicked_Done;
 				addressListView.ItemSelected += ItemClicked_Edit;
 
 			};
@@ -61,9 +61,9 @@ namespace HomeZig
 				addressListView.ItemTemplate = new DataTemplate(typeof (TextCell));
 				addressListView.ItemTemplate.SetBinding(TextCell.TextProperty, "name_by_user");
 				addressListView.ItemsSource = await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
-				addressListView.ItemSelected -= ItemClicked_1;
+				addressListView.ItemTapped -= ItemClicked_1;
 				addressListView.ItemSelected -= ItemClicked_Edit;
-				addressListView.ItemSelected += ItemClicked_Done;
+				addressListView.ItemTapped += ItemClicked_Done;
 			};
 
 			var layout = new StackLayout();
@@ -77,14 +77,14 @@ namespace HomeZig
 		{
 			base.OnAppearing ();
 			//listView.ItemsSource = await App.Database.GetItems ();
-			addressListView.ItemSelected -= ItemClicked_1;
+			addressListView.ItemTapped  -= ItemClicked_1;
 			addressListView.ItemSelected -= ItemClicked_Edit;
-			addressListView.ItemSelected -= ItemClicked_Done;
-			addressListView.ItemSelected += ItemClicked_1;
+			addressListView.ItemTapped -= ItemClicked_Done;
+			addressListView.ItemTapped  += ItemClicked_1;
 			MessagingCenter.Subscribe<ContentPage> (this, "BackFromEdit", (sender) => 
 			{
 				addressListView.ItemSelected -= ItemClicked_Edit;
-				addressListView.ItemSelected -= ItemClicked_1;
+				addressListView.ItemTapped -= ItemClicked_1;
 				addressListView.ItemSelected += ItemClicked_Edit;
 			});
 			var deviceType = (Db_allnode)BindingContext;
@@ -95,16 +95,64 @@ namespace HomeZig
 					data.name_by_user = data.node_addr;
 					await App.Database.Update_DBAllNode_Item(data);
 				} 
+
+				if (data.node_status.Equals ("1")) { // 1 is OFFLINE , 0 is ONLINE
+					var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");
+					if (indexForRemove == -1) {
+						data.name_by_user = data.name_by_user + "(OffLine)";
+					} else {
+						data.name_by_user = data.name_by_user.Remove (indexForRemove);
+						data.name_by_user = data.name_by_user + "(OffLine)";
+					}
+					await App.Database.Update_DBAllNode_Item (data);
+
+				} else {
+					var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");						
+					if (indexForRemove != -1) {
+						data.name_by_user = data.name_by_user.Remove (indexForRemove);
+						await App.Database.Update_DBAllNode_Item (data);
+					}
+				}
+
+				/**if (data.node_io.Equals ("FF") || data.node_io.Equals ("ff") || data.node_io.Equals (null)) {
+					var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");
+					if (indexForRemove == -1) {
+						data.name_by_user = data.name_by_user + "(OffLine)";
+					} else {
+						data.name_by_user = data.name_by_user.Remove (indexForRemove);
+						data.name_by_user = data.name_by_user + "(OffLine)";
+					}
+
+					await App.Database.Update_DBAllNode_Item (data);
+
+				} else {
+					var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");						
+					if (indexForRemove != -1) {
+						data.name_by_user = data.name_by_user.Remove (indexForRemove);
+						await App.Database.Update_DBAllNode_Item (data);
+					}
+
+				}**/
 			}
 			addressListView.ItemsSource = dataSource;
 		}
 
-		void ItemClicked_1 (object sender, SelectedItemChangedEventArgs e)
+		void ItemClicked_1 (object sender, ItemTappedEventArgs e)
 		{
-			var Item = (Db_allnode)e.SelectedItem;
-			var DeviceList = new Node_io_ItemPage();
-			DeviceList.BindingContext = Item;
-			Navigation.PushAsync(DeviceList);
+			var Item = (Db_allnode)e.Item;
+			if (Item.node_deviceType.Equals ("General purpose detector") && Item.node_status.Equals("0")) {
+				var DeviceList = new Node_io_GpdPage ();
+				DeviceList.BindingContext = Item;
+				Navigation.PushAsync (DeviceList);
+			} else if (Item.node_deviceType.Equals ("In wall switch") && Item.node_status.Equals("0")) {
+				var DeviceList = new Node_io_ItemPage ();
+				DeviceList.BindingContext = Item;
+				Navigation.PushAsync (DeviceList);
+			} else {
+				((ListView)sender).SelectedItem = null; //disable listview hightLight
+			}
+
+
 		}
 
 		void ItemClicked_Edit (object sender, SelectedItemChangedEventArgs e)
@@ -115,12 +163,20 @@ namespace HomeZig
 			Navigation.PushAsync(DeviceList);
 		}
 
-		void ItemClicked_Done (object sender, SelectedItemChangedEventArgs e)
+		void ItemClicked_Done (object sender, ItemTappedEventArgs e)
 		{
-			var Item = (Db_allnode)e.SelectedItem;
-			var DeviceList = new Node_io_ItemPage();
-			DeviceList.BindingContext = Item;
-			Navigation.PushAsync(DeviceList);
+			var Item = (Db_allnode)e.Item;
+			if (Item.node_deviceType.Equals ("General purpose detector") && Item.node_status.Equals("0")) {
+				var DeviceList = new Node_io_GpdPage ();
+				DeviceList.BindingContext = Item;
+				Navigation.PushAsync (DeviceList);
+			} else if (Item.node_deviceType.Equals ("In wall switch") && Item.node_status.Equals("0")) {
+				var DeviceList = new Node_io_ItemPage ();
+				DeviceList.BindingContext = Item;
+				Navigation.PushAsync (DeviceList);
+			} else {
+				((ListView)sender).SelectedItem = null;
+			}
 		}
 
 

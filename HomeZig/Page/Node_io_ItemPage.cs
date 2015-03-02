@@ -71,7 +71,7 @@ namespace HomeZig
 			};
 			Content = layout;
 
-			MessagingCenter.Subscribe<ContentPage> (this, "ChangeSwitch", (sender) => 
+			MessagingCenter.Subscribe<ContentPage> (this, "ChangeSwitchDetect", (sender) => 
 			{
 				doSwitch = false;
 				item = (Db_allnode)BindingContext;

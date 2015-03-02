@@ -26,8 +26,16 @@ namespace HomeZig
 			database = DependencyService.Get<ISQLite> ().GetConnection ();
 			// create the tables
 			database.CreateTableAsync<Db_allnode>();
+			database.CreateTableAsync<NameByUser>();
 		}
 
+		#region NameByUser
+		public async Task<int> Save_NameByUser_Item (NameByUser item) 
+		{	
+			System.Diagnostics.Debug.WriteLine ("Save_NameByUser_Item");
+			return await database.InsertAsync(item);
+		}
+		#endregion
 
 		public async Task<IEnumerable<Db_allnode>> GetItems ()
 		{
@@ -82,7 +90,8 @@ namespace HomeZig
 		}
 
 		public async Task<int> Save_DBAllNode_Item (Db_allnode item) 
-		{				
+		{	
+			System.Diagnostics.Debug.WriteLine ("Save_DBAllNode_Item");
 			return await database.InsertAsync(item);
 		}
 
@@ -93,22 +102,34 @@ namespace HomeZig
 
 		public async Task<int> Update_DBAllNode_Item (Db_allnode item) 
 		{
-			//System.Diagnostics.Debug.WriteLine("in Update_DBAllNode_Item method");
 			return await database.UpdateAsync(item);
+		}
+
+		public async Task<IEnumerable<Db_allnode>> Update_DBAllNode_All_Item (Db_allnode item) 
+		{
+			return await database.QueryAsync<Db_allnode>(String.Format("UPDATE [Db_allnode] SET " +
+				"[node_io] = \'{0}\', " +
+				"[node_status] = \'{1}\', " +
+				"[node_type] = \'{2}\', " +
+				"[node_deviceType]  = \'{3}\' " +
+				"WHERE [node_addr] = \'{4}\'",
+				item.node_io, item.node_status, item.node_type, item.node_deviceType, item.node_addr));
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_DBAllNode_Item2 (string node_status2, int ID2)
 		{
-			//lock (locker) {
 			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_status] = " + "'" + node_status2 + "'" + " WHERE [ID] = " + ID2);
-			//}
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_Node_Io (string node_io, string addr)
 		{
-			//lock (locker) {
 			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = " + "'" + node_io + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
-			//}
+		}
+
+		public async Task<IEnumerable<Db_allnode>> Update_Node_Io_Node_Status (string node_io, string node_status, string addr)
+		{
+			//return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = " + "'" + node_io + "', " + "[node_status] = " + "'" + node_status + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
+			return await database.QueryAsync<Db_allnode>(String.Format("UPDATE [Db_allnode] SET [node_io] = \'{0}\' , [node_status] = \'{1}\' WHERE [node_addr] = \'{2}\'",node_io, node_status, addr));
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_Node_NameByUser(string name, string addr)
