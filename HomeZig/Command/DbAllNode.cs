@@ -49,11 +49,14 @@ namespace HomeZig
 			{ 
 				if (node_type.Equals ("0x3FF01") || node_type.Equals ("0x3ff01")) {
 					nd = "In wall switch";
-				} else if (node_type.Equals ("0xA001C") || node_type.Equals ("0xa001c")) {
+				}else if (node_type.Equals ("0xA001C") || node_type.Equals ("0xa001c")) {
 					nd = "Camera";
 				}else if (node_type.Equals ("0x3FF11") || node_type.Equals ("0x3ff11")) {
 					nd = "General purpose detector";
-				} else {
+				}else if (node_type.Equals ("0x3FF20") || node_type.Equals ("0x3ff20")) {
+					nd = "Remote control";
+				}
+				else {
 					nd = "Unknow2";
 				}
 				return String.Format ("{0}", nd);
@@ -87,6 +90,7 @@ namespace HomeZig
 	public class RootObject
 	{
 		public List<Db_allnode> cmd_db_allnode { get; set; }
+		public List<Login> cmd_login { get; set; }
 		//public Dictionary<string,List<Db_allnode>> cmd_db_allnode;
 		//public Dictionary<string,Db_allnode> cmd_db_allnode;
 		//public Db_allnode[] cmd_db_allnode { get; set; }

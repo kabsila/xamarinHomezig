@@ -89,6 +89,12 @@ namespace HomeZig
 			});
 			var deviceType = (Db_allnode)BindingContext;
 			var dataSource =  await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
+
+			//var aa = await App.Database.Table_is_Emtry2 ();
+
+			//System.Diagnostics.Debug.WriteLine ("AAAAAAAAAAAAAAAAA {0}",);
+		
+
 			foreach (var data in dataSource) 
 			{
 				if (data.name_by_user == null) {
@@ -148,7 +154,12 @@ namespace HomeZig
 				var DeviceList = new Node_io_ItemPage ();
 				DeviceList.BindingContext = Item;
 				Navigation.PushAsync (DeviceList);
-			} else {
+			} else if (Item.node_deviceType.Equals ("Remote control") && Item.node_status.Equals("0")) {
+				var DeviceList = new Node_io_RemoteControl_Page ();
+				DeviceList.BindingContext = Item;
+				Navigation.PushAsync (DeviceList);
+			} 
+			else {
 				((ListView)sender).SelectedItem = null; //disable listview hightLight
 			}
 

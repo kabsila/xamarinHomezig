@@ -16,7 +16,7 @@ using WebSocket4Net;
 using Newtonsoft.Json;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms;
-//using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 
 namespace HomeZig.Android
@@ -31,20 +31,42 @@ namespace HomeZig.Android
 
 			Xamarin.Forms.Forms.Init (this, bundle);
 
-			var page = App.GetMainPage();
-			//App.Navigation = page.Navigation;
+			//var page = App.GetMainPage();
+
+			new DeviceItemDatabase ();
+			var page =  App.GetLoginPage ();
 			SetPage(page);
+			/**App.Check_flag_Login ();
+			MessagingCenter.Subscribe<ContentPage> (this, "FlagLoginPass", (sender) => 
+			{
+					var page =  App.GetLoginPage ();
+					SetPage(page);
+			});
+			MessagingCenter.Subscribe<ContentPage> (this, "FlagLoginNotPass", (sender) => 
+			{
+					var page =  App.GetLoginPage ();
+					SetPage(page);
+			});**/
+
+			//App.Navigation = page.Navigation;
+			//SetPage(page);
 			//SetPage (App.GetMainPage ());
 			//LoadApplication (page);
 			//this.RunOnUiThread (() => {new AllDevice("ssss");} );
-			new DeviceItemDatabase ();
-			new ConnectClick (this);
+			//new DeviceItemDatabase ();
+			//new ConnectClick (this);
+			new LoginClick (this);
 
 		}
 
 		public void showMenuTabPage ()
 		{
 			SetPage (App.GetListMainPage ()); 
+		}
+
+		public void showHomePage()
+		{
+			SetPage (App.GetMainPage ()); 
 		}
 
 	}

@@ -1,5 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeZig
 {
@@ -14,6 +16,25 @@ namespace HomeZig
 			set;
 		}
 
+		/**public static async void Check_flag_Login()
+		{
+			string flag = "";
+
+			foreach (var data in await App.Database.Get_flag_Login()) {
+				flag = data.flagForLogin;
+				if (flag.Equals ("pass")) {
+					MessagingCenter.Send<ContentPage> (new ContentPage (), "FlagLoginPass");
+				} else {
+					MessagingCenter.Send<ContentPage> (new ContentPage (), "FlagLoginNotPass");
+				}
+				break;
+			}
+			if (flag.Equals ("")) {
+				MessagingCenter.Send<ContentPage> (new ContentPage (), "FlagLoginNotPass");
+			}
+		}**/
+
+
 		public static Page GetMainPage ()
 		{	
 			//return new NavigationPage(new HomePage());
@@ -24,6 +45,11 @@ namespace HomeZig
 		public static Page GetListMainPage ()
 		{	
 			return new MenuTabPage ();
+		}
+
+		public static Page GetLoginPage ()
+		{	
+			return new LoginPage ();		
 		}
 
 		public static DeviceItemDatabase Database 

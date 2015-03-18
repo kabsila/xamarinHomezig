@@ -25,26 +25,77 @@ namespace HomeZig
 		{
 			database = DependencyService.Get<ISQLite> ().GetConnection ();
 			// create the tables
+			database.CreateTableAsync<Login>();
 			database.CreateTableAsync<Db_allnode>();
 			database.CreateTableAsync<NameByUser>();
+			database.CreateTableAsync<RemoteData>();
 		}
 
-		#region NameByUser
-		public async Task<int> Save_NameByUser_Item (NameByUser item) 
-		{	
-			System.Diagnostics.Debug.WriteLine ("Save_NameByUser_Item");
-			return await database.InsertAsync(item);
+		#region Login
+		public async Task<IEnumerable<Login>> Save_Login_Item (string username, string password, string flagForLogin, string lastConnectWebscoketUrl)
+		{
+			return await database.QueryAsync<Login>(String.Format("INSERT INTO [Login] ([username], [password], [flagForLogin], [lastConnectWebscoketUrl]) VALUES ('{0}', '{1}', '{2}', '{3}')",username, password, flagForLogin, lastConnectWebscoketUrl));
 		}
+
+		public async Task<IEnumerable<Login>> Update_Login_Item (string username, string password, string flagForLogin)
+		{
+			return await database.QueryAsync<Login>(String.Format("UPDATE [Login] SET [username] = '{0}', [password] = '{1}', [flagForLogin] = '{2}' WHERE [ID] = 0",username, password, flagForLogin));
+		}
+
+		public async Task<IEnumerable<Login>> Delete_Login_Item ()
+		{
+			return await database.QueryAsync<Login>("DELETE FROM [Login]");
+		}
+
+		public async Task<IEnumerable<Login>> Get_flag_Login ()
+		{
+			return await database.QueryAsync<Login>("SELECT * FROM [Login]");
+		}
+
+		public async Task<IEnumerable<Login>> Get_username_for_delete ()
+		{
+			return await database.QueryAsync<Login>("SELECT * FROM [Login] WHERE [username] != 'admin'");
+		}
+
+		public async Task<IEnumerable<Login>> Delete_username_for_delete ()
+		{
+			return await database.QueryAsync<Login>("DELETE FROM [Login] WHERE [username] != 'admin'");
+		}
+
+		public async Task<IEnumerable<Login>> Check_Login_Table_is_Emtry () 
+		{
+			return await database.QueryAsync<Login>("SELECT COUNT(*) from [Login]");
+		}
+
+
+		#endregion 
+
+		#region NameByUser
+		public async Task<int> Table_is_Emtry2 () 
+		{
+			return await database.ExecuteAsync("SELECT COUNT([ID]) from [NameByUser]");
+		}
+
+		public async Task<IEnumerable<NameByUser>> Table_is_Emtry () 
+		{
+			return await database.QueryAsync<NameByUser>("SELECT COUNT([ID]) from [NameByUser]");
+		}
+		public async Task<IEnumerable<NameByUser>> Save_NameByUser_Item (string name, string addr)
+		{
+			return await database.QueryAsync<NameByUser>(String.Format("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user]) VALUES ({0}, {1})",addr, name ));
+		}
+
+		public async Task<IEnumerable<NameByUser>> Update_NameByUser_Item (string name, string addr)
+		{
+			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_name_by_user] = " + "'" + name + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
+		}
+
+
 		#endregion
 
 		public async Task<IEnumerable<Db_allnode>> GetItems ()
 		{
-			//lock (locker) {
-			//return  await (from i in database.Table<DeviceDatabaseTable>() select i).ToList();
-			//}
-			//var aa = database.Table<Db_allnode> ().ToListAsync ();
 			return await  database.Table<Db_allnode> ().ToListAsync ();
-			//return await database.Table<DeviceDatabaseTable>().ToListAsync<IEnumerable<DeviceDatabaseTable>>();
 		}
 
 		public async Task<IEnumerable<Db_allnode>> GetItemsNotDone ()
@@ -77,7 +128,7 @@ namespace HomeZig
 			//}
 		}**/
 
-		public async Task<int> SaveItem (DeviceDatabaseTable item) 
+		/**public async Task<int> SaveItem (DeviceDatabaseTable item) 
 		{
 			//lock (locker) {
 				if (item.ID != 0) {
@@ -87,7 +138,7 @@ namespace HomeZig
 					return await database.InsertAsync(item);
 				}
 			//}
-		}
+		}**/
 
 		public async Task<int> Save_DBAllNode_Item (Db_allnode item) 
 		{	
@@ -137,12 +188,12 @@ namespace HomeZig
 			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [name_by_user] = " + "'" + name + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
 		}
 
-		public  async Task<int> DeleteItem(int id)
+		/**public  async Task<int> DeleteItem(int id)
 		{
 			//lock (locker) {
 				return await database.DeleteAsync<DeviceDatabaseTable>(id);
 			//}
-		}
+		}**/
 	}
 }
 

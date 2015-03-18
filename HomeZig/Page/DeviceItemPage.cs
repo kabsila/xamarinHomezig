@@ -32,7 +32,7 @@ namespace HomeZig
 			var deleteButton = new Button { Text = "Delete" };
 			deleteButton.Clicked += (sender, e) => {
 				var todoItem = (Db_allnode)BindingContext;
-				App.Database.DeleteItem(todoItem.ID);
+				//App.Database.DeleteItem(todoItem.ID);
 				this.Navigation.PopAsync();
 			};
 

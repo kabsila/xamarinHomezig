@@ -4,17 +4,17 @@ using SQLite.Net.Attributes;
 
 namespace HomeZig
 {
-	public class NameByUser
+	public class RemoteData
 	{
-		public NameByUser ()
+		public RemoteData ()
 		{
 		}
 
 		[PrimaryKey, AutoIncrement]
 		public int ID { get; set; }
 		public string node_addr { get; set; }
-		public string node_name_by_user { get; set; }
-		public string node_name_io_by_user { get; set; }
+		public string remote_button_name { get; set; }
+		public string remote_code { get; set; }
 	}
 }
 

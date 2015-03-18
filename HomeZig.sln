@@ -20,7 +20,4 @@ Global
 		{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBED7380-125C-4DC6-9BA7-E448CBAB1AF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Android\HomeZig.Android.csproj
-	EndGlobalSection
 EndGlobal

@@ -5,16 +5,18 @@ namespace HomeZig
 {
 	public class Node_io_ItemPage : ContentPage
 	{
+
 		static SwitchCell switchCellLeft; 
 		static SwitchCell switchCellRight;
 		public static Db_allnode item;
 		public static bool doSwitch = false;
 		Label NameOfNode;
+		ToolbarItem Edit;
 		public Node_io_ItemPage ()
 		{
 			NameOfNode = new Label
 			{
-				Text = "Name of node",
+				Text = "Name of node", // Change in OnAppearing
 				FontAttributes = FontAttributes.Bold,
 				FontSize = 40,
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -70,6 +72,28 @@ namespace HomeZig
 				}
 			};
 			Content = layout;
+
+			Edit = new ToolbarItem
+			{
+				Text = "Edit",
+				Order = ToolbarItemOrder.Primary
+			};
+
+			ToolbarItem Done = new ToolbarItem
+			{
+				Text = "Done",
+				Order = ToolbarItemOrder.Primary
+			};
+			this.ToolbarItems.Add(Edit);
+
+			Edit.Clicked += async (sender, e) => 
+			{
+				this.ToolbarItems.Add(Done);
+				this.ToolbarItems.Remove(Edit);
+				var deviceType = (Db_allnode)BindingContext;
+
+
+			};
 
 			MessagingCenter.Subscribe<ContentPage> (this, "ChangeSwitchDetect", (sender) => 
 			{

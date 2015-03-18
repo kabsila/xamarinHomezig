@@ -5,6 +5,7 @@ namespace HomeZig
 	public interface IPageManager
 	{
 		void showMenuTabPage ();
+		void showHomePage();
 	}
 
 }

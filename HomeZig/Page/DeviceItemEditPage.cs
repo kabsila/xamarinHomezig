@@ -27,8 +27,6 @@ namespace HomeZig
 				todoItem.name_by_user = nameEntry.Text;
 				await App.Database.Update_Node_NameByUser(todoItem.name_by_user, todoItem.node_addr);
 				await Navigation.PopAsync();
-				//System.Diagnostics.Debug.WriteLine("kkkkkkkkkkkkkkkkkkkk {0}", todoItem.name_by_user);
-				//MessagingCenter.Send<ContentPage> (new ContentPage(), "BackFromEdit");
 			};
 
 			var cancelButton = new Button { Text = "Cancel" };
