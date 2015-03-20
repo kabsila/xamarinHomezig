@@ -43,6 +43,14 @@ namespace HomeZig
 			IsEnabled = false
 		};
 
+		public static Label loginFail = new Label 
+		{ 
+			Text = "Invalid Username Or Password",
+			TextColor = Color.Red,
+			IsVisible = false,
+			HorizontalOptions = LayoutOptions.Center
+		};
+
 		public LoginPage ()
 		{
 			Content = new StackLayout {
@@ -72,6 +80,7 @@ namespace HomeZig
 							logoutButton
 						}
 					},
+					loginFail,
 					activityIndicator
 
 				}
@@ -81,14 +90,22 @@ namespace HomeZig
 		protected override async void OnAppearing ()
 		{
 			base.OnAppearing ();
+
+			Device.BeginInvokeOnMainThread (() => {
+				LoginPage.loginFail.IsVisible = false;
+			});
+
 			foreach (var data in await App.Database.Get_flag_Login()) 
 			{
 				username.Text = data.username;
 				password.Text = data.password;
-				username.IsEnabled = false;
-				password.IsEnabled = false;
-				loginButton.IsEnabled = false;
-				logoutButton.IsEnabled = true;
+				Device.BeginInvokeOnMainThread (() => {
+					username.IsEnabled = false;
+					password.IsEnabled = false;
+					loginButton.IsEnabled = false;
+					logoutButton.IsEnabled = true;
+				});
+
 			}
 		}
 

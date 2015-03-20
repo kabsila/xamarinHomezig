@@ -19,7 +19,7 @@ namespace HomeZig.Android
 		public async void changePasswordButton_Click (object sender, EventArgs e)
 		{
 			if (String.IsNullOrEmpty (Change_Password_Page.newPassword.Text)) {
-				DisplayAlert ("Validation Error", "New Password are required", "Re-try");
+				await DisplayAlert ("Validation Error", "New Password are required", "Re-try");
 			} else {
 
 				string jsonCommandChangePassword = "";

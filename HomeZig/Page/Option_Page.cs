@@ -36,7 +36,7 @@ namespace HomeZig
 
 		};
 
-		public Option_Page ()
+		public Option_Page (IPageManager ipm)
 		{
 			Command<Type> navigateCommand = new Command<Type>(async (Type pageType) =>
 			{
@@ -49,13 +49,17 @@ namespace HomeZig
 					await App.Database.Delete_Login_Item();
 					LoginPage.username.Text = "";
 					LoginPage.password.Text = "";
-					LoginPage.username.IsEnabled = true;
-					LoginPage.password.IsEnabled = true;
-					LoginPage.loginButton.IsEnabled = true;
-					LoginPage.logoutButton.IsEnabled = false;
-					LoginPage.activityIndicator.IsRunning = false;
-					Page page = (Page)Activator.CreateInstance(pageType);
-					await this.Navigation.PushAsync(page);
+					Device.BeginInvokeOnMainThread (() => {
+						LoginPage.username.IsEnabled = true;
+						LoginPage.password.IsEnabled = true;
+						LoginPage.loginButton.IsEnabled = true;
+						LoginPage.logoutButton.IsEnabled = false;
+						LoginPage.activityIndicator.IsRunning = false;
+					});
+
+					ipm.showLoginPage();
+					//Page page = (Page)Activator.CreateInstance(pageType);
+					//await this.Navigation.PushAsync(page);
 				});
 
 			adduser.Command = navigateCommand;

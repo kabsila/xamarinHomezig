@@ -34,6 +34,8 @@ namespace HomeZig.Android
 			//var page = App.GetMainPage();
 
 			new DeviceItemDatabase ();
+			App.Database.Delete_RemoteData_Item ();
+			App.Database.Delete_All_Login_Username_Show_For_Del ();
 			var page =  App.GetLoginPage ();
 			SetPage(page);
 			/**App.Check_flag_Login ();
@@ -56,12 +58,17 @@ namespace HomeZig.Android
 			//new DeviceItemDatabase ();
 			//new ConnectClick (this);
 			new LoginClick (this);
-
+			new MenuTabPage (this);
 		}
 
-		public void showMenuTabPage ()
+		public void showLoginPage ()
 		{
-			SetPage (App.GetListMainPage ()); 
+			SetPage (App.GetLoginPage ()); 
+		}
+
+		public void showMenuTabPage (IPageManager ipm)
+		{
+			SetPage (App.GetListMainPage (ipm)); 
 		}
 
 		public void showHomePage()

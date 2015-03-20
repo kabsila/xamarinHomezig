@@ -93,11 +93,15 @@
     <Compile Include="PageAction\DeviceListPageAction.cs" />
     <Compile Include="PageAction\Node_io_ItemPageAction.cs" />
     <Compile Include="PageAction\Node_io_GpdPageAction.cs" />
-    <Compile Include="PageAction\Node_io_RemoteControl_PageAction.cs" />
     <Compile Include="PageAction\LoginClick.cs" />
     <Compile Include="PageAction\Admin_Add_User_Page_Action.cs" />
     <Compile Include="PageAction\Change_Password_Page_Action.cs" />
     <Compile Include="PageAction\Admin_Delete_User_Page_Action.cs" />
+    <Compile Include="PageAction\Add_Remote_Single_Page_Action.cs" />
+    <Compile Include="PageAction\Add_Remote_Double_Action.cs" />
+    <Compile Include="PageAction\Add_Remote_Triple_Page_Action.cs" />
+    <Compile Include="PageAction\Delete_Remote_Page_Action.cs" />
+    <Compile Include="PageAction\Node_io_RemoteControl_Page_Action.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

@@ -7,14 +7,14 @@ namespace HomeZig
 	public class MenuTabPage : TabbedPage
 	{
 
-		public MenuTabPage ()
+		public MenuTabPage (IPageManager ipm)
 		{
 			this.Children.Add (new NavigationPage(new DeviceTypeListPage()){Title = "Powered"});
 			//this.Children.Add (new DeviceTypeListPage(){Title = "Powered"});
 			this.Children.Add (new NavigationPage(new Outlet2()){Title = "test2"});
 			this.Children.Add (new NavigationPage(new Powered()){Title = "test3"});
 			//if (Check_admin ()) {
-			this.Children.Add (new NavigationPage(new Option_Page()){Title = "Option"});
+			this.Children.Add (new NavigationPage(new Option_Page(ipm)){Title = "Option"});
 				//this.Children.Add (new NavigationPage(new Admin_Add_User_Page()){Title = "Add User"});
 			//}
 

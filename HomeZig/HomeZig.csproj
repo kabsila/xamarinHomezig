@@ -58,7 +58,6 @@
     <Compile Include="Page\Node_io_RemoteControl_Page.cs" />
     <Compile Include="Page\IRemoteControlCall.cs" />
     <Compile Include="Command\RemoteData.cs" />
-    <Compile Include="Page\Add_Remote_Button.cs" />
     <Compile Include="LoginPage.cs" />
     <Compile Include="Command\Login.cs" />
     <Compile Include="Page\Admin_Add_User_Page.cs" />
@@ -68,6 +67,16 @@
     <Compile Include="Page\I_Change_Password.cs" />
     <Compile Include="Page\Admin_Delete_User_Page.cs" />
     <Compile Include="Page\I_Admin_Delete_User.cs" />
+    <Compile Include="Page\I_Add_Remote_Single.cs" />
+    <Compile Include="Page\Add_Remote_Double_Page.cs" />
+    <Compile Include="Page\I_Add_Remote_Double.cs" />
+    <Compile Include="Page\Add_Remote_Single_Page.cs" />
+    <Compile Include="Page\Add_Remote_Triple_Page.cs" />
+    <Compile Include="Page\I_Add_Remote_Triple.cs" />
+    <Compile Include="Page\Delete_Remote_Page.cs" />
+    <Compile Include="Page\I_Delete_Remote.cs" />
+    <Compile Include="Command\LoginUsernameForDel.cs" />
+    <Compile Include="Page\I_Node_io_RemoteControl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.1.4.0.6341\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.4.0.6341\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

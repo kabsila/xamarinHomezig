@@ -7,8 +7,8 @@ namespace HomeZig
 {
 	public class Admin_Delete_User_Page : ContentPage
 	{
-		ListView usernameForDelete;
-		public static List<Login> ListOfusernameForDelete = new List<Login>();
+		public static ListView usernameForDelete;
+		//public static List<Login> ListOfusernameForDelete = new List<Login>();
 
 		public Admin_Delete_User_Page ()
 		{
@@ -25,7 +25,7 @@ namespace HomeZig
 				Font = Font.SystemFontOfSize(NamedSize.Large),
 				BorderWidth = 1	
 			};
-			queryButton.Clicked += DependencyService.Get<I_Admin_Delete_User> ().queryUser;
+			//queryButton.Clicked += DependencyService.Get<I_Admin_Delete_User> ().queryUser;
 
 			Label deleteUserHeader = new Label 
 			{
@@ -35,18 +35,9 @@ namespace HomeZig
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.EndAndExpand
 			};
-
-			MessagingCenter.Subscribe<ContentPage> (this, "user_for_delete", (sender) => 
-			{
-				//Device.BeginInvokeOnMainThread (() => {
-					usernameForDelete.ItemsSource = ListOfusernameForDelete;
-				//});
-			});
-
-
 			//DependencyService.Get<I_Admin_Delete_User> ().queryUser;
 
-			Content = new StackLayout {
+			this.Content = new StackLayout {
 				Padding = new Thickness (40, 40, 40, 10),
 				//Spacing = 10,
 				VerticalOptions = LayoutOptions.Center,
@@ -54,10 +45,22 @@ namespace HomeZig
 				//HorizontalOptions = LayoutOptions.Center,
 				Children = {
 					deleteUserHeader,
-					queryButton,
+					//queryButton,
 					usernameForDelete
 				}
 			};
+		}
+
+		protected override async void OnAppearing ()
+		{
+			base.OnAppearing ();
+			usernameForDelete.ItemsSource = await App.Database.Get_Login_Username_Show_For_Del();
+		}
+
+		protected override async void OnDisappearing ()
+		{
+			base.OnDisappearing ();
+			//await App.Database.Delete_All_Login_Username_Show_For_Del ();
 		}
 	}
 }

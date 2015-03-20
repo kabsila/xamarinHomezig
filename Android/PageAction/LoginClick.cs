@@ -23,14 +23,17 @@ namespace HomeZig.Android
 
 		public async void LoginButtonClick(object sender, EventArgs e)
 		{
+			LoginPage.loginFail.IsVisible = false;
 			if (String.IsNullOrEmpty(LoginPage.username.Text) || String.IsNullOrEmpty(LoginPage.password.Text))
 			{
 				await DisplayAlert("Validation Error", "Username and Password are required", "Re-try");
 			} else {
 
 				//code here for check valid username and password from server
-				LoginPage.loginButton.IsEnabled = false;
-				LoginPage.activityIndicator.IsRunning = true;
+				Device.BeginInvokeOnMainThread (() => {
+					LoginPage.loginButton.IsEnabled = false;
+					LoginPage.activityIndicator.IsRunning = true;
+				});
 				Login loginData = new Login ();
 				loginData.lastConnectWebscoketUrl = LoginPage.websocketUrl.Text;
 				loginData.username = LoginPage.username.Text;
@@ -50,12 +53,15 @@ namespace HomeZig.Android
 		public async void LogoutButtonClick(object sender, EventArgs e)
 		{
 			await App.Database.Delete_Login_Item ();
-			username.IsEnabled = true;
-			password.IsEnabled = true;
+			Device.BeginInvokeOnMainThread (() => {
+				username.IsEnabled = true;
+				password.IsEnabled = true;
+			});
+
 			//LoginPage.loginButton.IsEnabled = true;
 		}
 
-		public async void ConnectButton_Click(object sender, EventArgs e)
+		public void ConnectButton_Click(object sender, EventArgs e)
 		{
 			loginButton.IsEnabled = false;
 			ConnectButton.IsEnabled = false;

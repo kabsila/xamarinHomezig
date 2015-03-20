@@ -10,7 +10,7 @@ using System.Text;
 
 namespace HomeZig.Android
 {
-	public class WebsocketManager
+	public class WebsocketManager : ContentPage
 	{
 		public static WebSocket websocketMaster;
 		public static IPageManager ipm1;
@@ -51,6 +51,12 @@ namespace HomeZig.Android
 
 			foreach (var data in await App.Database.Get_flag_Login()) //check wa koiy login? 
 			{
+				Device.BeginInvokeOnMainThread (() => {
+					LoginPage.ConnectButton.IsEnabled = false;
+					LoginPage.loginButton.IsEnabled = false;
+					LoginPage.activityIndicator.IsRunning = true;
+				});
+
 				LoginPage.loginButton.IsEnabled = false;
 				//string flag = "";
 				//flag = data.flagForLogin;
@@ -121,7 +127,7 @@ namespace HomeZig.Android
 				//Db_allnode cmd = JsonConvert.DeserializeObject<Db_allnode>(e.Message);
 
 				if(cmd.cmd_db_allnode != null){			
-					Log.Info ("AAAAAAAAAAAAAAAAAAAA" , "AAA");
+					Log.Info ("cmd_db_allnode" , "AAA");
 					foreach(var data in cmd.cmd_db_allnode)
 					{
 						bool isUpdate = false;
@@ -168,12 +174,7 @@ namespace HomeZig.Android
 
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
-								//TabbedPage tw = new TabbedPage();
-								//tw.Children.Add (new AllDeviveLoad(cmd.cmd_db_allnode){Title = "test1"});
-								//tw.Children.Add (new Outlet2(){Title = "test2"});
-								//App.Navigation.PushAsync(new MenuTabPage());
-								//App.Navigation.PushAsync(new NavigationPage(new MenuTabPage()));
-								ipm1.showMenuTabPage();
+								ipm1.showMenuTabPage(ipm1);
 							});
 						})).Start();
 						break;
@@ -181,7 +182,7 @@ namespace HomeZig.Android
 					case "login_complete":
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
-								ipm1.showMenuTabPage();
+								ipm1.showMenuTabPage(ipm1);
 							});
 						})).Start();
 						break;
@@ -196,11 +197,11 @@ namespace HomeZig.Android
 
 				}else if(cmd.cmd_login != null){
 
-					Admin_Delete_User_Page.ListOfusernameForDelete.Clear();
+					//Admin_Delete_User_Page.ListOfusernameForDelete.Clear();
 
 					foreach(var data in cmd.cmd_login)
 					{
-						Log.Info ("BBBBBBBBBBBBBBBBBBB" , "BBBBBB");
+						Log.Info ("cmd_login" , "BBBBBB");
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
 							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"db_allnode\"}]}");
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
@@ -221,8 +222,13 @@ namespace HomeZig.Android
 							#endregion
 						}else if (data.flagForLogin.Equals("not_pass")){
 							//DisplayAlert("Validation Error", "Username and Password are required", "Re-try");
-							LoginPage.loginButton.IsEnabled = true;
-							LoginPage.logoutButton.IsEnabled = true;
+							Device.BeginInvokeOnMainThread (() => {
+								LoginPage.loginButton.IsEnabled = true;
+								LoginPage.logoutButton.IsEnabled = true;
+								LoginPage.activityIndicator.IsRunning = false;
+								LoginPage.loginFail.IsVisible = true;
+							});
+
 						}else if (data.flagForLogin.Equals("add_user_success")){
 							Device.BeginInvokeOnMainThread (() => {
 								Admin_Add_User_Page.username.BackgroundColor = Color.Green;
@@ -244,17 +250,129 @@ namespace HomeZig.Android
 								Change_Password_Page.newPassword.BackgroundColor = Color.Green;
 							});
 						}else if (data.flagForLogin.Equals("query_user")){
-							Admin_Delete_User_Page.ListOfusernameForDelete.Add(new Login(data.username));
-							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-								Device.BeginInvokeOnMainThread (() => {
-									MessagingCenter.Send<ContentPage> (new ContentPage(), "user_for_delete");
-								});
-							})).Start();
 
+							await App.Database.Add_Login_Username_Show_For_Del(data.username);
+
+						}else if (data.flagForLogin.Equals("user_deleted")){
+
+							await App.Database.Delete_Login_Username_Show_For_Del(data.username);
+							Device.BeginInvokeOnMainThread (async () => {
+								Admin_Delete_User_Page.usernameForDelete.ItemsSource = await App.Database.Get_Login_Username_Show_For_Del();
+							});	
 						}
 					}
+
+
+				}else if(cmd.cmd_remote != null){
+
+					foreach(var data in cmd.cmd_remote)
+					{
+						Log.Info ("cmd_remote" , "CCC");
+
+						foreach (var checkUser in await App.Database.Get_flag_Login())  
+						{
+							if(checkUser.username == data.remote_username){
+								if(data.node_command.Equals("remote_code_success")){
+									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name);
+									Device.BeginInvokeOnMainThread (() => {
+										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Green;
+										Add_Remote_Single_Page.plsWaitText.Text = "Remote code saved";
+										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
+
+										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Green;
+										Add_Remote_Double_Page.plsWaitText.Text = "Remote code saved";
+										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
+
+										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Green;
+										Add_Remote_Triple_Page.plsWaitText.Text = "Remote code saved";
+										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
+									});
+
+								}else if(data.node_command.Equals("remote_code_sync_database")){
+
+									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name);
+
+								}else if(data.node_command.Equals("remote_code_fail")){
+									Device.BeginInvokeOnMainThread (() => {
+										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
+										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Red;
+										Add_Remote_Single_Page.plsWaitText.Text = "Try Again";
+										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
+
+										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Red;
+										Add_Remote_Double_Page.plsWaitText.Text = "Try Again";
+										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
+
+										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Red;
+										Add_Remote_Triple_Page.plsWaitText.Text = "Try Again";
+										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
+									});
+								}else if(data.node_command.Equals("name_exist")){
+									Device.BeginInvokeOnMainThread (() => {
+										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
+										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Olive;
+										Add_Remote_Single_Page.plsWaitText.Text = "This name is already in use";
+										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
+
+										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Olive;
+										Add_Remote_Double_Page.plsWaitText.Text = "This name is already in use";
+										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
+
+										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
+										Add_Remote_Triple_Page.plsWaitText.Text = "This name is already in use";
+										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
+										Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
+									});
+								}else if(data.node_command.Equals("remote_code_continue")){
+									if(data.remote_code.Equals("1")){
+										Device.BeginInvokeOnMainThread (() => {
+											Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = false;
+											Add_Remote_Double_Page.plsWaitText.TextColor = Color.Olive;
+											Add_Remote_Double_Page.plsWaitText.Text = "Next button 2";
+											Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
+											Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
+
+											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = false;
+											Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
+											Add_Remote_Triple_Page.plsWaitText.Text = "Next button 2";
+											Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
+											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
+										});
+									}else{
+										Device.BeginInvokeOnMainThread (() => {
+											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = false;
+											Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
+											Add_Remote_Triple_Page.plsWaitText.Text = "Next button 3";
+											Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
+											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
+										});
+									}
+								}else if(data.node_command.Equals("delete_remote_success")){
+									await App.Database.Delete_RemoteData_Custom_Item(data.remote_button_name);
+									Device.BeginInvokeOnMainThread (async () => {
+										Delete_Remote_Page.deleteStatus.TextColor = Color.Green;
+										Delete_Remote_Page.deleteStatus.Text = "Item Deleted";
+										Delete_Remote_Page.remoteButtonListName.ItemsSource = await App.Database.Get_RemoteData_Item();
+									});
+
+								}
+							}
+							break;
+						}
+
+
+					}
 				}
-				Log.Info ("CCCCCCCCCCCCCCCCCC" , "CCCC");
+
+
 				// This is where we copy in the prepopulated database
 				//Console.WriteLine (path);
 				/**if(await App.Database.GetItems())

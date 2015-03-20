@@ -42,9 +42,9 @@ namespace HomeZig
 			return new HomePage ();
 		}
 
-		public static Page GetListMainPage ()
+		public static Page GetListMainPage (IPageManager ipm)
 		{	
-			return new MenuTabPage ();
+			return new MenuTabPage (ipm);
 		}
 
 		public static Page GetLoginPage ()

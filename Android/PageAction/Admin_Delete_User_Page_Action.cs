@@ -30,19 +30,16 @@ namespace HomeZig.Android
 			WebsocketManager.websocketMaster.Send (jsonCommandqueryUser);
 		}
 
-		public async void userForDelete_Tapped(object sender, ItemTappedEventArgs e)
+		public void userForDelete_Tapped(object sender, ItemTappedEventArgs e)
 		{
-			var Item = (Login)e.Item;
+			var LoginItem = (LoginUsernameForDel)e.Item;
 
-			Item.lastConnectWebscoketUrl = "";
-			Item.password = "";
-			Item.flagForLogin = "";
-			Item.node_command = "delete_user";
+			LoginItem.node_command = "delete_user";
 
-			string jsonCommandqueryUser = JsonConvert.SerializeObject (Item, Formatting.Indented);
+			string jsonCommandqueryUser = JsonConvert.SerializeObject (LoginItem, Formatting.Indented);
 			System.Diagnostics.Debug.WriteLine ("userForDelete_Tapped {0}", jsonCommandqueryUser);
 			WebsocketManager.websocketMaster.Send (jsonCommandqueryUser);
-			System.Diagnostics.Debug.Write("complteteeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
 		}
 	}
 }

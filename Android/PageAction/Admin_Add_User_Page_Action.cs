@@ -19,7 +19,7 @@ namespace HomeZig.Android
 		public async void registerButton_Click(object sender, EventArgs e)
 		{
 			if (String.IsNullOrEmpty (Admin_Add_User_Page.username.Text) || String.IsNullOrEmpty (Admin_Add_User_Page.password.Text)) {
-				DisplayAlert ("Validation Error", "Username and Password are required", "Re-try");
+				await DisplayAlert ("Validation Error", "Username and Password are required", "Re-try");
 			} else {
 				Login loginData = new Login ();
 				loginData.lastConnectWebscoketUrl = LoginPage.websocketUrl.Text;

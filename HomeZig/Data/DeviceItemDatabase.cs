@@ -26,10 +26,33 @@ namespace HomeZig
 			database = DependencyService.Get<ISQLite> ().GetConnection ();
 			// create the tables
 			database.CreateTableAsync<Login>();
+			database.CreateTableAsync<LoginUsernameForDel>();
 			database.CreateTableAsync<Db_allnode>();
 			database.CreateTableAsync<NameByUser>();
 			database.CreateTableAsync<RemoteData>();
 		}
+
+		#region RemoteData
+		public async Task<IEnumerable<RemoteData>> Save_RemoteData_Item (string node_addr, string remote_button_name)
+		{
+			return await database.QueryAsync<RemoteData>(String.Format("INSERT INTO [RemoteData] ([node_addr], [remote_button_name]) VALUES ('{0}', '{1}')",node_addr, remote_button_name));
+		}
+
+		public async Task<IEnumerable<RemoteData>> Get_RemoteData_Item ()
+		{
+			return await database.QueryAsync<RemoteData>("SELECT * FROM [RemoteData]");
+		}
+
+		public async Task<IEnumerable<RemoteData>> Delete_RemoteData_Item ()
+		{
+			return await database.QueryAsync<RemoteData>("DELETE FROM [RemoteData]");
+		}
+
+		public async Task<IEnumerable<RemoteData>> Delete_RemoteData_Custom_Item (string remoteName)
+		{
+			return await database.QueryAsync<RemoteData>(String.Format("DELETE FROM [RemoteData] WHERE [remote_button_name] = '{0}'", remoteName));
+		}
+		#endregion 
 
 		#region Login
 		public async Task<IEnumerable<Login>> Save_Login_Item (string username, string password, string flagForLogin, string lastConnectWebscoketUrl)
@@ -67,6 +90,27 @@ namespace HomeZig
 			return await database.QueryAsync<Login>("SELECT COUNT(*) from [Login]");
 		}
 
+		#endregion 
+		public async Task<IEnumerable<LoginUsernameForDel>> Add_Login_Username_Show_For_Del (string username) 
+		{
+			return await database.QueryAsync<LoginUsernameForDel>(String.Format("INSERT INTO [LoginUsernameForDel] ([username]) VALUES ('{0}')", username));
+		}
+
+		public async Task<IEnumerable<LoginUsernameForDel>> Get_Login_Username_Show_For_Del () 
+		{
+			return await database.QueryAsync<LoginUsernameForDel>("SELECT * FROM [LoginUsernameForDel]");
+		}
+
+		public async Task<IEnumerable<LoginUsernameForDel>> Delete_Login_Username_Show_For_Del (string username) 
+		{
+			return await database.QueryAsync<LoginUsernameForDel>(String.Format("DELETE FROM [LoginUsernameForDel] WHERE [username] = '{0}'", username));
+		}
+
+		public async Task<IEnumerable<LoginUsernameForDel>> Delete_All_Login_Username_Show_For_Del () 
+		{
+			return await database.QueryAsync<LoginUsernameForDel>("DELETE FROM [LoginUsernameForDel]");
+		}
+		#region Login
 
 		#endregion 
 

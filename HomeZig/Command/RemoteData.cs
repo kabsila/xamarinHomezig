@@ -12,7 +12,9 @@ namespace HomeZig
 
 		[PrimaryKey, AutoIncrement]
 		public int ID { get; set; }
+		public string remote_username { get; set; }
 		public string node_addr { get; set; }
+		public string node_command { get; set; }
 		public string remote_button_name { get; set; }
 		public string remote_code { get; set; }
 	}
