@@ -57,6 +57,8 @@ namespace HomeZig
 						LoginPage.activityIndicator.IsRunning = false;
 					});
 
+					await App.Database.Delete_RemoteData_Item();
+					await App.Database.Delete_All_Login_Username_Show_For_Del ();
 					ipm.showLoginPage();
 					//Page page = (Page)Activator.CreateInstance(pageType);
 					//await this.Navigation.PushAsync(page);

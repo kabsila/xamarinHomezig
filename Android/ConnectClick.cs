@@ -14,7 +14,7 @@ namespace HomeZig.Android
 
 		public ConnectClick (IPageManager ipm)
 		{
-			new WebsocketManager( wsUrlEditor.Text, ipm);
+			//new WebsocketManager( wsUrlEditor.Text, ipm);
 			//WebsocketManager.websocketMaster = new WebsocketManager( wsUrlEditor.Text);
 			ConnectButton.Clicked += ConnectButton_Click;
 			Disconnectbutton.Clicked += Disconnectbutton_Click;

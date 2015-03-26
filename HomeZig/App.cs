@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 
 namespace HomeZig
 {
-	public class App
+	public class App : Application
 	{
 		static DeviceItemDatabase database;
-		static IPageManager ListMainPage;
+		//static IPageManager ListMainPage;
 
+		public App()
+		{
+			MainPage = new LoginPage ();
+		
+		}
 		public static INavigation Navigation 
 		{
 			get;
@@ -35,7 +40,7 @@ namespace HomeZig
 		}**/
 
 
-		public static Page GetMainPage ()
+		/**public static Page GetMainPage ()
 		{	
 			//return new NavigationPage(new HomePage());
 			//ListMainPage = ilm;
@@ -50,7 +55,7 @@ namespace HomeZig
 		public static Page GetLoginPage ()
 		{	
 			return new LoginPage ();		
-		}
+		}**/
 
 		public static DeviceItemDatabase Database 
 		{

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using SQLite.Net.Attributes;
 
+
 namespace HomeZig
 {
 	public class Db_allnode
 	{
 		string ns, nd, nc, nbu;
+
 		public Db_allnode ()
 		{
 		}
@@ -19,16 +21,16 @@ namespace HomeZig
 		public string node_status { get; set; }
 		public string node_io { get; set; }
 		public string node_io_p { get; set; }
+
 		public string name_by_user 
 		{
-			get
+			get 
 			{ 
 				return nbu;
-				//return String.Format ("{0}", node_addr);
-			}
+			}	//return String.Format ("{0}", node_addr);			}
 			set
-			{
-				nbu = value;
+			{				
+				nbu = value;				
 			} 
 		}
 
@@ -45,7 +47,7 @@ namespace HomeZig
 		}
 
 		public string node_deviceType {
-			get
+			/**get
 			{ 
 				if (node_type.Equals ("0x3FF01") || node_type.Equals ("0x3ff01")) {
 					nd = "In wall switch";
@@ -58,6 +60,22 @@ namespace HomeZig
 				}
 				else {
 					nd = "Unknow2";
+				}
+				return String.Format ("{0}", nd);
+				//return String.Format ("address: {0}, type: {1}", node_addr, node_type);
+			}**/
+			get
+			{ 
+				if (node_type.Equals ("0x3FF01") || node_type.Equals ("0x3ff01")) {
+					nd = EnumtoString.EnumString (DeviceType.InWallSwitch);
+				}else if (node_type.Equals ("0xA001C") || node_type.Equals ("0xa001c")) {
+					nd = EnumtoString.EnumString (DeviceType.Camera);
+				}else if (node_type.Equals ("0x3FF11") || node_type.Equals ("0x3ff11")) {
+					nd = EnumtoString.EnumString (DeviceType.GeneralPurposeDetector);
+				}else if (node_type.Equals ("0x3FF20") || node_type.Equals ("0x3ff20")) {
+					nd = EnumtoString.EnumString (DeviceType.RemoteControl);
+				}else {
+					nd = DeviceType.UnknowDeviceType.ToString();
 				}
 				return String.Format ("{0}", nd);
 				//return String.Format ("address: {0}, type: {1}", node_addr, node_type);

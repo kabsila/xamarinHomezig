@@ -28,6 +28,16 @@ namespace HomeZig.Android
 		{
 			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.ApplicationName = global::HomeZig.Android.Resource.String.ApplicationName;
 			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.Hello = global::HomeZig.Android.Resource.String.Hello;
+			global::Toasts.Forms.Plugin.Droid.Resource.Drawable.error = global::HomeZig.Android.Resource.Drawable.error;
+			global::Toasts.Forms.Plugin.Droid.Resource.Drawable.info = global::HomeZig.Android.Resource.Drawable.info;
+			global::Toasts.Forms.Plugin.Droid.Resource.Drawable.success = global::HomeZig.Android.Resource.Drawable.success;
+			global::Toasts.Forms.Plugin.Droid.Resource.Drawable.warning = global::HomeZig.Android.Resource.Drawable.warning;
+			global::Toasts.Forms.Plugin.Droid.Resource.Id.desc = global::HomeZig.Android.Resource.Id.desc;
+			global::Toasts.Forms.Plugin.Droid.Resource.Id.image = global::HomeZig.Android.Resource.Id.image;
+			global::Toasts.Forms.Plugin.Droid.Resource.Id.title = global::HomeZig.Android.Resource.Id.title;
+			global::Toasts.Forms.Plugin.Droid.Resource.Layout.crouton = global::HomeZig.Android.Resource.Layout.crouton;
+			global::Toasts.Forms.Plugin.Droid.Resource.String.ApplicationName = global::HomeZig.Android.Resource.String.ApplicationName;
+			global::Toasts.Forms.Plugin.Droid.Resource.String.Hello = global::HomeZig.Android.Resource.String.Hello;
 		}
 		
 		public partial class Attribute
@@ -47,10 +57,22 @@ namespace HomeZig.Android
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
+			public const int error = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public const int monoandroidsplash = 2130837505;
+			public const int Icon = 2130837505;
+			
+			// aapt resource value: 0x7f020002
+			public const int info = 2130837506;
+			
+			// aapt resource value: 0x7f020003
+			public const int monoandroidsplash = 2130837507;
+			
+			// aapt resource value: 0x7f020004
+			public const int success = 2130837508;
+			
+			// aapt resource value: 0x7f020005
+			public const int warning = 2130837509;
 			
 			static Drawable()
 			{
@@ -65,8 +87,17 @@ namespace HomeZig.Android
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f060002
+			public const int desc = 2131099650;
+			
 			// aapt resource value: 0x7f060000
-			public const int myButton = 2131099648;
+			public const int image = 2131099648;
+			
+			// aapt resource value: 0x7f060003
+			public const int myButton = 2131099651;
+			
+			// aapt resource value: 0x7f060001
+			public const int title = 2131099649;
 			
 			static Id()
 			{
@@ -82,7 +113,10 @@ namespace HomeZig.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int Main = 2130903040;
+			public const int crouton = 2130903040;
+			
+			// aapt resource value: 0x7f030001
+			public const int Main = 2130903041;
 			
 			static Layout()
 			{

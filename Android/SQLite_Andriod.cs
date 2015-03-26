@@ -41,6 +41,7 @@ namespace HomeZig.Android
 
 			var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(plat, new SQLiteConnectionString(path, storeDateTimeAsTicks: false)));
 			var conn = new SQLiteAsyncConnection(connectionFactory);
+			//conn.ExecuteAsync ("PRAGMA encoding = UTF8");
 			// Return the database connection 
 			return conn;
 		}

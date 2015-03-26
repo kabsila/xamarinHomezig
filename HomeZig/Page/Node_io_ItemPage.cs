@@ -37,6 +37,7 @@ namespace HomeZig
 				//VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 			switchCellLeft.OnChanged += DependencyService.Get<IDeviceCall> ().switchLeft_OnChange;
+			switchCellLeft.Tapped += (sender, e) => {System.Diagnostics.Debug.WriteLine("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");};
 
 			switchCellRight = new SwitchCell
 			{
@@ -86,7 +87,7 @@ namespace HomeZig
 			};
 			this.ToolbarItems.Add(Edit);
 
-			Edit.Clicked += async (sender, e) => 
+			Edit.Clicked += (sender, e) => 
 			{
 				this.ToolbarItems.Add(Done);
 				this.ToolbarItems.Remove(Edit);

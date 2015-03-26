@@ -25,17 +25,22 @@ namespace HomeZig
 		{
 			database = DependencyService.Get<ISQLite> ().GetConnection ();
 			// create the tables
+
 			database.CreateTableAsync<Login>();
 			database.CreateTableAsync<LoginUsernameForDel>();
 			database.CreateTableAsync<Db_allnode>();
 			database.CreateTableAsync<NameByUser>();
 			database.CreateTableAsync<RemoteData>();
+
+			//prevent [node_addr] AND [target_io] duplicate
+			database.QueryAsync<NameByUser>("CREATE UNIQUE INDEX ix_uq ON [NameByUser] ([node_addr], [target_io])");
+		
 		}
 
 		#region RemoteData
 		public async Task<IEnumerable<RemoteData>> Save_RemoteData_Item (string node_addr, string remote_button_name)
 		{
-			return await database.QueryAsync<RemoteData>(String.Format("INSERT INTO [RemoteData] ([node_addr], [remote_button_name]) VALUES ('{0}', '{1}')",node_addr, remote_button_name));
+			return await database.QueryAsync<RemoteData>("INSERT INTO [RemoteData] ([node_addr], [remote_button_name]) VALUES (?, ?)",node_addr, remote_button_name);
 		}
 
 		public async Task<IEnumerable<RemoteData>> Get_RemoteData_Item ()
@@ -50,19 +55,19 @@ namespace HomeZig
 
 		public async Task<IEnumerable<RemoteData>> Delete_RemoteData_Custom_Item (string remoteName)
 		{
-			return await database.QueryAsync<RemoteData>(String.Format("DELETE FROM [RemoteData] WHERE [remote_button_name] = '{0}'", remoteName));
+			return await database.QueryAsync<RemoteData>("DELETE FROM [RemoteData] WHERE [remote_button_name] = ?", remoteName);
 		}
 		#endregion 
 
 		#region Login
 		public async Task<IEnumerable<Login>> Save_Login_Item (string username, string password, string flagForLogin, string lastConnectWebscoketUrl)
 		{
-			return await database.QueryAsync<Login>(String.Format("INSERT INTO [Login] ([username], [password], [flagForLogin], [lastConnectWebscoketUrl]) VALUES ('{0}', '{1}', '{2}', '{3}')",username, password, flagForLogin, lastConnectWebscoketUrl));
+			return await database.QueryAsync<Login>("INSERT INTO [Login] ([username], [password], [flagForLogin], [lastConnectWebscoketUrl]) VALUES (?, ?, ?, ?)",username, password, flagForLogin, lastConnectWebscoketUrl);
 		}
 
 		public async Task<IEnumerable<Login>> Update_Login_Item (string username, string password, string flagForLogin)
 		{
-			return await database.QueryAsync<Login>(String.Format("UPDATE [Login] SET [username] = '{0}', [password] = '{1}', [flagForLogin] = '{2}' WHERE [ID] = 0",username, password, flagForLogin));
+			return await database.QueryAsync<Login>("UPDATE [Login] SET [username] = ?, [password] = ?, [flagForLogin] = ? WHERE [ID] = 0",username, password, flagForLogin);
 		}
 
 		public async Task<IEnumerable<Login>> Delete_Login_Item ()
@@ -91,9 +96,11 @@ namespace HomeZig
 		}
 
 		#endregion 
+
+		#region User For delete
 		public async Task<IEnumerable<LoginUsernameForDel>> Add_Login_Username_Show_For_Del (string username) 
 		{
-			return await database.QueryAsync<LoginUsernameForDel>(String.Format("INSERT INTO [LoginUsernameForDel] ([username]) VALUES ('{0}')", username));
+			return await database.QueryAsync<LoginUsernameForDel>("INSERT INTO [LoginUsernameForDel] ([username]) VALUES (?)", username);
 		}
 
 		public async Task<IEnumerable<LoginUsernameForDel>> Get_Login_Username_Show_For_Del () 
@@ -103,38 +110,32 @@ namespace HomeZig
 
 		public async Task<IEnumerable<LoginUsernameForDel>> Delete_Login_Username_Show_For_Del (string username) 
 		{
-			return await database.QueryAsync<LoginUsernameForDel>(String.Format("DELETE FROM [LoginUsernameForDel] WHERE [username] = '{0}'", username));
+			return await database.QueryAsync<LoginUsernameForDel>("DELETE FROM [LoginUsernameForDel] WHERE [username] = ?", username);
 		}
 
 		public async Task<IEnumerable<LoginUsernameForDel>> Delete_All_Login_Username_Show_For_Del () 
 		{
 			return await database.QueryAsync<LoginUsernameForDel>("DELETE FROM [LoginUsernameForDel]");
 		}
-		#region Login
+
 
 		#endregion 
 
 		#region NameByUser
-		public async Task<int> Table_is_Emtry2 () 
+		public async Task<IEnumerable<NameByUser>> Get_NameByUser () 
 		{
-			return await database.ExecuteAsync("SELECT COUNT([ID]) from [NameByUser]");
+			return await database.QueryAsync<NameByUser>("SELECT * from [NameByUser]");
 		}
 
-		public async Task<IEnumerable<NameByUser>> Table_is_Emtry () 
+		public async Task<IEnumerable<NameByUser>> Save_NameByUser (Db_allnode item, string ioName, string targetIO)
 		{
-			return await database.QueryAsync<NameByUser>("SELECT COUNT([ID]) from [NameByUser]");
-		}
-		public async Task<IEnumerable<NameByUser>> Save_NameByUser_Item (string name, string addr)
-		{
-			return await database.QueryAsync<NameByUser>(String.Format("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user]) VALUES ({0}, {1})",addr, name ));
+			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user], [io_name_by_user], [target_io]) VALUES (?, ?, ?, ?)",item.node_addr, item.name_by_user, ioName, targetIO);
 		}
 
-		public async Task<IEnumerable<NameByUser>> Update_NameByUser_Item (string name, string addr)
+		public async Task<IEnumerable<NameByUser>> Update_NameByUser (string name, string addr)
 		{
-			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_name_by_user] = " + "'" + name + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
+			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_name_by_user] = ? WHERE [node_addr] = ?",name, addr);
 		}
-
-
 		#endregion
 
 		public async Task<IEnumerable<Db_allnode>> GetItems ()
@@ -151,17 +152,17 @@ namespace HomeZig
 
 		public async Task<IEnumerable<Db_allnode>> GetItemGroupByDeviceType ()
 		{
-			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] != 'Unknow2' GROUP BY [node_deviceType]");
+			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] != 'UnknowDeviceType' GROUP BY [node_deviceType]");
 		}
 
 		public async Task<IEnumerable<Db_allnode>> GetItemByDeviceType (string deviceType)
 		{
-			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] = " + "'" + deviceType + "'");
+			return await database.QueryAsync<Db_allnode>("SELECT * FROM [Db_allnode] WHERE [node_deviceType] = ?", deviceType);
 		}
 
 		public async Task<IEnumerable<Db_allnode>> GetIoOfNode (string deviceAddr)
 		{
-			return await database.QueryAsync<Db_allnode> ("SELECT * FROM [Db_allnode] WHERE [node_addr] = " + "'" + deviceAddr + "'");
+			return await database.QueryAsync<Db_allnode> ("SELECT * FROM [Db_allnode] WHERE [node_addr] = ?", deviceAddr);
 		}
 
 
@@ -202,37 +203,37 @@ namespace HomeZig
 
 		public async Task<IEnumerable<Db_allnode>> Update_DBAllNode_All_Item (Db_allnode item) 
 		{
-			return await database.QueryAsync<Db_allnode>(String.Format("UPDATE [Db_allnode] SET " +
-				"[node_io] = \'{0}\', " +
-				"[node_status] = \'{1}\', " +
-				"[node_type] = \'{2}\', " +
-				"[node_deviceType]  = \'{3}\' " +
-				"WHERE [node_addr] = \'{4}\'",
-				item.node_io, item.node_status, item.node_type, item.node_deviceType, item.node_addr));
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET " +
+				"[node_io] = ?, " +
+				"[node_status] = ?, " +
+				"[node_type] = ?, " +
+				"[node_deviceType]  = ? " +
+				"WHERE [node_addr] = ?",
+				item.node_io, item.node_status, item.node_type, item.node_deviceType, item.node_addr);
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_DBAllNode_Item2 (string node_status2, int ID2)
 		{
-			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_status] = " + "'" + node_status2 + "'" + " WHERE [ID] = " + ID2);
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_status] = ? WHERE [ID] = ?",node_status2, ID2);
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_Node_Io (string node_io, string addr)
 		{
-			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = " + "'" + node_io + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = ? WHERE [node_addr] = ?", node_io, addr);
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_Node_Io_Node_Status (string node_io, string node_status, string addr)
 		{
 			//return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = " + "'" + node_io + "', " + "[node_status] = " + "'" + node_status + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
-			return await database.QueryAsync<Db_allnode>(String.Format("UPDATE [Db_allnode] SET [node_io] = \'{0}\' , [node_status] = \'{1}\' WHERE [node_addr] = \'{2}\'",node_io, node_status, addr));
+			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [node_io] = ? , [node_status] = ? WHERE [node_addr] = ?", node_io, node_status, addr);
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_Node_NameByUser(string name, string addr)
 		{
-			return await database.QueryAsync<Db_allnode>("UPDATE [Db_allnode] SET [name_by_user] = " + "'" + name + "'" + " WHERE [node_addr] = " + "'" + addr + "'");
+			return await database.QueryAsync<Db_allnode>("UPDATE Db_allnode SET name_by_user = ? WHERE node_addr = ?",name, addr);
 		}
 
-		/**public  async Task<int> DeleteItem(int id)
+		/**public  async Task<int> DeleteItem(int id)SET NAMES UTF8
 		{
 			//lock (locker) {
 				return await database.DeleteAsync<DeviceDatabaseTable>(id);

@@ -4,7 +4,7 @@ using HomeZig.Android;
 using WebSocket4Net;
 using Newtonsoft.Json;
 using System.Text;
-
+using Toasts.Forms.Plugin.Abstractions;
 
 [assembly: Dependency (typeof (Admin_Delete_User_Page_Action))]
 
@@ -16,9 +16,9 @@ namespace HomeZig.Android
 		{
 		}
 
-		public void queryUser (object sender, EventArgs e)
+		public async void queryUser (object sender, EventArgs e)
 		{
-			Login loginData = new Login ();
+			/**Login loginData = new Login ();
 			loginData.lastConnectWebscoketUrl = LoginPage.websocketUrl.Text;
 			loginData.username = "";
 			loginData.password = "";
@@ -27,18 +27,27 @@ namespace HomeZig.Android
 
 			string jsonCommandqueryUser = JsonConvert.SerializeObject (loginData, Formatting.Indented);
 			System.Diagnostics.Debug.WriteLine ("jsonCommandqueryUser {0}", jsonCommandqueryUser);
-			WebsocketManager.websocketMaster.Send (jsonCommandqueryUser);
+			WebsocketManager.websocketMaster.Send (jsonCommandqueryUser);**/
+			var notificator = DependencyService.Get<IToastNotificator>();
+			bool tapped = await notificator.Notify(ToastNotificationType.Error, 
+				"Error", "Something went wrong", TimeSpan.FromSeconds(2));
+
 		}
 
-		public void userForDelete_Tapped(object sender, ItemTappedEventArgs e)
+		public async void userForDelete_Tapped(object sender, ItemTappedEventArgs e)
 		{
 			var LoginItem = (LoginUsernameForDel)e.Item;
 
-			LoginItem.node_command = "delete_user";
-
-			string jsonCommandqueryUser = JsonConvert.SerializeObject (LoginItem, Formatting.Indented);
-			System.Diagnostics.Debug.WriteLine ("userForDelete_Tapped {0}", jsonCommandqueryUser);
-			WebsocketManager.websocketMaster.Send (jsonCommandqueryUser);
+			var answer = await DisplayAlert ("Confirm?", "Would you like to delete " + LoginItem.username, "Yes", "No");
+			//System.Diagnostics.Debug.WriteLine("Answer: " + answer);
+			if (answer.Equals (true)) {
+				LoginItem.node_command = "delete_user";
+				string jsonCommandqueryUser = JsonConvert.SerializeObject (LoginItem, Formatting.Indented);
+				System.Diagnostics.Debug.WriteLine ("userForDelete_Tapped {0}", jsonCommandqueryUser);
+				WebsocketManager.websocketMaster.Send (jsonCommandqueryUser);
+			} else {
+				((ListView)sender).SelectedItem = null;
+			}
 
 		}
 	}

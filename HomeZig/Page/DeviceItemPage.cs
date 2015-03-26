@@ -23,10 +23,10 @@ namespace HomeZig
 			//addressEntry.SetBinding (Entry.TextProperty, "Address");
 
 			var saveButton = new Button { Text = "Save" };
-			saveButton.Clicked += (sender, e) => {
+			saveButton.Clicked += async (sender, e) => {
 				var todoItem = (Db_allnode)BindingContext;
-				App.Database.Save_DBAllNode_Item(todoItem);
-				this.Navigation.PopAsync();
+				await App.Database.Save_DBAllNode_Item(todoItem);
+				await this.Navigation.PopAsync();
 			};
 
 			var deleteButton = new Button { Text = "Delete" };

@@ -8,9 +8,10 @@ namespace HomeZig
 	{
 		public static Entry websocketUrl = new Entry
 		{
-			//Text = "ws://echo.websocket.org",
+			Placeholder = "Example: ws://echo.websocket.org",
+			Text = "ws://echo.websocket.org",
 			//Text = "ws://homezigth.ddns.net:8888/ws",
-			Text = "ws://192.168.199.111:8888/ws",
+			//Text = "ws://192.168.199.111:8888/ws",
 			//HorizontalOptions = LayoutOptions.Center
 		};
 		public static Button ConnectButton = new Button
@@ -60,7 +61,7 @@ namespace HomeZig
 				//Orientation = StackOrientation.Vertical,
 				//HorizontalOptions = LayoutOptions.Center,
 				Children = {
-					new Label { Text = "Server Url", FontSize = Device.GetNamedSize (NamedSize.Medium, typeof(Label)) }, 
+					new Label { Text = "Server URL", FontSize = Device.GetNamedSize (NamedSize.Medium, typeof(Label)) }, 
 					websocketUrl,
 					ConnectButton,
 					new Label { Text = "Login", FontSize = Device.GetNamedSize (NamedSize.Medium, typeof(Label)) }, 
@@ -107,6 +108,15 @@ namespace HomeZig
 				});
 
 			}
+		}
+
+		protected override bool OnBackButtonPressed ()
+		{
+			base.OnBackButtonPressed ();
+			System.Diagnostics.Debug.WriteLine ("AAAAAAAAAAAAAAAAAAA");
+			//super.OnPause();
+
+			return true;
 		}
 
 	}

@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Xamarin.Forms;
-
+using Toasts.Forms.Plugin.Abstractions;
 namespace HomeZig
 {
 	public class Outlet2 : ContentPage
@@ -35,6 +35,12 @@ namespace HomeZig
 			};
 			this.ToolbarItems.Add(Edit);
 
+			connect.Clicked += async (sender, e) => 
+			{
+				var notificator = DependencyService.Get<IToastNotificator>();
+				bool tapped = await notificator.Notify(ToastNotificationType.Error, 
+					"Error", "Something went wrong", TimeSpan.FromSeconds(2));
+			};
 			this.Content = new StackLayout
 			{
 

@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms;
 using System.Threading.Tasks;
-
+using Toasts.Forms.Plugin.Droid;
 
 namespace HomeZig.Android
 {
@@ -30,26 +30,15 @@ namespace HomeZig.Android
 			base.OnCreate (bundle);
 
 			Xamarin.Forms.Forms.Init (this, bundle);
-
+			ToastNotificatorImplementation.Init();
 			//var page = App.GetMainPage();
 
 			new DeviceItemDatabase ();
 			App.Database.Delete_RemoteData_Item ();
 			App.Database.Delete_All_Login_Username_Show_For_Del ();
-			var page =  App.GetLoginPage ();
-			SetPage(page);
-			/**App.Check_flag_Login ();
-			MessagingCenter.Subscribe<ContentPage> (this, "FlagLoginPass", (sender) => 
-			{
-					var page =  App.GetLoginPage ();
-					SetPage(page);
-			});
-			MessagingCenter.Subscribe<ContentPage> (this, "FlagLoginNotPass", (sender) => 
-			{
-					var page =  App.GetLoginPage ();
-					SetPage(page);
-			});**/
-
+			//var page =  App.GetLoginPage ();
+			//SetPage(page);
+			LoadApplication (new App());
 			//App.Navigation = page.Navigation;
 			//SetPage(page);
 			//SetPage (App.GetMainPage ());
@@ -63,17 +52,19 @@ namespace HomeZig.Android
 
 		public void showLoginPage ()
 		{
-			SetPage (App.GetLoginPage ()); 
+			//SetPage (App.GetLoginPage ());
+			LoadApplication(new App());
 		}
 
 		public void showMenuTabPage (IPageManager ipm)
 		{
-			SetPage (App.GetListMainPage (ipm)); 
+			//SetPage (App.GetListMainPage (ipm)); 
+			LoadApplication (new MenuTabPage(ipm));
 		}
 
 		public void showHomePage()
 		{
-			SetPage (App.GetMainPage ()); 
+			//SetPage (App.GetMainPage ()); 
 		}
 
 	}

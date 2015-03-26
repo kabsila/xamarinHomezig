@@ -57,7 +57,7 @@ namespace HomeZig
 			usernameForDelete.ItemsSource = await App.Database.Get_Login_Username_Show_For_Del();
 		}
 
-		protected override async void OnDisappearing ()
+		protected override void OnDisappearing ()
 		{
 			base.OnDisappearing ();
 			//await App.Database.Delete_All_Login_Username_Show_For_Del ();

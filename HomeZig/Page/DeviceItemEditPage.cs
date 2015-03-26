@@ -1,6 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 
+
 namespace HomeZig
 {
 	public class DeviceItemEditPage : ContentPage
@@ -23,7 +24,8 @@ namespace HomeZig
 
 			var saveButton = new Button { Text = "Save" };
 			saveButton.Clicked += async (sender, e) => {
-				var todoItem = (Db_allnode)BindingContext;
+				var todoItem = (Db_allnode)BindingContext;	
+
 				todoItem.name_by_user = nameEntry.Text;
 				await App.Database.Update_Node_NameByUser(todoItem.name_by_user, todoItem.node_addr);
 				await Navigation.PopAsync();

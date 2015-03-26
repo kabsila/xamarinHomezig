@@ -14,7 +14,8 @@ namespace HomeZig
 		public int ID { get; set; }
 		public string node_addr { get; set; }
 		public string node_name_by_user { get; set; }
-		public string node_name_io_by_user { get; set; }
+		public string io_name_by_user { get; set; }
+		public string target_io {get; set;}
 	}
 }
 
