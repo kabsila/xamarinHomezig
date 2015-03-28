@@ -16,9 +16,17 @@ namespace HomeZig.Android
 
 		}
 
-		public void switcher_Toggled(object sender, ToggledEventArgs e)
+		public void switcher_Toggled(object sender, ItemTappedEventArgs e)
 		{
-			string jsonCommandIo = JsonConvert.SerializeObject(DeviceItemCell.NodeItem, Formatting.Indented);
+			var aa = (NameByUser)e.Item;
+
+
+
+			//((ListView)sender).SelectedItem = co;
+
+
+
+			//string jsonCommandIo = JsonConvert.SerializeObject(DeviceItemCell.NodeItem, Formatting.Indented);
 			//System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json", jsonCommandIo);
 			//WebsocketManager.websocketMaster.Send (jsonCommandIo);
 		}
@@ -35,7 +43,7 @@ namespace HomeZig.Android
 				Node_io_ItemPage.item.node_io = NumberConversion.binary2hex(aStringBuilder.ToString());
 
 				string jsonCommandIo = JsonConvert.SerializeObject(Node_io_ItemPage.item, Formatting.Indented);
-				//System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json222", jsonCommandIo);
+				System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json222", jsonCommandIo);
 				await App.Database.Update_DBAllNode_Item(Node_io_ItemPage.item);
 				WebsocketManager.websocketMaster.Send (jsonCommandIo);
 				Node_io_ItemPage.doSwitch = true;
@@ -55,7 +63,7 @@ namespace HomeZig.Android
 				Node_io_ItemPage.item.node_io = NumberConversion.binary2hex (aStringBuilder.ToString ());
 
 				string jsonCommandIo = JsonConvert.SerializeObject (Node_io_ItemPage.item, Formatting.Indented);
-				//System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json222", jsonCommandIo);
+				System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json222", jsonCommandIo);
 				await App.Database.Update_DBAllNode_Item (Node_io_ItemPage.item);
 				WebsocketManager.websocketMaster.Send (jsonCommandIo);
 				Node_io_ItemPage.doSwitch = true;
@@ -64,9 +72,8 @@ namespace HomeZig.Android
 
 		public void testClick(object sender, EventArgs e)
 		{
-			WebsocketManager.websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff90\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"1\",\"node_io\":\"FC\",\"node_command\":\"command_io\"},{\"node_type\":\"0x3ff90\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"1\",\"node_io\":\"F8\",\"node_command\":\"command_io\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FE\",\"node_command\":\"command_io\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"command_io\"}]}");
+			WebsocketManager.websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FF\",\"node_command\":\"command_io\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 		}
-
 	}
 }
 

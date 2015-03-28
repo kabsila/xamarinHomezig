@@ -7,6 +7,7 @@ namespace HomeZig
 		void showMenuTabPage (IPageManager ipm);
 		void showHomePage();
 		void showLoginPage();
+		void showLoginPageDis();
 	}
 
 }

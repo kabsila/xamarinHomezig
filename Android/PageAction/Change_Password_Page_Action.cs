@@ -25,7 +25,7 @@ namespace HomeZig.Android
 				string jsonCommandChangePassword = "";
 				foreach (var data in await App.Database.Get_flag_Login())  
 				{
-					data.password = LoginClick.sha256_hash (Change_Password_Page.newPassword.Text);
+					data.password = Login_Page_Action.sha256_hash (Change_Password_Page.newPassword.Text);
 					data.node_command = "change_user_password";
 					jsonCommandChangePassword = JsonConvert.SerializeObject (data, Formatting.Indented);
 					break;

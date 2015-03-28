@@ -24,21 +24,33 @@ namespace HomeZig.Android
 	[Activity (Label = "HomeZig.Android.Android", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : FormsApplicationActivity, IPageManager
 	{
-
+		static App ap = null;
+		static MenuTabPage mt = null;
+		public static IPageManager ipm;
+		static DeviceItemDatabase dvi = null;
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-
+			Log.Debug ("OnCreate", "OnCreateeeeeeeeee");
 			Xamarin.Forms.Forms.Init (this, bundle);
 			ToastNotificatorImplementation.Init();
-			//var page = App.GetMainPage();
 
-			new DeviceItemDatabase ();
+			dvi = new DeviceItemDatabase ();
 			App.Database.Delete_RemoteData_Item ();
 			App.Database.Delete_All_Login_Username_Show_For_Del ();
-			//var page =  App.GetLoginPage ();
-			//SetPage(page);
-			LoadApplication (new App());
+
+			ipm = this;
+			ap = new App();
+			LoadApplication (ap);
+			mt = new MenuTabPage (ipm);
+				
+
+
+
+
+			//ap = new App();
+
+
 			//App.Navigation = page.Navigation;
 			//SetPage(page);
 			//SetPage (App.GetMainPage ());
@@ -46,20 +58,94 @@ namespace HomeZig.Android
 			//this.RunOnUiThread (() => {new AllDevice("ssss");} );
 			//new DeviceItemDatabase ();
 			//new ConnectClick (this);
-			new LoginClick (this);
-			new MenuTabPage (this);
+
+		}
+
+		protected override void OnStart()
+		{
+			Log.Debug ("OnStart", "OnStart called, App is Active");
+			base.OnStart();
+
+			try
+			{			
+				if( WebsocketManager.websocketMaster.State == WebSocketState.Open) {					
+					LoadApplication (mt);
+				}else{
+
+				}
+				Log.Debug ("OnResume", "WebsocketManager.websocketMaster.Opened !!!");
+			}
+			catch
+			{
+
+				Log.Debug ("OnResume", "WebsocketManager.websocketMaster.State CATCH!!!");
+			}
+
+		}
+
+		protected override void OnPause()
+		{
+			Log.Debug ("OnPause", "OnPause called, App is moving to background");
+			base.OnPause();
+		}
+		protected override void OnStop()
+		{			
+			Log.Debug ("OnStop", "OnStop called, App is in the background");
+			base.OnStop();
+		}
+
+		protected override void OnResume()
+		{			
+			base.OnResume();
+		}
+
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			//WebsocketManager.websocketMaster.Dispose ();
+
+			//base.OnPause();
+			//try
+			//{
+				//LoginPage.ConnectButton.IsEnabled = true;
+				//WebsocketManager.websocketMaster.Close ();
+			//}
+			//catch{
+				Log.Debug ("OnDestroy", "OnDestroy called, App is Terminating");
+			//}
+
 		}
 
 		public void showLoginPage ()
-		{
-			//SetPage (App.GetLoginPage ());
-			LoadApplication(new App());
+		{		//SetPage (App.GetLoginPage ());
+			//ap = new App();
+			//LoadApplication (ap);	 
+
 		}
 
+		public void showLoginPageDis ()
+		{
+			//SetPage (App.GetLoginPage ());
+			WebsocketManager.websocketMaster.Close ();
+			//WebsocketManager.websocketMaster.Dispose ();
+			//LoginPage.ConnectButton.IsEnabled = true;
+			//ap.Dispose();
+			//ap = new App();
+			LoadApplication (ap);
+
+			
+			//ap = new App ();
+			//LoadApplication (ap);
+			 
+		}
 		public void showMenuTabPage (IPageManager ipm)
 		{
-			//SetPage (App.GetListMainPage (ipm)); 
-			LoadApplication (new MenuTabPage(ipm));
+			//App.Navigation.PushAsync(new MenuTabPage(ipm));
+			//mt = new MenuTabPage(ipm);
+			LoadApplication (mt);
+			Login_Page_Action.nws = null;
+			Log.Info ("prevent_other_change_page" ,"GGGGGGGGGGGGGGGGG");
+			//LoadApplication (new MenuTabPage(ipm));
 		}
 
 		public void showHomePage()

@@ -122,6 +122,12 @@ namespace HomeZig
 		#endregion 
 
 		#region NameByUser
+
+		public async Task<IEnumerable<NameByUser>> Get_NameByUser_by_addr (string addr) 
+		{
+			return await database.QueryAsync<NameByUser>("SELECT * FROM [NameByUser] WHERE node_addr = ?", addr);
+		}
+
 		public async Task<IEnumerable<NameByUser>> Get_NameByUser () 
 		{
 			return await database.QueryAsync<NameByUser>("SELECT * from [NameByUser]");
@@ -129,7 +135,12 @@ namespace HomeZig
 
 		public async Task<IEnumerable<NameByUser>> Save_NameByUser (Db_allnode item, string ioName, string targetIO)
 		{
-			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user], [io_name_by_user], [target_io]) VALUES (?, ?, ?, ?)",item.node_addr, item.name_by_user, ioName, targetIO);
+			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user], [node_io], [io_name_by_user], [target_io]) VALUES (?, ?, ?, ?, ?)",item.node_addr, item.name_by_user, item.node_io, ioName, targetIO);
+		}
+
+		public async Task<IEnumerable<NameByUser>> Update_NameByUser_ioValue (string nodeio, string addr)
+		{
+			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_io] = ? WHERE [node_addr] = ?",nodeio, addr);
 		}
 
 		public async Task<IEnumerable<NameByUser>> Update_NameByUser (string name, string addr)

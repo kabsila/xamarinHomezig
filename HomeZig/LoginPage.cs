@@ -54,6 +54,10 @@ namespace HomeZig
 
 		public LoginPage ()
 		{
+			ConnectButton.Clicked += DependencyService.Get<I_Login> ().ConnectButton_Click;
+			loginButton.Clicked += DependencyService.Get<I_Login> ().LoginButtonClick; 
+			logoutButton.Clicked +=  DependencyService.Get<I_Login> ().LogoutButtonClick;
+
 			Content = new StackLayout {
 				Padding = new Thickness (40, 40, 40, 10),
 				//Spacing = 10,
@@ -71,7 +75,6 @@ namespace HomeZig
 					password,
 					new StackLayout
 					{
-
 						//VerticalOptions = LayoutOptions.Center,
 						//Orientation = StackOrientation.Horizontal,
 						//HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -109,6 +112,8 @@ namespace HomeZig
 
 			}
 		}
+
+	
 
 		protected override bool OnBackButtonPressed ()
 		{

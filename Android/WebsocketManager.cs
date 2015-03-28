@@ -19,7 +19,8 @@ namespace HomeZig.Android
 		//string dataBasePath;
 		public WebsocketManager()
 		{
-			ipm1 = LoginClick.ipm1;
+			
+			ipm1 = MainActivity.ipm;
 			Log.Info ("WebsocketManager","Connecting");
 			try{
 				websocketMaster = new WebSocket(LoginPage.websocketUrl.Text);			
@@ -28,7 +29,6 @@ namespace HomeZig.Android
 				websocketMaster.Closed += new EventHandler(websocket_Closed);
 				websocketMaster.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived);
 			}catch{
-
 				Device.BeginInvokeOnMainThread (async () => {
 					var notificator = DependencyService.Get<IToastNotificator>();
 					await notificator.Notify(ToastNotificationType.Error, 
@@ -43,13 +43,9 @@ namespace HomeZig.Android
 
 		public async void websocket_Opened(object sender, EventArgs e)
 		{	
-			LoginClick.tmr.Stop ();
-			//phoneNumberText.Text = "Opened";
-			//websocket.Send("db_allnode");
-			//websocket.Send("{'employees': [{  'firstName':'John' , 'lastName':'Doe' },{  'firstName':'Anna' , 'lastName':'Smith' }, { 'firstName': 'Peter' ,  'lastName': 'Jones' }]}");
-			//websocketMaster.Send ("{\"cmd_db_allnode\": [{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:ae]!\", \"node_status\": \"1\"},{\"node_type\": \"0x3ff90\", \"node_addr\": \"[00:13:a2:00:40:ad:58:kk]!\", \"node_status\": \"1\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:b2:16:5a]!\", \"node_status\": \"0\"}, {\"node_type\": \"0xa001a\", \"node_addr\": \"[00:13:a2:00:40:ad:57:e3]!\", \"node_status\": \"0\"}]}");
-			//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"Outlet\":[{\"node_addr\":\"123\", \"node_status\":\"1\"},{\"node_addr\":\"456\", \"node_status\":\"0\"}],\n\"Camera\":[{\"node_addr\":\"789\", \"node_status\":\"0\"},{\"node_addr\":\"121\", \"node_status\":\"1\"}]}]}");
-			//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff90\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"1\",\"node_io\":\"FC\"},{\"node_type\":\"0x3ff90\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"1\",\"node_io\":\"F8\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FF\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\"}]}");
+			
+			Login_Page_Action.tmr.Stop ();
+			Log.Info("websocket", "Websocket_Connected");
 
 			Device.BeginInvokeOnMainThread (() => {
 				//HomePage.ConnectButton.IsEnabled = false;
@@ -71,7 +67,7 @@ namespace HomeZig.Android
 				//string flag = "";
 				//flag = data.flagForLogin;
 				if (data.flagForLogin.Equals ("pass")) {
-					data.password = LoginClick.sha256_hash (data.password);
+					data.password = Login_Page_Action.sha256_hash (data.password);
 					data.node_command = "check_login";
 					string jsonCommandLogin = JsonConvert.SerializeObject(data, Formatting.Indented);
 					//var jsonCommandLogin = new StringBuilder(JsonConvert.SerializeObject(data, Formatting.Indented));
@@ -83,24 +79,6 @@ namespace HomeZig.Android
 				} 
 				break;
 			}
-			//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"db_allnode\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"db_allnode\"}]}");
-
-			/**
-			#region FirstSendToGateway
-			Db_allnode db = new Db_allnode ();
-			db.node_command = "db_allnode";
-			db.ID = 0;
-			db.nodeStatusToString = "";
-			db.node_addr = "";
-			db.node_deviceType = "";
-			db.node_io = "";
-			db.node_status = "";
-			db.node_type = "";
-			db.node_io_p = "";
-			//db.name;
-			var FirstSend = JsonConvert.SerializeObject(db);
-			websocketMaster.Send (FirstSend);
-			#endregion**/
 
 		}
 
@@ -118,6 +96,7 @@ namespace HomeZig.Android
 		public void websocket_Closed(object sender, EventArgs e)
 		{
 			Log.Info("websocket_Closed", "WebsocketClosed");
+			//websocketMaster.Dispose ();
 			Device.BeginInvokeOnMainThread (() => {
 				HomePage.ConnectButton.IsEnabled = true;
 				HomePage.activityIndicator.IsRunning = false;
@@ -137,7 +116,7 @@ namespace HomeZig.Android
 				//Db_allnode cmd = JsonConvert.DeserializeObject<Db_allnode>(e.Message);
 
 				if(cmd.cmd_db_allnode != null){			
-					Log.Info ("cmd_db_allnode" , "AAA");
+					Log.Info ("cmd_db_allnode" , "cmd_db_allnode");
 
 					foreach(var data in cmd.cmd_db_allnode)
 					{
@@ -158,20 +137,21 @@ namespace HomeZig.Android
 						}
 					}
 
-
+					/**
 					foreach(var data in await App.Database.GetItems())
 					{
 						var ioNUmber = 0;
 						if(data.node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
 							ioNUmber = 2;
 						}else if(data.node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
-							ioNUmber = 5;
+							ioNUmber = 4;
 						}else{
 							ioNUmber = 1;
 						}
 
 						try
 						{
+							await App.Database.Update_NameByUser_ioValue(data.node_io, data.node_addr);
 							for(var i = 1;i <= ioNUmber;i++)
 							{
 								await App.Database.Save_NameByUser(data, i.ToString(), i.ToString());
@@ -181,7 +161,7 @@ namespace HomeZig.Android
 						{
 							Log.Info ("Exception2" , exx.ToString());
 						}
-					}
+					}**/
 					foreach(var i in await App.Database.GetItems())
 					{
 						//Log.Info ("From Database" , i.node_addr);
@@ -191,7 +171,7 @@ namespace HomeZig.Android
 					foreach(var i in await App.Database.Get_NameByUser())
 					{
 						//System.Diagnostics.Debug.WriteLine("=====> {0}, {1}, {2}", i.node_addr, i.io_name_by_user, i.target_io);
-						Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}", i.node_addr, i.node_name_by_user, i.io_name_by_user, i.target_io));
+						//Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.target_io, i.io_value));
 						//Log.Info ("From Get_NameByUser" , i.node_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.io_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.target_io);
@@ -211,7 +191,11 @@ namespace HomeZig.Android
 
 					case "command_io":
 						MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
-						Log.Info ("MessageReceived3" , "ChangeSwitchDetect");
+
+						/**Device.BeginInvokeOnMainThread (async () => {
+						Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
+						});
+						Log.Info ("MessageReceived3" , "ChangeSwitchDetect");**/
 						break;
 
 					case "db_allnode":
@@ -226,11 +210,14 @@ namespace HomeZig.Android
 
 					case "prevent_other_change_page":
 						Log.Info ("prevent_other_change_page" ,"UUUUUUUUUUUUUUUUUUU");
-						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+						//new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread ( () => {
-								 ipm1.showMenuTabPage(ipm1);
+								
+							MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
+								Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
+
 							});
-						})).Start();
+						//})).Start();
 						break;
 					/**case "login_complete":
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
@@ -254,11 +241,11 @@ namespace HomeZig.Android
 
 					foreach(var data in cmd.cmd_login)
 					{
-						Log.Info ("cmd_login" , "BBBBBB");
+						Log.Info ("cmd_login" , "cmd_login");
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
-							//websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
+							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
 							#region FirstSendToGateway
@@ -274,7 +261,7 @@ namespace HomeZig.Android
 							db.node_io_p = "";
 							//db.name;
 							var FirstSend = JsonConvert.SerializeObject(db);
-							//websocketMaster.Send (FirstSend);
+							websocketMaster.Send (FirstSend);
 							#endregion
 						}else if (data.flagForLogin.Equals("not_pass")){
 							//DisplayAlert("Validation Error", "Username and Password are required", "Re-try");
@@ -342,7 +329,7 @@ namespace HomeZig.Android
 
 					foreach(var data in cmd.cmd_remote)
 					{
-						Log.Info ("cmd_remote" , "CCC");
+						Log.Info ("cmd_remote" , "cmd_remote");
 
 						foreach (var checkUser in await App.Database.Get_flag_Login())  
 						{

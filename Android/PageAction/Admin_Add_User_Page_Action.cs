@@ -24,7 +24,7 @@ namespace HomeZig.Android
 				Login loginData = new Login ();
 				loginData.lastConnectWebscoketUrl = LoginPage.websocketUrl.Text;
 				loginData.username = Admin_Add_User_Page.username.Text;
-				loginData.password = LoginClick.sha256_hash (Admin_Add_User_Page.password.Text);
+				loginData.password = Login_Page_Action.sha256_hash (Admin_Add_User_Page.password.Text);
 				loginData.flagForLogin = "";
 				loginData.node_command = "add_user";
 

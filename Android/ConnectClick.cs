@@ -29,7 +29,7 @@ namespace HomeZig.Android
 				ConnectButton.IsEnabled = false;
 				activityIndicator.IsRunning = true;
 			});
-			WebsocketManager.websocketMaster.Open ();
+			//WebsocketManager.websocketMaster.Open ();
 			//WebsocketManager wss =  new WebsocketManager();
 			//wss.websocket.Opened += new EventHandler(websocket_Opened);
 			//wss.websocket.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived2);

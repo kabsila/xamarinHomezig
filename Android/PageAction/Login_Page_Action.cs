@@ -1,28 +1,24 @@
 ﻿using System;
+using Xamarin.Forms;
+using HomeZig.Android;
 using WebSocket4Net;
 using Newtonsoft.Json;
-using Android.Util;
-using Xamarin.Forms;
 using System.Text;
 using System.Security.Cryptography;
 using System.Timers;
 using Toasts.Forms.Plugin.Abstractions;
 
+[assembly: Dependency (typeof (Login_Page_Action))]
 namespace HomeZig.Android
 {
-	public class LoginClick : LoginPage, IDisposable
+	public class Login_Page_Action : ContentPage, I_Login
 	{
-		public static IPageManager ipm1;
+		//public static IPageManager ipm1;
 		public static Timer tmr ;
-		WebsocketManager nws = null;
-		public LoginClick (IPageManager ipm2)
-		{			
-			ipm1 = ipm2;
-			//WebsocketManager websocketObject =  new WebsocketManager(ipm1);
-			loginButton.Clicked += LoginButtonClick;
-			logoutButton.Clicked += LogoutButtonClick;
-			ConnectButton.Clicked += ConnectButton_Click;
+		public static WebsocketManager nws = null;
 
+		public Login_Page_Action ()
+		{
 		}
 
 		public async void LoginButtonClick(object sender, EventArgs e)
@@ -48,9 +44,9 @@ namespace HomeZig.Android
 				//no await App.Database.Save_Login_Item (loginData.username, LoginPage.password.Text, "pass", loginData.lastConnectWebscoketUrl);
 
 				string jsonCommandLogin = JsonConvert.SerializeObject(loginData, Formatting.Indented);
-				Log.Info ("jsonCommandLogin" , jsonCommandLogin);
-				//WebsocketManager.websocketMaster.Send (jsonCommandLogin);
-				WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
+				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin" , jsonCommandLogin);
+				WebsocketManager.websocketMaster.Send (jsonCommandLogin);
+				//WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
 				// no ipm1.showMenuTabPage ();
 			}
 		}
@@ -70,8 +66,8 @@ namespace HomeZig.Android
 			Device.BeginInvokeOnMainThread (() => {
 				LoginPage.username.Text = "";
 				LoginPage.password.Text = "";
-				username.IsEnabled = true;
-				password.IsEnabled = true;
+				LoginPage.username.IsEnabled = true;
+				LoginPage.password.IsEnabled = true;
 				LoginPage.ConnectButton.IsEnabled = true;
 				LoginPage.loginButton.IsEnabled = true;
 				LoginPage.logoutButton.IsEnabled = false;
@@ -93,21 +89,23 @@ namespace HomeZig.Android
 				tmr.Start();
 
 
-				if (nws == null) 
-				{					
+				//if (nws == null) 
+				//{				
 					nws = new WebsocketManager ();
-				}
+					System.Diagnostics.Debug.WriteLine ("1111111111111111");
+				//}
 
-				loginButton.IsEnabled = false;
-				ConnectButton.IsEnabled = false;
-				activityIndicator.IsRunning = true;
+				LoginPage.loginButton.IsEnabled = false;
+				LoginPage.ConnectButton.IsEnabled = false;
+				LoginPage.activityIndicator.IsRunning = true;
 
 				try
-				{				
+				{		System.Diagnostics.Debug.WriteLine ("2222222222222222222222");
+					
 					WebsocketManager.websocketMaster.Open ();
 				}
 				catch
-				{
+				{System.Diagnostics.Debug.WriteLine ("33333333333333333333");
 					tmr.Stop ();
 					//tmr.Dispose ();
 					LoginPage.activityIndicator.IsRunning = false;
@@ -144,13 +142,6 @@ namespace HomeZig.Android
 
 			tmr.Stop(); // Manually stop timer, or let run indefinitely
 		}
-
-		public void Dispose()
-		{ 
-			//Dispose(true);
-			GC.SuppressFinalize(this);           
-		}
-
 	}
 }
 

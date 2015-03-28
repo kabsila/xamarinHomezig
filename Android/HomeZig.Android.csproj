@@ -16,6 +16,7 @@
     <AssemblyName>HomeZig.Android</AssemblyName>
     <TargetFrameworkVersion>v4.1</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidLinkMode>None</AndroidLinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,16 +27,21 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AndroidLinkMode>None</AndroidLinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+    <DebugType>full</DebugType>
+    <AndroidKeyStore>True</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\1q2w3e4r\Desktop\choke.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>1q2w3e4r</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>choke_key_name</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>1q2w3e4r</AndroidSigningKeyPass>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -99,7 +105,6 @@
     <Compile Include="PageAction\DeviceListPageAction.cs" />
     <Compile Include="PageAction\Node_io_ItemPageAction.cs" />
     <Compile Include="PageAction\Node_io_GpdPageAction.cs" />
-    <Compile Include="PageAction\LoginClick.cs" />
     <Compile Include="PageAction\Admin_Add_User_Page_Action.cs" />
     <Compile Include="PageAction\Change_Password_Page_Action.cs" />
     <Compile Include="PageAction\Admin_Delete_User_Page_Action.cs" />
@@ -108,6 +113,7 @@
     <Compile Include="PageAction\Add_Remote_Triple_Page_Action.cs" />
     <Compile Include="PageAction\Delete_Remote_Page_Action.cs" />
     <Compile Include="PageAction\Node_io_RemoteControl_Page_Action.cs" />
+    <Compile Include="PageAction\Login_Page_Action.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

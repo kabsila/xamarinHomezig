@@ -5,20 +5,25 @@ using System.Threading.Tasks;
 
 namespace HomeZig
 {
-	public class App : Application
+	public class App : Application, IDisposable
 	{
 		static DeviceItemDatabase database;
 		//static IPageManager ListMainPage;
-
+		static LoginPage lg = new LoginPage();
 		public App()
-		{
-			MainPage = new LoginPage ();
-		
+		{			
+			MainPage = lg;//new LoginPage ();		
 		}
 		public static INavigation Navigation 
 		{
 			get;
 			set;
+		}
+
+		public void Dispose()
+		{ 
+			//Dispose(true);
+			GC.SuppressFinalize(this);           
 		}
 
 		/**public static async void Check_flag_Login()

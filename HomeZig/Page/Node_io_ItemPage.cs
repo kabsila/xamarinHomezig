@@ -9,26 +9,41 @@ namespace HomeZig
 		static SwitchCell switchCellLeft; 
 		static SwitchCell switchCellRight;
 		public static Db_allnode item;
+		public static NameByUser NBitem;
 		public static bool doSwitch = false;
+
+		public static ListView ioListView;
 		Label NameOfNode;
 		ToolbarItem Edit;
 		public Node_io_ItemPage ()
 		{
+
+			ioListView = new ListView ();
+			//listView.ItemTemplate = new DataTemplate(typeof (DeviceItemCell));
+			//ioListView.ItemTemplate = new DataTemplate(typeof (Node_io_Item_Cell));
+			//ioListView.ItemTemplate.SetBinding (, "io_value");
+			//ioListView.ItemTemplate = new DataTemplate(typeof (SwitchCell));
+			//ioListView.ItemTemplate.SetBinding (SwitchCell.TextProperty, "io_name_by_user");
+			//ioListView.ItemTemplate.SetBinding (SwitchCell.OnProperty, "io_value");
+
+			ioListView.ItemTapped += DependencyService.Get<IDeviceCall> ().switcher_Toggled;
+
 			NameOfNode = new Label
 			{
 				Text = "Name of node", // Change in OnAppearing
 				FontAttributes = FontAttributes.Bold,
-				FontSize = 40,
+				FontSize = Device.GetNamedSize (NamedSize.Large, typeof(Label)),
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.EndAndExpand
 			};
 
 
-			/**Button test = new Button 
+			Button test = new Button 
 			{
 				Text = "Test"
 			};
-			test.Clicked += DependencyService.Get<IDeviceCall> ().testClick;**/
+			test.Clicked += DependencyService.Get<IDeviceCall> ().testClick;
+
 
 			switchCellLeft = new SwitchCell
 			{
@@ -37,7 +52,7 @@ namespace HomeZig
 				//VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 			switchCellLeft.OnChanged += DependencyService.Get<IDeviceCall> ().switchLeft_OnChange;
-			switchCellLeft.Tapped += (sender, e) => {System.Diagnostics.Debug.WriteLine("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");};
+
 
 			switchCellRight = new SwitchCell
 			{
@@ -68,8 +83,9 @@ namespace HomeZig
 				Children = 
 				{
 					NameOfNode,
-					//test,
+					test,
 					tableView
+					//ioListView
 				}
 			};
 			Content = layout;
@@ -92,9 +108,8 @@ namespace HomeZig
 				this.ToolbarItems.Add(Done);
 				this.ToolbarItems.Remove(Edit);
 				var deviceType = (Db_allnode)BindingContext;
-
-
 			};
+
 
 			MessagingCenter.Subscribe<ContentPage> (this, "ChangeSwitchDetect", (sender) => 
 			{
@@ -102,11 +117,12 @@ namespace HomeZig
 				item = (Db_allnode)BindingContext;
 				Device.BeginInvokeOnMainThread (() => {
 						setSwitchIo(item.node_addr);
-						//switchCellLeft.SetValue(SwitchCell.OnProperty,false);
+
 				});
 				
 			});
 		}
+
 
 		async void setSwitchIo(string node_addr)
 		{
@@ -145,14 +161,17 @@ namespace HomeZig
 
 		}
 
-		protected override void OnAppearing ()
+		protected override async void OnAppearing ()
 		{
 			base.OnAppearing ();
 			item = (Db_allnode)BindingContext;
 			NameOfNode.Text = item.name_by_user;
 			SetSwitchByNodeIo (item.node_io);
-			//addressListView.ItemsSource = await App.Database.GetItemByDeviceType(deviceType.node_deviceType.ToString());
+
+			//ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(item.node_addr);
+
 		}
+
 
 	}
 }
