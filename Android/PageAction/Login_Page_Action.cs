@@ -45,8 +45,8 @@ namespace HomeZig.Android
 
 				string jsonCommandLogin = JsonConvert.SerializeObject(loginData, Formatting.Indented);
 				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin" , jsonCommandLogin);
-				WebsocketManager.websocketMaster.Send (jsonCommandLogin);
-				//WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
+				//WebsocketManager.websocketMaster.Send (jsonCommandLogin);
+				WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
 				// no ipm1.showMenuTabPage ();
 			}
 		}
@@ -84,7 +84,7 @@ namespace HomeZig.Android
 				await DisplayAlert("Validation Error", "Server URL is required", "Re-try");
 			} else {
 				tmr = new Timer();
-				tmr.Interval = 6000; // 0.1 second
+				tmr.Interval = 10000; // 10 second
 				tmr.Elapsed += timerHandler; // We'll write it in a bit
 				tmr.Start();
 

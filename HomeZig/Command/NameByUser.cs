@@ -55,6 +55,7 @@ namespace HomeZig
 			}
 		}
 		public string target_io {get; set;}
+		//public string this_is_togle {get; set;}
 
 
 	}

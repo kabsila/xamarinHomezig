@@ -137,7 +137,7 @@ namespace HomeZig.Android
 						}
 					}
 
-					/**
+
 					foreach(var data in await App.Database.GetItems())
 					{
 						var ioNUmber = 0;
@@ -161,7 +161,7 @@ namespace HomeZig.Android
 						{
 							Log.Info ("Exception2" , exx.ToString());
 						}
-					}**/
+					}
 					foreach(var i in await App.Database.GetItems())
 					{
 						//Log.Info ("From Database" , i.node_addr);
@@ -171,7 +171,7 @@ namespace HomeZig.Android
 					foreach(var i in await App.Database.Get_NameByUser())
 					{
 						//System.Diagnostics.Debug.WriteLine("=====> {0}, {1}, {2}", i.node_addr, i.io_name_by_user, i.target_io);
-						//Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.target_io, i.io_value));
+						Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.target_io, i.io_value));
 						//Log.Info ("From Get_NameByUser" , i.node_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.io_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.target_io);
@@ -190,12 +190,13 @@ namespace HomeZig.Android
 						break;
 
 					case "command_io":
-						MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
-
-						/**Device.BeginInvokeOnMainThread (async () => {
-						Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
+						//MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
+						Node_io_ItemPage.doSwitch = false;
+						Device.BeginInvokeOnMainThread (async () => {							
+							Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
 						});
-						Log.Info ("MessageReceived3" , "ChangeSwitchDetect");**/
+
+						Log.Info ("command_io" , "ChangeSwitchDetect");
 						break;
 
 					case "db_allnode":
@@ -244,7 +245,7 @@ namespace HomeZig.Android
 						Log.Info ("cmd_login" , "cmd_login");
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);

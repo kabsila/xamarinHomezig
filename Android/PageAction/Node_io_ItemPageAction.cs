@@ -9,29 +9,49 @@ using System.Text;
 
 namespace HomeZig.Android
 {
-	public class Node_io_ItemPageAction : IDeviceCall
+	public class Node_io_ItemPageAction : I_Node_io_Item //IDeviceCall
 	{
 		public Node_io_ItemPageAction ()
 		{
 
 		}
 
-		public void switcher_Toggled(object sender, ItemTappedEventArgs e)
+		public async void switcher_Toggled(object sender, ToggledEventArgs e)
 		{
-			var aa = (NameByUser)e.Item;
+			if (Node_io_ItemPage.doSwitch) {
+				var b = (Switch)sender;
+				//var NameByUserData = (NameByUser)b.BindingContext;
+				Node_io_ItemPage.NBitem = (NameByUser)b.BindingContext;
+
+				var aStringBuilder = new StringBuilder (NumberConversion.hex2binary (Node_io_ItemPage.NBitem.node_io));
+				if (Node_io_ItemPage.NBitem.target_io.Equals ("1")) {				
+					aStringBuilder.Remove (6, 1);
+					aStringBuilder.Insert (6, Convert.ToByte (e.Value).ToString ());
+				} else if (Node_io_ItemPage.NBitem.target_io.Equals ("2")) {
+					aStringBuilder.Remove (7, 1);
+					aStringBuilder.Insert (7, Convert.ToByte (e.Value).ToString ());
+				}
+
+				Node_io_ItemPage.NBitem.node_io = NumberConversion.binary2hex (aStringBuilder.ToString ());
+				string jsonCommandIo = JsonConvert.SerializeObject (Node_io_ItemPage.NBitem, Formatting.Indented);
+				System.Diagnostics.Debug.WriteLine ("in switcher_Toggled method json2", jsonCommandIo);
+				WebsocketManager.websocketMaster.Send (jsonCommandIo);
+
+				await App.Database.Update_NameByUser_ioValue(Node_io_ItemPage.NBitem.node_io, Node_io_ItemPage.NBitem.node_addr);
 
 
+				//Device.BeginInvokeOnMainThread (async () => {							
+				Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(Node_io_ItemPage.NBitem.node_addr);
 
+				//});
+			}
+
+			//var aa = e.Value;
+			//var pos = (((ListView) sender).GetValue(Label.TextProperty));
 			//((ListView)sender).SelectedItem = co;
-
-
-
-			//string jsonCommandIo = JsonConvert.SerializeObject(DeviceItemCell.NodeItem, Formatting.Indented);
-			//System.Diagnostics.Debug.WriteLine("in switcher_Toggled method json", jsonCommandIo);
-			//WebsocketManager.websocketMaster.Send (jsonCommandIo);
 		}
 
-		public async void switchLeft_OnChange(object sender, ToggledEventArgs e)
+		/**public async void switchLeft_OnChange(object sender, ToggledEventArgs e)
 		{
 			if(Node_io_ItemPage.doSwitch)
 			{
@@ -68,7 +88,7 @@ namespace HomeZig.Android
 				WebsocketManager.websocketMaster.Send (jsonCommandIo);
 				Node_io_ItemPage.doSwitch = true;
 			}
-		}
+		}**/
 
 		public void testClick(object sender, EventArgs e)
 		{

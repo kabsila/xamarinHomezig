@@ -143,6 +143,11 @@ namespace HomeZig
 			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_io] = ? WHERE [node_addr] = ?",nodeio, addr);
 		}
 
+		public async Task<IEnumerable<NameByUser>> Update_NameByUser_by_target_io (string ioName, string addr, string target_io)
+		{
+			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [io_name_by_user] = ? WHERE [node_addr] = ? AND [target_io] = ?",ioName, addr, target_io);
+		}
+
 		public async Task<IEnumerable<NameByUser>> Update_NameByUser (string name, string addr)
 		{
 			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_name_by_user] = ? WHERE [node_addr] = ?",name, addr);

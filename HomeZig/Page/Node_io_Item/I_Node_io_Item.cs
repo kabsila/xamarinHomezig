@@ -3,11 +3,9 @@ using Xamarin.Forms;
 
 namespace HomeZig
 {
-	public interface IDeviceCall
-	{				
+	public interface I_Node_io_Item
+	{
 		void switcher_Toggled(object sender, ToggledEventArgs e);
-		void switchLeft_OnChange(object sender, ToggledEventArgs e);
-		void switchRight_OnChange(object sender, ToggledEventArgs e);
 		void testClick(object sender, EventArgs e);
 	}
 }

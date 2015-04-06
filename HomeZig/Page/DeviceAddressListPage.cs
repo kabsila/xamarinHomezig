@@ -15,8 +15,9 @@ namespace HomeZig
 			//NavigationPage.SetBackButtonTitle (this., "back");
 			addressListView = new ListView ();
 			//listView.ItemTemplate = new DataTemplate(typeof (DeviceItemCell));
-			addressListView.ItemTemplate = new DataTemplate(typeof (TextCell));
-			addressListView.ItemTemplate.SetBinding (TextCell.TextProperty, "name_by_user");
+			//addressListView.ItemTemplate = new DataTemplate(typeof (TextCell));
+			addressListView.ItemTemplate = new DataTemplate(typeof (DeviceAddressList_Cell));
+			//addressListView.ItemTemplate.SetBinding (TextCell.TextProperty, "name_by_user");
 		
 
 			/**addressListView.ItemSelected += (sender, e) => {
