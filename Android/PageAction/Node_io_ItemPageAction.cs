@@ -18,34 +18,31 @@ namespace HomeZig.Android
 
 		public async void switcher_Toggled(object sender, ToggledEventArgs e)
 		{
+			
 			if (Node_io_ItemPage.doSwitch) {
 				var b = (Switch)sender;
-				//var NameByUserData = (NameByUser)b.BindingContext;
-				Node_io_ItemPage.NBitem = (NameByUser)b.BindingContext;
+				var NameByUserData = (NameByUser)b.BindingContext;
+				//Node_io_ItemPage.NBitem = (NameByUser)b.BindingContext;
 
 				var aStringBuilder = new StringBuilder (NumberConversion.hex2binary (Node_io_ItemPage.NBitem.node_io));
-				if (Node_io_ItemPage.NBitem.target_io.Equals ("1")) {				
-					aStringBuilder.Remove (6, 1);
-					aStringBuilder.Insert (6, Convert.ToByte (e.Value).ToString ());
-				} else if (Node_io_ItemPage.NBitem.target_io.Equals ("2")) {
+				if (NameByUserData.target_io.Equals ("1")) {				
 					aStringBuilder.Remove (7, 1);
 					aStringBuilder.Insert (7, Convert.ToByte (e.Value).ToString ());
+				} else if (NameByUserData.target_io.Equals ("2")) {
+					aStringBuilder.Remove (6, 1);
+					aStringBuilder.Insert (6, Convert.ToByte (e.Value).ToString ());
 				}
 
 				Node_io_ItemPage.NBitem.node_io = NumberConversion.binary2hex (aStringBuilder.ToString ());
-				string jsonCommandIo = JsonConvert.SerializeObject (Node_io_ItemPage.NBitem, Formatting.Indented);
+				NameByUserData.node_io = Node_io_ItemPage.NBitem.node_io;
+				string jsonCommandIo = JsonConvert.SerializeObject (NameByUserData, Formatting.Indented);
 				System.Diagnostics.Debug.WriteLine ("in switcher_Toggled method json2", jsonCommandIo);
-				WebsocketManager.websocketMaster.Send (jsonCommandIo);
 
-				await App.Database.Update_NameByUser_ioValue(Node_io_ItemPage.NBitem.node_io, Node_io_ItemPage.NBitem.node_addr);
-
-
-				//Device.BeginInvokeOnMainThread (async () => {							
-				Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(Node_io_ItemPage.NBitem.node_addr);
-
-				//});
+				await App.Database.Update_NameByUser_ioValue(NameByUserData.node_io, NameByUserData.node_addr);
+				//WebsocketManager.websocketMaster.Send (jsonCommandIo);
 			}
 
+			//Node_io_ItemPage.doSwitch = true;
 			//var aa = e.Value;
 			//var pos = (((ListView) sender).GetValue(Label.TextProperty));
 			//((ListView)sender).SelectedItem = co;

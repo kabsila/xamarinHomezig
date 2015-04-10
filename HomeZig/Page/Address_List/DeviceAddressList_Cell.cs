@@ -11,32 +11,28 @@ namespace HomeZig
 			var label1 = new Label 
 			{ 
 				//Text = "Label 1", 
-				//FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)), 
+				FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)), 
 				//FontAttributes = FontAttributes.Bold 
 				VerticalOptions = LayoutOptions.CenterAndExpand,
 				//HorizontalOptions = LayoutOptions.CenterAndExpand
 			};
 			label1.SetBinding(Label.TextProperty, "name_by_user");
 
-			var moreAction = new MenuItem { Text = "More" };
-			moreAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));
-			moreAction.Clicked += (sender, e) => {
+			var EditAction = new MenuItem { Text = "Edit" }; // red background
+			EditAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));
+			EditAction.Clicked += (sender, e) => {
 				var mi = ((MenuItem)sender);
-				Debug.WriteLine("More Context Action clicked: " + mi.CommandParameter);
-			};
+				var mo = (Db_allnode)mi.BindingContext;
+				MessagingCenter.Send<ContentPage, Db_allnode> (new ContentPage(), "DeviceAddressList_EditActionClicked", mo);
 
-			var deleteAction = new MenuItem { Text = "Delete", IsDestructive = true }; // red background
-			deleteAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));
-			deleteAction.Clicked += (sender, e) => {
-				var mi = ((MenuItem)sender);
-				Debug.WriteLine("Delete Context Action clicked: " + mi.CommandParameter);
+				System.Diagnostics.Debug.WriteLine("DeviceAddressList_EditActionClicked");
 			};
 
 			//
 			// add context actions to the cell
 			//
-			ContextActions.Add (moreAction);
-			ContextActions.Add (deleteAction);
+			//ContextActions.Add (moreAction);
+			ContextActions.Add (EditAction);
 
 
 

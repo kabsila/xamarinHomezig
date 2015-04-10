@@ -1,19 +1,20 @@
 ﻿using System;
 using Xamarin.Forms;
+using System.ComponentModel;
 
 namespace HomeZig
 {
 	public class Node_io_ItemPage : ContentPage
-	{
-
+	{		
 		//static SwitchCell switchCellLeft; 
 		//static SwitchCell switchCellRight;
 		public static Db_allnode item;
 		public static NameByUser NBitem;
 		public static bool doSwitch = true;
-		public static bool bindingChange = true;
+		public static bool bindingChange = false;
+		public static Int16 checkFirstSwitch = 0;
 
-		public static ListView ioListView;
+		ListView ioListView;
 		Label NameOfNode;
 		//ToolbarItem Edit;
 		public Node_io_ItemPage ()
@@ -41,18 +42,30 @@ namespace HomeZig
 				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 
-
 			Button test = new Button 
 			{
 				Text = "Test"
 			};
 			test.Clicked += DependencyService.Get<I_Node_io_Item> ().testClick;
 
-			MessagingCenter.Subscribe<ContentPage, NameByUser> (new ContentPage(), "EditActionClicked", (sender, arg) => {
+			MessagingCenter.Subscribe<ContentPage, NameByUser> (new ContentPage(), "Node_io_Item_EditActionClicked", (sender, arg) => {
 				var DeviceList = new Node_io_Item_Edit ();
 				DeviceList.BindingContext = arg;
 				Navigation.PushAsync (DeviceList);
 			});
+
+			MessagingCenter.Subscribe<Node_io_ItemPage, string> (this, "Node_io_Item_Change_Detected", (sender, addr) => {
+				//check address for avoid switchChange wrong page  
+
+				if(item.node_addr.Equals(addr)){					
+					Device.BeginInvokeOnMainThread (async () => {
+						Node_io_ItemPage.doSwitch = false;
+						ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(addr);
+					});
+				}
+			});
+
+
 
 			/**
 			switchCellLeft = new SwitchCell
@@ -90,6 +103,7 @@ namespace HomeZig
 				//Orientation = StackOrientation.Horizontal,
 				//HorizontalOptions = LayoutOptions.StartAndExpand,
 				//VerticalOptions = LayoutOptions.CenterAndExpand,
+
 				Children = 
 				{
 					NameOfNode,
@@ -132,7 +146,7 @@ namespace HomeZig
 			});**/
 		}
 
-		async void setSwitchIo(string node_addr)
+		/**async void setSwitchIo(string node_addr)
 		{
 			foreach (var s in await App.Database.GetIoOfNode(node_addr)) {
 				if (s.node_addr == item.node_addr) {
@@ -167,7 +181,7 @@ namespace HomeZig
 			//switchCellRight.On = Convert.ToBoolean(stateRight);
 			doSwitch = true;
 
-		}
+		}**/
 
 		protected override async void OnAppearing ()
 		{

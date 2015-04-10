@@ -192,9 +192,21 @@ namespace HomeZig.Android
 					case "command_io":
 						//MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
 						Node_io_ItemPage.doSwitch = false;
-						Device.BeginInvokeOnMainThread (async () => {							
-							Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
-						});
+						//must use message center
+						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
+							MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
+						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
+							Log.Info ("command_io" , "GeneralPurposeDetector_ChangeSwitchDetect");
+							//Device.BeginInvokeOnMainThread (async () => {
+							//	Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
+							//});
+							MessagingCenter.Send<Node_io_GpdPage, string> (new Node_io_GpdPage(), "Node_io_Gpd_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
+							//MessagingCenter.Send<ContentPage> (new ContentPage(), "Node_io_Gpd_Change_Detected");
+						}else{
+							
+						}
+
+
 
 						Log.Info ("command_io" , "ChangeSwitchDetect");
 						break;

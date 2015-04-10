@@ -3,13 +3,9 @@ using Xamarin.Forms;
 
 namespace HomeZig
 {
-
-	//public class ListButton : Button { }
-	//public class Listsw : SwitchCell { }
-
-	public class Node_io_Item_Cell : ViewCell
+	public class Node_io_Gpd_Cell : ViewCell
 	{
-		public Node_io_Item_Cell ()
+		public Node_io_Gpd_Cell ()
 		{
 			var label = new Label 
 			{
@@ -21,30 +17,6 @@ namespace HomeZig
 
 			Switch sw = new Switch ();
 			sw.SetBinding (Switch.IsToggledProperty, "io_value");
-			//sw.SetBinding (, "io_value");
-
-			/**sw.Toggled += (sender, e) => {
-				var b = (Switch)sender;
-				var t = (NameByUser)b.BindingContext;
-				//((ContentPage)((ListView)((StackLayout)b.ParentView).ParentView).ParentView).DisplayAlert("Clicked", t.target_io + " button was clicked", "OK");
-				System.Diagnostics.Debug.WriteLine("clicked" + t.target_io);
-			};**/
-
-
-			sw.PropertyChanging += (sender, e) => 
-			{
-				//prevent switch loopBle
-					if(Node_io_ItemPage.bindingChange){
-						Node_io_ItemPage.doSwitch = false;
-						Node_io_ItemPage.bindingChange = false;
-					}else{
-						Node_io_ItemPage.doSwitch = true;
-					}
-				//prevent switch loopBle
-
-			};
-
-			sw.Toggled += DependencyService.Get<I_Node_io_Item> ().switcher_Toggled;
 
 			var EditAction = new MenuItem { Text = "Edit", IsDestructive = true }; // red background
 			EditAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));
@@ -52,7 +24,7 @@ namespace HomeZig
 				var mi = ((MenuItem)sender);
 				var mo = (NameByUser)mi.BindingContext;
 
-				MessagingCenter.Send<ContentPage, NameByUser> (new ContentPage(), "Node_io_Item_EditActionClicked", mo);
+				MessagingCenter.Send<ContentPage, NameByUser> (new ContentPage(), "Node_io_Gpd_EditActionClicked", mo);
 				//var DeviceList = new Node_io_Item_Edit ();
 				//DeviceList.BindingContext = mo;
 				//Node_io_ItemPage.Navigation.PushAsync (DeviceList);
@@ -77,19 +49,13 @@ namespace HomeZig
 					label,
 					sw
 				}
-			};
+				};
 			View = layout;
 		}
 
 		protected override void OnBindingContextChanged ()
-		{
-			///////prevent switch loopBle
-			Node_io_ItemPage.doSwitch = false;
-			Node_io_ItemPage.bindingChange = true;
-			/////////////////////////////
-
+		{			
 			View.BindingContext = BindingContext;
-			Node_io_ItemPage.NBitem = (NameByUser)BindingContext;
 			base.OnBindingContextChanged ();
 		}
 	}

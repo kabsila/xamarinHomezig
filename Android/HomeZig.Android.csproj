@@ -48,9 +48,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>..\packages\Xamarin.Android.Support.v4.21.0.3.0\lib\MonoAndroid10\Xamarin.Android.Support.v4.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -84,6 +81,9 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\packages\Xamarin.Forms.1.4.1.6349\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.22.0.0.0\lib\MonoAndroid10\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HomeZig\HomeZig.csproj">
@@ -101,7 +101,6 @@
     <Compile Include="ConnectClick.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="SQLite_Andriod.cs" />
-    <Compile Include="PageAction\AllDeviveLoad.cs" />
     <Compile Include="PageAction\DeviceListPageAction.cs" />
     <Compile Include="PageAction\Node_io_ItemPageAction.cs" />
     <Compile Include="PageAction\Node_io_GpdPageAction.cs" />
