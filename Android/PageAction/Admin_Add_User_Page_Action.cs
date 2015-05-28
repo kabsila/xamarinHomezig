@@ -33,6 +33,8 @@ namespace HomeZig.Android
 				string jsonCommandLogin = JsonConvert.SerializeObject (loginData, Formatting.Indented);
 				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin {0}", jsonCommandLogin);
 				WebsocketManager.websocketMaster.Send (jsonCommandLogin);
+
+
 			}
 		}
 	}

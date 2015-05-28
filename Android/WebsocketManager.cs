@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using WebSocket4Net;
 using Android.Util;
 using Newtonsoft.Json;
@@ -15,7 +15,7 @@ namespace HomeZig.Android
 	{
 		public static WebSocket websocketMaster;
 		public static IPageManager ipm1;
-
+		IToastNotificator global_notificator = DependencyService.Get<IToastNotificator>();
 		//string dataBasePath;
 		public WebsocketManager()
 		{
@@ -43,13 +43,15 @@ namespace HomeZig.Android
 
 		public async void websocket_Opened(object sender, EventArgs e)
 		{	
-			
+
 			Login_Page_Action.tmr.Stop ();
 			Log.Info("websocket", "Websocket_Connected");
 
-			Device.BeginInvokeOnMainThread (() => {
-				//HomePage.ConnectButton.IsEnabled = false;
-				//HomePage.activityIndicator.IsRunning = false;
+			Device.BeginInvokeOnMainThread (async () => {
+				//var notificator = DependencyService.Get<IToastNotificator>();
+				await global_notificator.Notify(ToastNotificationType.Success, 
+					"Connection complete", "Here we go !", TimeSpan.FromSeconds(5));
+				
 				LoginPage.ConnectButton.IsEnabled = false;
 				LoginPage.loginButton.IsEnabled = true;
 				LoginPage.activityIndicator.IsRunning = false;
@@ -86,8 +88,8 @@ namespace HomeZig.Android
 		{
 			websocketMaster.Close ();
 			Device.BeginInvokeOnMainThread (() => {
-				HomePage.ConnectButton.IsEnabled = true;
-				HomePage.activityIndicator.IsRunning = false;
+				LoginPage.ConnectButton.IsEnabled = true;
+				LoginPage.activityIndicator.IsRunning = false;
 			});
 			string tag = "Errorrrrrrrrrrrrrrrrrrrrrrrrrrr";
 			Log.Info (tag,e.ToString());
@@ -97,9 +99,13 @@ namespace HomeZig.Android
 		{
 			Log.Info("websocket_Closed", "WebsocketClosed");
 			//websocketMaster.Dispose ();
-			Device.BeginInvokeOnMainThread (() => {
-				HomePage.ConnectButton.IsEnabled = true;
-				HomePage.activityIndicator.IsRunning = false;
+			Device.BeginInvokeOnMainThread (async () => {
+				await global_notificator.Notify(ToastNotificationType.Error, 
+					"Error code: 101", "Websocket disconnected", TimeSpan.FromSeconds(2));
+				LoginPage.ConnectButton.IsEnabled = true;
+				MainActivity.ipm.showLoginPage();
+
+				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin {0}", "Go to login page");
 			});
 		}
 
@@ -116,7 +122,7 @@ namespace HomeZig.Android
 				//Db_allnode cmd = JsonConvert.DeserializeObject<Db_allnode>(e.Message);
 
 				if(cmd.cmd_db_allnode != null){			
-					Log.Info ("cmd_db_allnode" , "cmd_db_allnode");
+					Log.Info ("node_change_detected" , "node_change_detected");
 
 					foreach(var data in cmd.cmd_db_allnode)
 					{
@@ -189,30 +195,36 @@ namespace HomeZig.Android
 						//Log.Info ("MessageReceived" , typeof(CmdDbAllnode).GetProperties()[0].Name);
 						break;
 
-					case "command_io":
+					case "io_change_detected":
 						//MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
 						Node_io_ItemPage.doSwitch = false;
 						//must use message center
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
 							MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
 						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
-							Log.Info ("command_io" , "GeneralPurposeDetector_ChangeSwitchDetect");
+							Log.Info ("io_change_detected" , "GeneralPurposeDetector_ChangeSwitchDetect");
 							//Device.BeginInvokeOnMainThread (async () => {
-							//	Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
+							//	Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.node_change_detected[0].node_addr);
 							//});
 							MessagingCenter.Send<Node_io_GpdPage, string> (new Node_io_GpdPage(), "Node_io_Gpd_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
 							//MessagingCenter.Send<ContentPage> (new ContentPage(), "Node_io_Gpd_Change_Detected");
 						}else{
-							
+
 						}
 
 
 
-						Log.Info ("command_io" , "ChangeSwitchDetect");
+						Log.Info ("io_change_detected" , "ChangeSwitchDetect");
 						break;
 
 					case "db_allnode":
-						Log.Info ("MessageReceived4" , "swipe");
+						Log.Info ("MessageReceived4" , "db_allnode");
+						Device.BeginInvokeOnMainThread ( () => {
+
+							MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
+							Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
+
+						});
 						break;
 						/**new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
@@ -224,15 +236,15 @@ namespace HomeZig.Android
 					case "prevent_other_change_page":
 						Log.Info ("prevent_other_change_page" ,"UUUUUUUUUUUUUUUUUUU");
 						//new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-							Device.BeginInvokeOnMainThread ( () => {
-								
-							MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
-								Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
+						Device.BeginInvokeOnMainThread ( () => {
 
-							});
+							MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
+							Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
+
+						});
 						//})).Start();
 						break;
-					/**case "login_complete":
+						/**case "login_complete":
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
 								ipm1.showMenuTabPage(ipm1);
@@ -248,16 +260,37 @@ namespace HomeZig.Android
 
 					}
 
-				}else if(cmd.cmd_login != null){
+				}/**else if(cmd.node_change_detected != null){
+					if(cmd.cmd_db_allnode[0].node_command.Equals("change_detected")){
+						Node_io_ItemPage.doSwitch = false;
+						//must use message center
+						if(cmd.node_change_detected[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
+							MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.node_change_detected[0].node_addr);
+						}else if(cmd.node_change_detected[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
+							Log.Info ("io_change_detected" , "GeneralPurposeDetector_ChangeSwitchDetect");
+							//Device.BeginInvokeOnMainThread (async () => {
+							//	Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.node_change_detected[0].node_addr);
+							//});
+							MessagingCenter.Send<Node_io_GpdPage, string> (new Node_io_GpdPage(), "Node_io_Gpd_Change_Detected", cmd.node_change_detected[0].node_addr);
+							//MessagingCenter.Send<ContentPage> (new ContentPage(), "Node_io_Gpd_Change_Detected");
+						}else{
+
+						}
+						Log.Info ("io_change_detected" , "ChangeSwitchDetect");
+					}
+					
+				}**/else if(cmd.cmd_login != null){
 
 					//Admin_Delete_User_Page.ListOfusernameForDelete.Clear();
 
 					foreach(var data in cmd.cmd_login)
 					{
+						#region cmd_login
 						Log.Info ("cmd_login" , "cmd_login");
+						#endregion
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							//websocketMaster.Send ("{\"node_change_detected\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
@@ -355,17 +388,14 @@ namespace HomeZig.Android
 											"Success", " Remote code saved", TimeSpan.FromSeconds(2));
 									});
 									/**Device.BeginInvokeOnMainThread (() => {
-
 										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Green;
 										Add_Remote_Single_Page.plsWaitText.Text = "Remote code saved";
 										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
-
 										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Green;
 										Add_Remote_Double_Page.plsWaitText.Text = "Remote code saved";
 										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-
 										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Green;
 										Add_Remote_Triple_Page.plsWaitText.Text = "Remote code saved";
 										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
@@ -388,12 +418,10 @@ namespace HomeZig.Android
 										Add_Remote_Single_Page.plsWaitText.Text = "Try Again";
 										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
-
 										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Red;
 										Add_Remote_Double_Page.plsWaitText.Text = "Try Again";
 										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-
 										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Red;
 										Add_Remote_Triple_Page.plsWaitText.Text = "Try Again";
 										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
@@ -405,18 +433,16 @@ namespace HomeZig.Android
 										await notificator.Notify(ToastNotificationType.Warning, 
 											"Warning", "This name is already in use", TimeSpan.FromSeconds(2));
 									});
-								/**	Device.BeginInvokeOnMainThread (() => {
+									/**	Device.BeginInvokeOnMainThread (() => {
 										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
 										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Olive;
 										Add_Remote_Single_Page.plsWaitText.Text = "This name is already in use";
 										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
-
 										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Olive;
 										Add_Remote_Double_Page.plsWaitText.Text = "This name is already in use";
 										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-
 										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
 										Add_Remote_Triple_Page.plsWaitText.Text = "This name is already in use";
 										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
@@ -435,7 +461,6 @@ namespace HomeZig.Android
 											Add_Remote_Double_Page.plsWaitText.Text = "Next button 2";
 											Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
 											Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-
 											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = false;
 											Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
 											Add_Remote_Triple_Page.plsWaitText.Text = "Next button 2";
@@ -483,7 +508,7 @@ namespace HomeZig.Android
 				//Console.WriteLine (path);
 				/**if(await App.Database.GetItems())
 				{
-					foreach(var data in cmd.cmd_db_allnode)
+					foreach(var data in cmd.node_change_detected)
 					{
 						try
 						{
@@ -494,11 +519,10 @@ namespace HomeZig.Android
 							Log.Info ("Exception" , exx.ToString());
 						}
 					}
-
 				}
 				else
 				{
-					foreach(var data in cmd.cmd_db_allnode)
+					foreach(var data in cmd.node_change_detected)
 					{
 						try
 						{
@@ -517,14 +541,14 @@ namespace HomeZig.Android
 				//string[] getRoot = cmd.GetType().GetProperties().GetValue(0).ToString().Split(' ');
 				//string RootElement = getRoot[1];
 				//getRoot = null;
-				//string name2 = cmd.cmd_db_allnode[0].node_addr;
-				//Log.Info ("MessageReceived222222" , cmd.cmd_db_allnode[0].ToString());
+				//string name2 = cmd.node_change_detected[0].node_addr;
+				//Log.Info ("MessageReceived222222" , cmd.node_change_detected[0].ToString());
 				//RootElement cmd = JsonConvert.DeserializeObject<RootElement>(e.Message);	
 
 
 
 
-			/**	foreach(var i in await App.Database.GetItemsNotDone())
+				/**	foreach(var i in await App.Database.GetItemsNotDone())
 				{
 					Log.Info ("From Database" , i.node_deviceType);
 				}**/
@@ -532,7 +556,7 @@ namespace HomeZig.Android
 
 
 				//switch ("")
-				/**switch (cmd.cmd_db_allnode[0].node_command)
+				/**switch (cmd.node_change_detected[0].node_command)
 				{
 					case "db_allnode2":
 					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
@@ -542,19 +566,16 @@ namespace HomeZig.Android
 					})).Start();
 					//Log.Info ("MessageReceived" , typeof(CmdDbAllnode).GetProperties()[0].Name);
 					break;
-
 					case "command_io":
 					MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
 					Log.Info ("MessageReceived3" , "ChangeSwitchDetect");
 					break;
-
 					case "db_allnode":
 					Log.Info ("MessageReceived4" , "swipe");
-
 					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 						Device.BeginInvokeOnMainThread (() => {
 							//TabbedPage tw = new TabbedPage();
-							//tw.Children.Add (new AllDeviveLoad(cmd.cmd_db_allnode){Title = "test1"});
+							//tw.Children.Add (new AllDeviveLoad(cmd.node_change_detected){Title = "test1"});
 							//tw.Children.Add (new Outlet2(){Title = "test2"});
 							//App.Navigation.PushAsync(new MenuTabPage());
 							//App.Navigation.PushAsync(new NavigationPage(new MenuTabPage()));
@@ -562,7 +583,6 @@ namespace HomeZig.Android
 						});
 					})).Start();
 					break;
-
 					case "login_complete":
 					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 						Device.BeginInvokeOnMainThread (() => {
@@ -570,13 +590,9 @@ namespace HomeZig.Android
 						});
 					})).Start();
 					break;
-
-
-
 					default:
 					Log.Info ("MessageReceived_default" , e.Message);
 					break;
-
 				}**/
 
 				//Example m = JsonConvert.DeserializeObject<Example>(e.Message);
@@ -590,9 +606,6 @@ namespace HomeZig.Android
 
 
 		}
+
 	}
 }
-
-
-
-

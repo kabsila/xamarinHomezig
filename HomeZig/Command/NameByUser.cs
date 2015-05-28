@@ -25,44 +25,44 @@ namespace HomeZig
 				string state = NumberConversion.hex2binary (node_io);
 				string io_state = string.Empty;
 				if(target_io.Equals("1")){
-					io_state = state.Substring(7, 1);
-					if (io_state.Equals ("0")) 
-					{ 
-						io_state = "false";
-					} 
-					else 
-					{
-						io_state = "true";
-					}
-				}else if(target_io.Equals("2")){
-					io_state = state.Substring(6, 1);
-					if (io_state.Equals ("0")) 
-					{ 
-						io_state = "false";
-					} 
-					else 
-					{
-						io_state = "true";
-					}
-				}else if(target_io.Equals("3")){
-					io_state = state.Substring(5, 1);
-					if (io_state.Equals ("0")) 
-					{ 
-						io_state = "false";
-					} 
-					else 
-					{
-						io_state = "true";
-					}
-				}else if(target_io.Equals("4")){
 					io_state = state.Substring(4, 1);
 					if (io_state.Equals ("0")) 
 					{ 
-						io_state = "false";
+						io_state = "true";
 					} 
 					else 
 					{
+						io_state = "false";
+					}
+				}else if(target_io.Equals("2")){
+					io_state = state.Substring(5, 1);
+					if (io_state.Equals ("0")) 
+					{ 
 						io_state = "true";
+					} 
+					else 
+					{
+						io_state = "false";
+					}
+				}else if(target_io.Equals("3")){
+					io_state = state.Substring(6, 1);
+					if (io_state.Equals ("0")) 
+					{ 
+						io_state = "true";
+					} 
+					else 
+					{
+						io_state = "false";
+					}
+				}else if(target_io.Equals("4")){
+					io_state = state.Substring(7, 1);
+					if (io_state.Equals ("0")) 
+					{ 
+						io_state = "true";
+					} 
+					else 
+					{
+						io_state = "false";
 					}
 				}				
 

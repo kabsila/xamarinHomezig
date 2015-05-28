@@ -1,6 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
-
+using Connectivity.Plugin;
 
 namespace HomeZig
 {
@@ -9,9 +9,9 @@ namespace HomeZig
 		public static Entry websocketUrl = new Entry
 		{
 			Placeholder = "Example: ws://echo.websocket.org",
-			Text = "ws://echo.websocket.org",
+			//Text = "ws://echo.websocket.org",
 			//Text = "ws://homezigth.ddns.net:8888/ws",
-			//Text = "ws://192.168.199.111:8888/ws",
+			Text = "ws://192.168.1.109:8888/ws",
 			//HorizontalOptions = LayoutOptions.Center
 		};
 		public static Button ConnectButton = new Button
@@ -53,7 +53,8 @@ namespace HomeZig
 		};
 
 		public LoginPage ()
-		{
+		{		
+
 			ConnectButton.Clicked += DependencyService.Get<I_Login> ().ConnectButton_Click;
 			loginButton.Clicked += DependencyService.Get<I_Login> ().LoginButtonClick; 
 			logoutButton.Clicked +=  DependencyService.Get<I_Login> ().LogoutButtonClick;
@@ -115,14 +116,14 @@ namespace HomeZig
 
 	
 
-		protected override bool OnBackButtonPressed ()
+		/**protected override bool OnBackButtonPressed ()
 		{
 			base.OnBackButtonPressed ();
 			System.Diagnostics.Debug.WriteLine ("AAAAAAAAAAAAAAAAAAA");
 			//super.OnPause();
 
 			return true;
-		}
+		}**/
 
 	}
 

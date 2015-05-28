@@ -3,6 +3,7 @@ using Xamarin.Forms;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace HomeZig
 {
 	public class App : Application, IDisposable

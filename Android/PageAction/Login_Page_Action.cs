@@ -8,9 +8,11 @@ using System.Security.Cryptography;
 using System.Timers;
 using Toasts.Forms.Plugin.Abstractions;
 
+
 [assembly: Dependency (typeof (Login_Page_Action))]
 namespace HomeZig.Android
 {
+	
 	public class Login_Page_Action : ContentPage, I_Login
 	{
 		//public static IPageManager ipm1;
@@ -45,8 +47,8 @@ namespace HomeZig.Android
 
 				string jsonCommandLogin = JsonConvert.SerializeObject(loginData, Formatting.Indented);
 				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin" , jsonCommandLogin);
-				//WebsocketManager.websocketMaster.Send (jsonCommandLogin);
-				WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
+				WebsocketManager.websocketMaster.Send (jsonCommandLogin);
+				//WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
 				// no ipm1.showMenuTabPage ();
 			}
 		}
@@ -79,6 +81,8 @@ namespace HomeZig.Android
 
 		public async void ConnectButton_Click(object sender, EventArgs e)
 		{
+			
+
 			if (String.IsNullOrEmpty(LoginPage.websocketUrl.Text))
 			{
 				await DisplayAlert("Validation Error", "Server URL is required", "Re-try");
@@ -100,12 +104,13 @@ namespace HomeZig.Android
 				LoginPage.activityIndicator.IsRunning = true;
 
 				try
-				{		System.Diagnostics.Debug.WriteLine ("2222222222222222222222");
-					
+				{		
+					System.Diagnostics.Debug.WriteLine ("2222222222222222222222");					
 					WebsocketManager.websocketMaster.Open ();
 				}
 				catch
-				{System.Diagnostics.Debug.WriteLine ("33333333333333333333");
+				{
+					System.Diagnostics.Debug.WriteLine ("33333333333333333333");
 					tmr.Stop ();
 					//tmr.Dispose ();
 					LoginPage.activityIndicator.IsRunning = false;

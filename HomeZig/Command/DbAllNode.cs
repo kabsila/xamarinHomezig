@@ -110,6 +110,7 @@ namespace HomeZig
 		public List<Db_allnode> cmd_db_allnode { get; set; }
 		public List<Login> cmd_login { get; set; }
 		public List<RemoteData> cmd_remote { get; set; }
+		//public List<NodeDetect> node_change_detected { get; set; }
 		//public Dictionary<string,List<Db_allnode>> cmd_db_allnode;
 		//public Dictionary<string,Db_allnode> cmd_db_allnode;
 		//public Db_allnode[] cmd_db_allnode { get; set; }

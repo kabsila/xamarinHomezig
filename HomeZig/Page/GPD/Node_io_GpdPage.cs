@@ -47,6 +47,7 @@ namespace HomeZig
 				//check address for avoid switchChange wrong page  
 				if(item.node_addr.Equals(addr)){
 					Device.BeginInvokeOnMainThread (async () => {
+						System.Diagnostics.Debug.WriteLine ("Gpd_Change_Detectedvvvvvvvvvvvvvvvvvv");
 						ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(addr);
 					});
 				}

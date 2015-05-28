@@ -1,7 +1,5 @@
 ﻿using System;
 
-
-
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -34,6 +32,8 @@ namespace HomeZig.Android
 			Log.Debug ("OnCreate", "OnCreateeeeeeeeee");
 			Xamarin.Forms.Forms.Init (this, bundle);
 			ToastNotificatorImplementation.Init();
+
+
 
 			dvi = new DeviceItemDatabase ();
 			App.Database.Delete_RemoteData_Item ();
@@ -117,10 +117,11 @@ namespace HomeZig.Android
 		}
 
 		public void showLoginPage ()
-		{		//SetPage (App.GetLoginPage ());
-			//ap = new App();
-			//LoadApplication (ap);	 
+		{		
+			LoadApplication (ap);
 
+			//Login_Page_Action.nws = null;
+			Log.Info ("showLoginPage" ,"GGGGGGGGGGGGGGGGG");
 		}
 
 		public void showLoginPageDis ()
