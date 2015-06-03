@@ -11,7 +11,7 @@ namespace HomeZig
 			Placeholder = "Example: ws://echo.websocket.org",
 			//Text = "ws://echo.websocket.org",
 			//Text = "ws://homezigth.ddns.net:8888/ws",
-			Text = "ws://192.168.1.109:8888/ws",
+			Text = "ws://118.175.28.23:8888/ws",
 			//HorizontalOptions = LayoutOptions.Center
 		};
 		public static Button ConnectButton = new Button

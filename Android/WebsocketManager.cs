@@ -244,6 +244,18 @@ namespace HomeZig.Android
 						});
 						//})).Start();
 						break;
+
+					case "listview_request":
+						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
+							Log.Info ("listview_request" ,"keepppppppppppppp");
+							Device.BeginInvokeOnMainThread (async () => {
+								DeviceAddressListPage.addressListView.EndRefresh();
+								DeviceAddressListPage.addressListView.IsRefreshing = false;
+								DeviceAddressListPage.addressListView.ItemsSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
+							});
+						}
+						break;	
+					
 						/**case "login_complete":
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
@@ -279,7 +291,8 @@ namespace HomeZig.Android
 						Log.Info ("io_change_detected" , "ChangeSwitchDetect");
 					}
 					
-				}**/else if(cmd.cmd_login != null){
+				}**/
+					else if(cmd.cmd_login != null){
 
 					//Admin_Delete_User_Page.ListOfusernameForDelete.Clear();
 

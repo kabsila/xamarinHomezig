@@ -6,7 +6,7 @@ namespace HomeZig
 	public class DeviceAddressListPage : ContentPage
 	{
 
-		ListView addressListView;
+		public static ListView addressListView;
 		//ToolbarItem Edit;
 		public DeviceAddressListPage ()
 		{
@@ -14,12 +14,18 @@ namespace HomeZig
 			//NavigationPage.SetHasNavigationBar (this, true);
 			//NavigationPage.SetBackButtonTitle (this., "back");
 			addressListView = new ListView ();
+
 			//listView.ItemTemplate = new DataTemplate(typeof (DeviceItemCell));
 			//addressListView.ItemTemplate = new DataTemplate(typeof (TextCell));
 			addressListView.ItemTemplate = new DataTemplate(typeof (DeviceAddressList_Cell));
 			//addressListView.ItemTemplate.SetBinding (TextCell.TextProperty, "name_by_user");
+			//addressListView.IsRefreshing = true;
+			addressListView.IsPullToRefreshEnabled = true;
+			addressListView.Refreshing += DependencyService.Get<I_DeviceAddressList> ().refresh;
+
 			addressListView.ItemTapped  += (sender, e) => 
-			{
+			{	
+
 				var Item = (Db_allnode)e.Item;
 				if (Item.node_deviceType.Equals (EnumtoString.EnumString(DeviceType.GeneralPurposeDetector)) && Item.node_status.Equals("0")) {
 					var DeviceList = new Node_io_GpdPage ();
