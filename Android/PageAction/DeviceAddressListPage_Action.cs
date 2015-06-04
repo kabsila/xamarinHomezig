@@ -17,7 +17,7 @@ namespace HomeZig.Android
 
 		public void refresh(object sender, EventArgs e)
 		{
-			//DeviceAddressListPage.addressListView.IsRefreshing = true;
+			//DeviceAddressListPage.addressListView.IsRefreshing = true;kkk
 			Db_allnode requestRefresh = new Db_allnode();
 			requestRefresh.ID = 0;
 			requestRefresh.name_by_user = "";
