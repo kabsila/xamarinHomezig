@@ -104,7 +104,6 @@
     <Compile Include="ConnectClick.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="SQLite_Andriod.cs" />
-    <Compile Include="PageAction\DeviceListPageAction.cs" />
     <Compile Include="PageAction\Node_io_ItemPageAction.cs" />
     <Compile Include="PageAction\Node_io_GpdPageAction.cs" />
     <Compile Include="PageAction\Admin_Add_User_Page_Action.cs" />
@@ -117,6 +116,7 @@
     <Compile Include="PageAction\Node_io_RemoteControl_Page_Action.cs" />
     <Compile Include="PageAction\Login_Page_Action.cs" />
     <Compile Include="ListSwitchRenderer.cs" />
+    <Compile Include="PageAction\DeviceAddressListPage_Action.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

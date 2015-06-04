@@ -8,6 +8,7 @@ using System.Reflection;
 using System.IO;
 using System.Text;
 using Toasts.Forms.Plugin.Abstractions;
+using System.Threading.Tasks;
 
 namespace HomeZig.Android
 {
@@ -248,11 +249,15 @@ namespace HomeZig.Android
 					case "listview_request":
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
 							Log.Info ("listview_request" ,"keepppppppppppppp");
-							Device.BeginInvokeOnMainThread (async () => {
-								DeviceAddressListPage.addressListView.EndRefresh();
-								DeviceAddressListPage.addressListView.IsRefreshing = false;
-								DeviceAddressListPage.addressListView.ItemsSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
-							});
+							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+								Device.BeginInvokeOnMainThread (async () => {
+									DeviceAddressListPage.addressListView.EndRefresh();
+									DeviceAddressListPage.addressListView.IsRefreshing = false;
+									DeviceAddressListPage.addressListView.ItemsSource =  await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
+
+								});
+							})).Start();
+
 						}
 						break;	
 					
@@ -303,7 +308,7 @@ namespace HomeZig.Android
 						#endregion
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							//websocketMaster.Send ("{\"node_change_detected\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
@@ -320,7 +325,7 @@ namespace HomeZig.Android
 							db.node_io_p = "";
 							//db.name;
 							var FirstSend = JsonConvert.SerializeObject(db);
-							websocketMaster.Send (FirstSend);
+							//websocketMaster.Send (FirstSend);
 							#endregion
 						}else if (data.flagForLogin.Equals("not_pass")){
 							//DisplayAlert("Validation Error", "Username and Password are required", "Re-try");
