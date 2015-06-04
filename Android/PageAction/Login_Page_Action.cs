@@ -32,10 +32,13 @@ namespace HomeZig.Android
 			} else {
 
 				//code here for check valid username and password from server
-				Device.BeginInvokeOnMainThread (() => {
-					LoginPage.loginButton.IsEnabled = false;
-					LoginPage.activityIndicator.IsRunning = true;
-				});
+				new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+					Device.BeginInvokeOnMainThread (() => {
+						LoginPage.loginButton.IsEnabled = false;
+						LoginPage.activityIndicator.IsRunning = true;
+					});
+				})).Start();
+
 				Login loginData = new Login ();
 				loginData.lastConnectWebscoketUrl = LoginPage.websocketUrl.Text;
 				loginData.username = LoginPage.username.Text;
@@ -65,16 +68,19 @@ namespace HomeZig.Android
 				System.Diagnostics.Debug.WriteLine ("[LogoutButtonClick] Logout when websocket not connected");
 			}
 
-			Device.BeginInvokeOnMainThread (() => {
-				LoginPage.username.Text = "";
-				LoginPage.password.Text = "";
-				LoginPage.username.IsEnabled = true;
-				LoginPage.password.IsEnabled = true;
-				LoginPage.ConnectButton.IsEnabled = true;
-				LoginPage.loginButton.IsEnabled = true;
-				LoginPage.logoutButton.IsEnabled = false;
-				LoginPage.activityIndicator.IsRunning = false;
-			});
+			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+				Device.BeginInvokeOnMainThread (() => {
+					LoginPage.username.Text = "";
+					LoginPage.password.Text = "";
+					LoginPage.username.IsEnabled = true;
+					LoginPage.password.IsEnabled = true;
+					LoginPage.ConnectButton.IsEnabled = true;
+					LoginPage.loginButton.IsEnabled = true;
+					LoginPage.logoutButton.IsEnabled = false;
+					LoginPage.activityIndicator.IsRunning = false;
+				});
+			})).Start();
+
 
 			//LoginPage.loginButton.IsEnabled = true;
 		}
@@ -136,13 +142,16 @@ namespace HomeZig.Android
 
 		private void timerHandler(object sender, EventArgs e) {
 			WebsocketManager.websocketMaster.Dispose ();
-			Device.BeginInvokeOnMainThread (async () => {
-				var notificator = DependencyService.Get<IToastNotificator>();
-				await notificator.Notify(ToastNotificationType.Warning, 
-					"TimeOut", "Check your internet connection", TimeSpan.FromSeconds(3));
-				LoginPage.ConnectButton.IsEnabled = true;
-				LoginPage.activityIndicator.IsRunning = false;
-			});
+			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+				Device.BeginInvokeOnMainThread (async () => {
+					var notificator = DependencyService.Get<IToastNotificator>();
+					await notificator.Notify(ToastNotificationType.Warning, 
+						"TimeOut", "Check your internet connection", TimeSpan.FromSeconds(3));
+					LoginPage.ConnectButton.IsEnabled = true;
+					LoginPage.activityIndicator.IsRunning = false;
+				});
+			})).Start();
+
 
 
 			tmr.Stop(); // Manually stop timer, or let run indefinitely

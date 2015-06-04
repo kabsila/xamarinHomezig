@@ -29,12 +29,15 @@ namespace HomeZig.Android
 				websocketMaster.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>(websocket_Error);
 				websocketMaster.Closed += new EventHandler(websocket_Closed);
 				websocketMaster.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived);
-			}catch{
-				Device.BeginInvokeOnMainThread (async () => {
-					var notificator = DependencyService.Get<IToastNotificator>();
-					await notificator.Notify(ToastNotificationType.Error, 
-						"Error", "Somethings Wrongs", TimeSpan.FromSeconds(3));
-				});
+			}catch{			
+
+				new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+					Device.BeginInvokeOnMainThread (async () => {
+						var notificator = DependencyService.Get<IToastNotificator>();
+						await notificator.Notify(ToastNotificationType.Error, 
+							"Error", "Somethings Wrongs", TimeSpan.FromSeconds(3));
+					});
+				})).Start();
 			}
 			//var sqliteFilename = "HomezigSQLite.db3";
 			//string documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal); // Documents folder
@@ -48,15 +51,18 @@ namespace HomeZig.Android
 			Login_Page_Action.tmr.Stop ();
 			Log.Info("websocket", "Websocket_Connected");
 
-			Device.BeginInvokeOnMainThread (async () => {
-				//var notificator = DependencyService.Get<IToastNotificator>();
-				await global_notificator.Notify(ToastNotificationType.Success, 
-					"Connection complete", "Here we go !", TimeSpan.FromSeconds(5));
-				
-				LoginPage.ConnectButton.IsEnabled = false;
-				LoginPage.loginButton.IsEnabled = true;
-				LoginPage.activityIndicator.IsRunning = false;
-			});
+			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+				Device.BeginInvokeOnMainThread (async () => {
+					//var notificator = DependencyService.Get<IToastNotificator>();
+					await global_notificator.Notify(ToastNotificationType.Success, 
+						"Connection complete", "Here we go !", TimeSpan.FromSeconds(5));
+
+					LoginPage.ConnectButton.IsEnabled = false;
+					LoginPage.loginButton.IsEnabled = true;
+					LoginPage.activityIndicator.IsRunning = false;
+				});
+			})).Start();
+
 
 			foreach (var data in await App.Database.Get_flag_Login()) //check wa koiy login? 
 			{
@@ -204,11 +210,13 @@ namespace HomeZig.Android
 							MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
 						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
 							Log.Info ("io_change_detected" , "GeneralPurposeDetector_ChangeSwitchDetect");
-							//Device.BeginInvokeOnMainThread (async () => {
-							//	Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.node_change_detected[0].node_addr);
-							//});
-							MessagingCenter.Send<Node_io_GpdPage, string> (new Node_io_GpdPage(), "Node_io_Gpd_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
-							//MessagingCenter.Send<ContentPage> (new ContentPage(), "Node_io_Gpd_Change_Detected");
+							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+								Device.BeginInvokeOnMainThread ( async () => {									
+									System.Diagnostics.Debug.WriteLine ("Gpd_Change_Detectedvvvvvvvvvvvvvvvvvv");
+									Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);										
+								});
+							})).Start();
+
 						}else{
 
 						}
@@ -220,12 +228,15 @@ namespace HomeZig.Android
 
 					case "db_allnode":
 						Log.Info ("MessageReceived4" , "db_allnode");
-						Device.BeginInvokeOnMainThread ( () => {
+						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+							Device.BeginInvokeOnMainThread ( () => {
 
-							MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
-							Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
+								MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
+								Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
 
-						});
+							});
+						})).Start();
+
 						break;
 						/**new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
@@ -236,28 +247,52 @@ namespace HomeZig.Android
 
 					case "prevent_other_change_page":
 						Log.Info ("prevent_other_change_page" ,"UUUUUUUUUUUUUUUUUUU");
-						//new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-						Device.BeginInvokeOnMainThread ( () => {
+						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+							Device.BeginInvokeOnMainThread ( () => {
 
-							MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
-							Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
+								MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
+								Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
 
-						});
-						//})).Start();
+							});
+						})).Start();
 						break;
 
 					case "listview_request":
+						
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
-							Log.Info ("listview_request" ,"keepppppppppppppp");
-							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-								Device.BeginInvokeOnMainThread (async () => {
+							Log.Info ("listview_request" ,"GeneralPurposeDetector");
+							var dataSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
+							foreach (var data in dataSource) 
+							{								
+
+								if (data.node_status.Equals ("1")) { // 1 is OFFLINE , 0 is ONLINE
+									var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");
+									if (indexForRemove == -1) {
+										data.name_by_user = data.name_by_user + "(OffLine)";
+									} else {
+										data.name_by_user = data.name_by_user.Remove (indexForRemove);
+										data.name_by_user = data.name_by_user + "(OffLine)";
+									}
+									await App.Database.Update_DBAllNode_Item (data);
+
+								} else {
+									var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");						
+									if (indexForRemove != -1) {
+										data.name_by_user = data.name_by_user.Remove (indexForRemove);
+										await App.Database.Update_DBAllNode_Item (data);
+									}
+								}
+							}
+
+
+							//var ItemsSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
+							new System.Threading.Thread (new System.Threading.ThreadStart (() => {								
+								Device.BeginInvokeOnMainThread (() => {									
+									DeviceAddressListPage.addressListView.ItemsSource =  dataSource;//await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
 									DeviceAddressListPage.addressListView.EndRefresh();
 									DeviceAddressListPage.addressListView.IsRefreshing = false;
-									DeviceAddressListPage.addressListView.ItemsSource =  await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
-
 								});
 							})).Start();
-
 						}
 						break;	
 					

@@ -12,7 +12,7 @@ namespace HomeZig
 		public static Db_allnode item;
 		public static NameByUser NBitem;
 
-		ListView ioListView;
+		public static ListView ioListView;
 		//public static bool doSwitch = false;
 		Label NameOfNode;
 		public Node_io_GpdPage ()
