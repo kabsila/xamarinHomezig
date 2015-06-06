@@ -28,10 +28,10 @@ namespace HomeZig.Android
 			requestRefresh.node_type = "0x3ff11";
 			requestRefresh.node_command = "is_alive_node_type";
 
-			string jsonCommand = "{\"cmd_db_allnode\":[{\"node_io\": \"FF\", \"node_type\": \"0x3ff11\", \"node_addr\": \"[00:13:a2:00:40:ad:bd:8c]!\", \"node_status\": \"1\", \"node_command\": \"listview_request\"}, {\"node_io\": \"0f\", \"node_type\": \"0x3ff11\", \"node_addr\": \"[00:13:a2:00:40:ad:bd:30]!\", \"node_status\": \"1\", \"node_command\": \"listview_request\"}]}\n";
+			//string jsonCommand = "{\"cmd_db_allnode\":[{\"node_io\": \"FF\", \"node_type\": \"0x3ff11\", \"node_addr\": \"[00:13:a2:00:40:ad:bd:8c]!\", \"node_status\": \"1\", \"node_command\": \"listview_request\"}, {\"node_io\": \"0f\", \"node_type\": \"0x3ff11\", \"node_addr\": \"[00:13:a2:00:40:ad:bd:30]!\", \"node_status\": \"1\", \"node_command\": \"listview_request\"}]}\n";
 			//string jsonCommand = "{\"cmd_db_allnode\":[{\"node_io\": \"FF\", \"node_type\": \"0x3ff11\", \"node_addr\": \"[00:13:a2:00:40:ad:58:kk]!\", \"node_status\": \"1\", \"node_command\": \"listview_request\"}, {\"node_io\": \"0f\", \"node_type\": \"0x3ff11\", \"node_addr\": \"[00:13:a2:00:40:ad:bd:30]!\", \"node_status\": \"1\", \"node_command\": \"listview_request\"}]}\n";
 
-			//string jsonCommand = JsonConvert.SerializeObject (requestRefresh, Formatting.Indented);
+			string jsonCommand = JsonConvert.SerializeObject (requestRefresh, Formatting.Indented);
 			System.Diagnostics.Debug.WriteLine ("jsonCommandRefresh" , jsonCommand);
 			WebsocketManager.websocketMaster.Send (jsonCommand);
 		}
