@@ -13,7 +13,7 @@ namespace HomeZig
 			ipm2 = ipm;
 			TabbedPage mainTabbedPage = new TabbedPage ();
 			mainTabbedPage.Children.Add (new NavigationPage(new DeviceTypeListPage()){Title = "Powered"});
-			mainTabbedPage.Children.Add (new NavigationPage(new Outlet2()){Title = "test2"});
+			mainTabbedPage.Children.Add (new NavigationPage(new Profile_Page()){Title = "Profile"});
 			mainTabbedPage.Children.Add (new NavigationPage(new Powered()){Title = "test3"});
 			mainTabbedPage.Children.Add (new NavigationPage(new Option_Page(ipm)){Title = "Option"});
 

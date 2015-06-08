@@ -20,7 +20,7 @@ namespace HomeZig
 			System.Diagnostics.Debug.WriteLine ("= new Node_io_GpdPage ()");
 			ioListView = new ListView ();
 			ioListView.ItemTemplate = new DataTemplate(typeof (Node_io_Gpd_Cell));
-
+			//ioListView.IsEnabled = false;
 			NameOfNode = new Label
 			{
 				Text = "Name of node", // Change in OnAppearing
@@ -42,7 +42,7 @@ namespace HomeZig
 				Navigation.PushAsync (DeviceList);
 			});
 
-			MessagingCenter.Subscribe<Node_io_GpdPage, string> (this, "Node_io_Gpd_Change_Detected", (sender, addr) => {
+			/**MessagingCenter.Subscribe<Node_io_GpdPage, string> (this, "Node_io_Gpd_Change_Detected", (sender, addr) => {
 
 				//check address for avoid switchChange wrong page  
 				if(item.node_addr.Equals(addr)){
@@ -51,7 +51,7 @@ namespace HomeZig
 						ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(addr);
 					});
 				}
-			});
+			});**/
 
 			/**switchCell_01 = new SwitchCell
 			{

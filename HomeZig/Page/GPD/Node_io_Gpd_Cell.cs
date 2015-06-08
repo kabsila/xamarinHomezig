@@ -17,6 +17,7 @@ namespace HomeZig
 
 			Switch sw = new Switch ();
 			sw.SetBinding (Switch.IsToggledProperty, "io_value");
+			//sw.IsEnabled = false;
 
 			var EditAction = new MenuItem { Text = "Edit", IsDestructive = true }; // red background
 			EditAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));

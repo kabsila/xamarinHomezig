@@ -117,6 +117,7 @@
     <Compile Include="PageAction\Login_Page_Action.cs" />
     <Compile Include="ListSwitchRenderer.cs" />
     <Compile Include="PageAction\DeviceAddressListPage_Action.cs" />
+    <Compile Include="PageAction\Profile_Page_Action.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

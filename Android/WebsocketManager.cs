@@ -55,7 +55,7 @@ namespace HomeZig.Android
 				Device.BeginInvokeOnMainThread (async () => {
 					//var notificator = DependencyService.Get<IToastNotificator>();
 					await global_notificator.Notify(ToastNotificationType.Success, 
-						"Connection complete", "Here we go !", TimeSpan.FromSeconds(5));
+						"Connection complete", "Here we go !", TimeSpan.FromSeconds(2));
 
 					LoginPage.ConnectButton.IsEnabled = false;
 					LoginPage.loginButton.IsEnabled = true;
@@ -109,6 +109,7 @@ namespace HomeZig.Android
 			Device.BeginInvokeOnMainThread (async () => {
 				await global_notificator.Notify(ToastNotificationType.Error, 
 					"Error code: 101", "Websocket disconnected", TimeSpan.FromSeconds(2));
+				LoginPage.activityIndicator.IsRunning = false;
 				LoginPage.ConnectButton.IsEnabled = true;
 				MainActivity.ipm.showLoginPage();
 
@@ -207,7 +208,14 @@ namespace HomeZig.Android
 						Node_io_ItemPage.doSwitch = false;
 						//must use message center
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
-							MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
+							Log.Info ("io_change_detected" , "InWallSwitch_ChangeSwitchDetect");
+							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+								Device.BeginInvokeOnMainThread ( async () => {									
+									Node_io_ItemPage.doSwitch = false;
+									Node_io_ItemPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);										
+								});
+							})).Start();
+							//MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
 						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
 							Log.Info ("io_change_detected" , "GeneralPurposeDetector_ChangeSwitchDetect");
 							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
@@ -220,8 +228,6 @@ namespace HomeZig.Android
 						}else{
 
 						}
-
-
 
 						Log.Info ("io_change_detected" , "ChangeSwitchDetect");
 						break;
@@ -304,12 +310,9 @@ namespace HomeZig.Android
 						})).Start();
 						break;**/
 
-
-
 					default:
 						Log.Info ("MessageReceived_default" , e.Message);
 						break;
-
 					}
 
 				}/**else if(cmd.node_change_detected != null){

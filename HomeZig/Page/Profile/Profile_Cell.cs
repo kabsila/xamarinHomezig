@@ -1,14 +1,13 @@
 ﻿using System;
 using Xamarin.Forms;
-using System.Diagnostics;
 
 namespace HomeZig
 {
-	public class DeviceAddressList_Cell : ViewCell
+	public class Profile_Cell : ViewCell
 	{
-		public DeviceAddressList_Cell ()
+		public Profile_Cell ()
 		{
-			var label1 = new Label 
+			var nameOfProfile = new Label 
 			{ 
 				//Text = "Label 1", 
 				FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)), 
@@ -16,16 +15,15 @@ namespace HomeZig
 				VerticalOptions = LayoutOptions.CenterAndExpand,
 				//HorizontalOptions = LayoutOptions.CenterAndExpand
 			};
-			label1.SetBinding(Label.TextProperty, "name_by_user");
+			nameOfProfile.SetBinding(Label.TextProperty, "profileName");
 
 			var EditAction = new MenuItem { Text = "Edit" }; // red background
 			EditAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));
 			EditAction.Clicked += (sender, e) => {
 				var mi = ((MenuItem)sender);
-				var mo = (Db_allnode)mi.BindingContext;
-				MessagingCenter.Send<ContentPage, Db_allnode> (new ContentPage(), "DeviceAddressList_EditActionClicked", mo);
-
-				System.Diagnostics.Debug.WriteLine("DeviceAddressList_EditActionClicked");
+				var mo = (ProfileData)mi.BindingContext;
+				MessagingCenter.Send<ContentPage, ProfileData> (new ContentPage(), "Profile_Name_EditActionClicked", mo);
+				System.Diagnostics.Debug.WriteLine("Profile_Name_EditActionClicked");
 			};
 
 			//
@@ -41,11 +39,7 @@ namespace HomeZig
 				//HorizontalOptions = LayoutOptions.CenterAndExpand,
 				Padding = new Thickness (15, 0, 0, 0),
 				Children = {
-					label1
-					//new StackLayout {
-					//	Orientation = StackOrientation.Vertical,
-						//Children = { label1 }
-					//}
+					nameOfProfile
 				}
 			};
 		}

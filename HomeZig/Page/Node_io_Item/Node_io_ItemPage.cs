@@ -14,7 +14,7 @@ namespace HomeZig
 		public static bool bindingChange = false;
 		public static Int16 checkFirstSwitch = 0;
 
-		ListView ioListView;
+		public static ListView ioListView;
 		Label NameOfNode;
 		//ToolbarItem Edit;
 		public Node_io_ItemPage ()

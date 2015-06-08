@@ -31,12 +31,28 @@ namespace HomeZig
 			database.CreateTableAsync<Db_allnode>();
 			database.CreateTableAsync<NameByUser>();
 			database.CreateTableAsync<RemoteData>();
+			database.CreateTableAsync<ProfileData>();
 
 			//prevent [node_addr] AND [target_io] duplicate
 			database.QueryAsync<NameByUser>("CREATE UNIQUE INDEX ix_uq ON [NameByUser] ([node_addr], [target_io])");
 		
 		}
+		#region ProfileData
+		public async Task<IEnumerable<ProfileData>> Insert_ProfileData_Item (string profileName)
+		{
+			return await database.QueryAsync<ProfileData>("INSERT INTO [ProfileData] ([profileName]) VALUES (?)",profileName);
+		}
 
+		public async Task<IEnumerable<ProfileData>> Edit_ProfileData_Item (string profileName, int id)
+		{
+			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [profileName] = ? WHERE [ID] = ?",profileName, id);
+		}
+
+		public async Task<IEnumerable<ProfileData>> Get_profileName ()
+		{
+			return await database.QueryAsync<ProfileData>("SELECT * FROM [ProfileData]");
+		}
+		#endregion 
 		#region RemoteData
 		public async Task<IEnumerable<RemoteData>> Save_RemoteData_Item (string node_addr, string remote_button_name)
 		{
