@@ -33,8 +33,8 @@ namespace HomeZig
 			database.CreateTableAsync<RemoteData>();
 			database.CreateTableAsync<ProfileData>();
 
-			//prevent [node_addr] AND [target_io] duplicate
-			database.QueryAsync<NameByUser>("CREATE UNIQUE INDEX ix_uq ON [NameByUser] ([node_addr], [target_io])");
+			//prevent [node_addr] AND [node_io_p] duplicate
+			database.QueryAsync<NameByUser>("CREATE UNIQUE INDEX ix_uq ON [NameByUser] ([node_addr], [node_io_p])");
 		
 		}
 		#region ProfileData
@@ -149,9 +149,9 @@ namespace HomeZig
 			return await database.QueryAsync<NameByUser>("SELECT * from [NameByUser]");
 		}
 
-		public async Task<IEnumerable<NameByUser>> Save_NameByUser (Db_allnode item, string ioName, string targetIO)
+		public async Task<IEnumerable<NameByUser>> Save_NameByUser (Db_allnode item, string ioName, string node_io_p, string io_value)
 		{
-			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user], [node_io], [io_name_by_user], [target_io]) VALUES (?, ?, ?, ?, ?)",item.node_addr, item.name_by_user, item.node_io, ioName, targetIO);
+			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user], [node_io], [io_name_by_user], [node_io_p], [io_value]) VALUES (?, ?, ?, ?, ?, ?)",item.node_addr, item.name_by_user, item.node_io, ioName, node_io_p, io_value);
 		}
 
 		public async Task<IEnumerable<NameByUser>> Update_NameByUser_ioValue (string nodeio, string addr)
@@ -159,9 +159,14 @@ namespace HomeZig
 			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_io] = ? WHERE [node_addr] = ?",nodeio, addr);
 		}
 
-		public async Task<IEnumerable<NameByUser>> Update_NameByUser_by_target_io (string ioName, string addr, string target_io)
+		public async Task<IEnumerable<NameByUser>> Update_NameByUser_ioValue2 (string node_io, string io_value, string addr, string node_io_p)
 		{
-			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [io_name_by_user] = ? WHERE [node_addr] = ? AND [target_io] = ?",ioName, addr, target_io);
+			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [node_io] = ?, [io_value] = ? WHERE [node_addr] = ? AND [node_io_p] = ?",node_io, io_value, addr, node_io_p);
+		}
+
+		public async Task<IEnumerable<NameByUser>> Update_NameByUser_by_target_io (string ioName, string addr, string node_io_p)
+		{
+			return await database.QueryAsync<NameByUser>("UPDATE [NameByUser] SET [io_name_by_user] = ? WHERE [node_addr] = ? AND [node_io_p] = ?",ioName, addr, node_io_p);
 		}
 
 		public async Task<IEnumerable<NameByUser>> Update_NameByUser (string name, string addr)

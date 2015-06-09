@@ -22,7 +22,7 @@ namespace HomeZig
 			saveButton.Clicked += async (sender, e) => {
 				var todoItem = (NameByUser)BindingContext;	
 				todoItem.io_name_by_user = nameEntry.Text;
-				await App.Database.Update_NameByUser_by_target_io(nameEntry.Text, todoItem.node_addr, todoItem.target_io);
+				await App.Database.Update_NameByUser_by_target_io(nameEntry.Text, todoItem.node_addr, todoItem.node_io_p);
 				await Navigation.PopAsync();
 			};
 

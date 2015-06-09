@@ -17,14 +17,15 @@ namespace HomeZig
 		public string node_name_by_user { get; set; }
 		public string io_name_by_user { get; set; }
 		public string node_io { get; set; }
+		public string node_command { get; set; }
 
-		public string io_value 
-		{
+		public string io_value { get; set; }
+		/**{
 			get 
 			{ 
 				string state = NumberConversion.hex2binary (node_io);
 				string io_state = string.Empty;
-				if(target_io.Equals("1")){
+				if(node_io_p.Equals("0")){
 					io_state = state.Substring(4, 1);
 					if (io_state.Equals ("0")) 
 					{ 
@@ -34,7 +35,7 @@ namespace HomeZig
 					{
 						io_state = "false";
 					}
-				}else if(target_io.Equals("2")){
+				}else if(node_io_p.Equals("1")){
 					io_state = state.Substring(5, 1);
 					if (io_state.Equals ("0")) 
 					{ 
@@ -44,7 +45,7 @@ namespace HomeZig
 					{
 						io_state = "false";
 					}
-				}else if(target_io.Equals("3")){
+				}else if(node_io_p.Equals("3")){
 					io_state = state.Substring(6, 1);
 					if (io_state.Equals ("0")) 
 					{ 
@@ -54,7 +55,7 @@ namespace HomeZig
 					{
 						io_state = "false";
 					}
-				}else if(target_io.Equals("4")){
+				}else if(node_io_p.Equals("4")){
 					io_state = state.Substring(7, 1);
 					if (io_state.Equals ("0")) 
 					{ 
@@ -73,8 +74,8 @@ namespace HomeZig
 			{
 				ni = value;
 			}
-		}
-		public string target_io {get; set;}
+		}**/
+		public string node_io_p {get; set;}
 		//public string this_is_togle {get; set;}
 
 

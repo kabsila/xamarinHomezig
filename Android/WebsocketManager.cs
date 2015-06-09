@@ -44,6 +44,61 @@ namespace HomeZig.Android
 			//dataBasePath = Path.Combine(documentsPath, sqliteFilename);
 		}
 
+		string find_io_value(int position, string node_io)
+		{
+			string state = NumberConversion.hex2binary (node_io);
+			System.Diagnostics.Debug.WriteLine("testtttttt + " + state);
+			string io_state = string.Empty;
+			if(position.ToString().Equals("0")){
+				io_state = state.Substring(7, 1);
+				System.Diagnostics.Debug.WriteLine("io_state 7,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{ 
+					System.Diagnostics.Debug.WriteLine("ecccc1111");
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}else if(position.ToString().Equals("1")){
+				io_state = state.Substring(6, 1);
+				System.Diagnostics.Debug.WriteLine("io_state 6,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{
+					System.Diagnostics.Debug.WriteLine("ecccc2222");
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}else if(position.ToString().Equals("2")){
+				io_state = state.Substring(5, 1);
+				System.Diagnostics.Debug.WriteLine("io_state 5,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{ 
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}else if(position.ToString().Equals("3")){
+				io_state = state.Substring(4, 1);
+				System.Diagnostics.Debug.WriteLine("io_state 4,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{ 
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}
+
+			return io_state;
+		}
 
 		public async void websocket_Opened(object sender, EventArgs e)
 		{	
@@ -150,10 +205,12 @@ namespace HomeZig.Android
 							await App.Database.Update_DBAllNode_All_Item(data);
 						}
 					}
-
-
+					 
 					foreach(var data in await App.Database.GetItems())
 					{
+						#region io_value
+
+						#endregion
 						var ioNUmber = 0;
 						if(data.node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
 							ioNUmber = 2;
@@ -165,10 +222,19 @@ namespace HomeZig.Android
 
 						try
 						{
-							await App.Database.Update_NameByUser_ioValue(data.node_io, data.node_addr);
-							for(var i = 1;i <= ioNUmber;i++)
+							//{"cmd_db_allnode":[{"node_io": "02", "node_type": "0x3ff01", "node_addr": "[00:13:a2:00:40:ad:bd:30]!", "node_status": "0", "node_command": "io_change_detected"}]}
+							//for(var i = 0;i < ioNUmber;i++)
+							//{
+								//string io_state2 = find_io_value(i, data.node_io);
+								//await App.Database.Update_NameByUser_ioValue2(data.node_io, io_state2, data.node_addr, i.ToString());
+							//count++;
+							//}
+
+							for(var i = 0;i < ioNUmber;i++)
 							{
-								await App.Database.Save_NameByUser(data, i.ToString(), i.ToString());
+								string io_state = find_io_value(i, data.node_io);
+								await App.Database.Update_NameByUser_ioValue2(data.node_io, io_state, data.node_addr, i.ToString());
+								await App.Database.Save_NameByUser(data, i.ToString(), i.ToString(), io_state);
 							}
 						}
 						catch (Exception exx)
@@ -185,7 +251,7 @@ namespace HomeZig.Android
 					foreach(var i in await App.Database.Get_NameByUser())
 					{
 						//System.Diagnostics.Debug.WriteLine("=====> {0}, {1}, {2}", i.node_addr, i.io_name_by_user, i.target_io);
-						Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.target_io, i.io_value));
+						Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.node_io_p, i.io_value));
 						//Log.Info ("From Get_NameByUser" , i.node_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.io_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.target_io);

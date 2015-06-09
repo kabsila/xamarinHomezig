@@ -23,23 +23,30 @@ namespace HomeZig.Android
 				var b = (Switch)sender;
 				var NameByUserData = (NameByUser)b.BindingContext;
 				//Node_io_ItemPage.NBitem = (NameByUser)b.BindingContext;
-
+				string io_state = string.Empty;
 				var aStringBuilder = new StringBuilder (NumberConversion.hex2binary (Node_io_ItemPage.NBitem.node_io));
-				if (NameByUserData.target_io.Equals ("1")) {				
+				if (NameByUserData.node_io_p.Equals ("0")) {
+					io_state = Convert.ToByte (e.Value).ToString ();
 					aStringBuilder.Remove (7, 1);
-					aStringBuilder.Insert (7, Convert.ToByte (e.Value).ToString ());
-				} else if (NameByUserData.target_io.Equals ("2")) {
+					aStringBuilder.Insert (7, io_state);
+
+				} else if (NameByUserData.node_io_p.Equals ("1")) {
+					io_state = Convert.ToByte (e.Value).ToString ();
 					aStringBuilder.Remove (6, 1);
-					aStringBuilder.Insert (6, Convert.ToByte (e.Value).ToString ());
+					aStringBuilder.Insert (6, io_state);
+
 				}
 
-				Node_io_ItemPage.NBitem.node_io = NumberConversion.binary2hex (aStringBuilder.ToString ());
-				NameByUserData.node_io = Node_io_ItemPage.NBitem.node_io;
+				//Node_io_ItemPage.NBitem.node_io = NumberConversion.binary2hex (aStringBuilder.ToString ());
+				NameByUserData.node_io = NumberConversion.binary2hex (aStringBuilder.ToString ());//Node_io_ItemPage.NBitem.node_io;
+				NameByUserData.node_command = "command_io";
 				string jsonCommandIo = JsonConvert.SerializeObject (NameByUserData, Formatting.Indented);
 				System.Diagnostics.Debug.WriteLine ("in switcher_Toggled method json2", jsonCommandIo);
 
-				await App.Database.Update_NameByUser_ioValue(NameByUserData.node_io, NameByUserData.node_addr);
-				//WebsocketManager.websocketMaster.Send (jsonCommandIo);
+
+				//await App.Database.Update_NameByUser_ioValue(NameByUserData.node_io, NameByUserData.node_addr);
+				await App.Database.Update_NameByUser_ioValue2(NameByUserData.node_io, io_state, NameByUserData.node_addr, NameByUserData.node_io_p);
+				WebsocketManager.websocketMaster.Send (jsonCommandIo);
 			}
 
 			//Node_io_ItemPage.doSwitch = true;
