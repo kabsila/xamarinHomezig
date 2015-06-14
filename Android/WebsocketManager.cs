@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using Toasts.Forms.Plugin.Abstractions;
 using System.Threading.Tasks;
+using Connectivity.Plugin;
 
 namespace HomeZig.Android
 {
@@ -39,65 +40,10 @@ namespace HomeZig.Android
 					});
 				})).Start();
 			}
+
 			//var sqliteFilename = "HomezigSQLite.db3";
 			//string documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal); // Documents folder
 			//dataBasePath = Path.Combine(documentsPath, sqliteFilename);
-		}
-
-		string find_io_value(int position, string node_io)
-		{
-			string state = NumberConversion.hex2binary (node_io);
-			System.Diagnostics.Debug.WriteLine("testtttttt + " + state);
-			string io_state = string.Empty;
-			if(position.ToString().Equals("0")){
-				io_state = state.Substring(7, 1);
-				System.Diagnostics.Debug.WriteLine("io_state 7,1 " + io_state);
-				if (io_state.Equals ("0")) 
-				{ 
-					System.Diagnostics.Debug.WriteLine("ecccc1111");
-					io_state = "true";
-				} 
-				else 
-				{
-					io_state = "false";
-				}
-			}else if(position.ToString().Equals("1")){
-				io_state = state.Substring(6, 1);
-				System.Diagnostics.Debug.WriteLine("io_state 6,1 " + io_state);
-				if (io_state.Equals ("0")) 
-				{
-					System.Diagnostics.Debug.WriteLine("ecccc2222");
-					io_state = "true";
-				} 
-				else 
-				{
-					io_state = "false";
-				}
-			}else if(position.ToString().Equals("2")){
-				io_state = state.Substring(5, 1);
-				System.Diagnostics.Debug.WriteLine("io_state 5,1 " + io_state);
-				if (io_state.Equals ("0")) 
-				{ 
-					io_state = "true";
-				} 
-				else 
-				{
-					io_state = "false";
-				}
-			}else if(position.ToString().Equals("3")){
-				io_state = state.Substring(4, 1);
-				System.Diagnostics.Debug.WriteLine("io_state 4,1 " + io_state);
-				if (io_state.Equals ("0")) 
-				{ 
-					io_state = "true";
-				} 
-				else 
-				{
-					io_state = "false";
-				}
-			}
-
-			return io_state;
 		}
 
 		public async void websocket_Opened(object sender, EventArgs e)
@@ -147,7 +93,7 @@ namespace HomeZig.Android
 		}
 
 		public void websocket_Error(object sender, EventArgs e)
-		{
+		{			
 			websocketMaster.Close ();
 			Device.BeginInvokeOnMainThread (() => {
 				LoginPage.ConnectButton.IsEnabled = true;
@@ -234,7 +180,10 @@ namespace HomeZig.Android
 							{
 								string io_state = find_io_value(i, data.node_io);
 								await App.Database.Update_NameByUser_ioValue2(data.node_io, io_state, data.node_addr, i.ToString());
-								await App.Database.Save_NameByUser(data, i.ToString(), i.ToString(), io_state);
+								if(!data.node_deviceType.Equals(EnumtoString.EnumString(DeviceType.UnknowDeviceType))){
+									await App.Database.Save_NameByUser(data, i.ToString(), i.ToString(), io_state);
+								}
+
 							}
 						}
 						catch (Exception exx)
@@ -329,13 +278,19 @@ namespace HomeZig.Android
 						})).Start();
 						break;
 
-					case "listview_request":
-						
+					case "listview_request":						
+						IEnumerable<Db_allnode> dataSource = new List<Db_allnode>();
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
 							Log.Info ("listview_request" ,"GeneralPurposeDetector");
-							var dataSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
+							dataSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
+
+						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
+							Log.Info ("listview_request" ,"InWallSwitch");
+							dataSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.InWallSwitch));
+						}
+
 							foreach (var data in dataSource) 
-							{								
+							{						
 
 								if (data.node_status.Equals ("1")) { // 1 is OFFLINE , 0 is ONLINE
 									var indexForRemove = data.name_by_user.IndexOf ("(OffLine)");
@@ -356,7 +311,6 @@ namespace HomeZig.Android
 								}
 							}
 
-
 							//var ItemsSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
 							new System.Threading.Thread (new System.Threading.ThreadStart (() => {								
 								Device.BeginInvokeOnMainThread (() => {									
@@ -365,7 +319,7 @@ namespace HomeZig.Android
 									DeviceAddressListPage.addressListView.IsRefreshing = false;
 								});
 							})).Start();
-						}
+						//}
 						break;	
 					
 						/**case "login_complete":
@@ -412,7 +366,7 @@ namespace HomeZig.Android
 						#endregion
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ab]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"}, {\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
@@ -727,6 +681,62 @@ namespace HomeZig.Android
 			}
 
 
+		}
+
+		string find_io_value(int position, string node_io)
+		{
+			string state = NumberConversion.hex2binary (node_io);
+			//System.Diagnostics.Debug.WriteLine("testtttttt + " + state);
+			string io_state = string.Empty;
+			if(position.ToString().Equals("0")){
+				io_state = state.Substring(7, 1);
+				//System.Diagnostics.Debug.WriteLine("io_state 7,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{ 
+					//System.Diagnostics.Debug.WriteLine("ecccc1111");
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}else if(position.ToString().Equals("1")){
+				io_state = state.Substring(6, 1);
+				//System.Diagnostics.Debug.WriteLine("io_state 6,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{
+					//System.Diagnostics.Debug.WriteLine("ecccc2222");
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}else if(position.ToString().Equals("2")){
+				io_state = state.Substring(5, 1);
+				//System.Diagnostics.Debug.WriteLine("io_state 5,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{ 
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}else if(position.ToString().Equals("3")){
+				io_state = state.Substring(4, 1);
+				//System.Diagnostics.Debug.WriteLine("io_state 4,1 " + io_state);
+				if (io_state.Equals ("0")) 
+				{ 
+					io_state = "true";
+				} 
+				else 
+				{
+					io_state = "false";
+				}
+			}
+
+			return io_state;
 		}
 
 	}

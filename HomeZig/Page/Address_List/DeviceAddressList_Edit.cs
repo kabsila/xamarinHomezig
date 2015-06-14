@@ -24,6 +24,7 @@ namespace HomeZig
 
 				todoItem.name_by_user = nameEntry.Text;
 				await App.Database.Update_Node_NameByUser(todoItem.name_by_user, todoItem.node_addr);
+				await App.Database.Update_NameByUser(todoItem.name_by_user, todoItem.node_addr);
 				await Navigation.PopAsync();
 			};
 

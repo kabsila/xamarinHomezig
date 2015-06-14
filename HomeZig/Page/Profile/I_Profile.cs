@@ -5,7 +5,8 @@ namespace HomeZig
 {
 	public interface I_Profile
 	{
-		void addProfile_Click(object sender, EventArgs e);
+		void switcher_Toggled(object sender, ToggledEventArgs e);
+		void profile_Toggled(object sender, ToggledEventArgs e);
 	}
 }
 

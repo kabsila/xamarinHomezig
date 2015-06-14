@@ -11,11 +11,13 @@ namespace HomeZig
 			{ 
 				//Text = "Label 1", 
 				FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)), 
-				//FontAttributes = FontAttributes.Bold 
-				VerticalOptions = LayoutOptions.CenterAndExpand,
-				//HorizontalOptions = LayoutOptions.CenterAndExpand
+				HorizontalOptions = LayoutOptions.StartAndExpand,
+				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 			nameOfProfile.SetBinding(Label.TextProperty, "profileName");
+
+			Switch sw = new Switch ();
+			sw.Toggled += DependencyService.Get<I_Profile> ().profile_Toggled;
 
 			var EditAction = new MenuItem { Text = "Edit" }; // red background
 			EditAction.SetBinding (MenuItem.CommandParameterProperty, new Binding ("."));
@@ -37,9 +39,12 @@ namespace HomeZig
 			View = new StackLayout {
 				//Orientation = StackOrientation.Vertical,
 				//HorizontalOptions = LayoutOptions.CenterAndExpand,
-				Padding = new Thickness (15, 0, 0, 0),
+				Padding = new Thickness(30, 0, 30, 0),
+				Orientation = StackOrientation.Horizontal,
+				HorizontalOptions = LayoutOptions.StartAndExpand,
 				Children = {
-					nameOfProfile
+					nameOfProfile,
+					sw
 				}
 			};
 		}

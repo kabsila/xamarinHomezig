@@ -16,6 +16,8 @@ using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms;
 using System.Threading.Tasks;
 using Toasts.Forms.Plugin.Droid;
+using Connectivity.Plugin;
+using Toasts.Forms.Plugin.Abstractions;
 
 namespace HomeZig.Android
 {
@@ -33,19 +35,34 @@ namespace HomeZig.Android
 			Xamarin.Forms.Forms.Init (this, bundle);
 			ToastNotificatorImplementation.Init();
 
-
-
 			dvi = new DeviceItemDatabase ();
 			App.Database.Delete_RemoteData_Item ();
 			App.Database.Delete_All_Login_Username_Show_For_Del ();
 
 			ipm = this;
 			ap = new App();
-			LoadApplication (ap);
-			mt = new MenuTabPage (ipm);
-				
+			//LoadApplication (ap);
+			mt = new MenuTabPage (ipm);				
 
+			CrossConnectivity.Current.ConnectivityChanged += (sender, args) =>
+			{				
+				if(!args.IsConnected){
+					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+						Device.BeginInvokeOnMainThread (async () => {
+							var notificator = DependencyService.Get<IToastNotificator>();
+							await notificator.Notify(ToastNotificationType.Warning, 
+								"No Internet Connection", "Check your internet connection", TimeSpan.FromSeconds(10));							
+						});
 
+						LoginPage.activityIndicator.IsRunning = false;
+						LoginPage.ConnectButton.IsEnabled = true;
+
+					})).Start();
+					LoadApplication (ap);
+				}else{
+					LoadApplication (ap);
+				}
+			};
 
 
 			//ap = new App();

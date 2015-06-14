@@ -6,7 +6,7 @@ namespace HomeZig
 {
 	public class NameByUser
 	{
-		string ni;
+		//string ni;
 		public NameByUser ()
 		{
 		}
@@ -18,7 +18,7 @@ namespace HomeZig
 		public string io_name_by_user { get; set; }
 		public string node_io { get; set; }
 		public string node_command { get; set; }
-
+		public string node_deviceType { get; set; }
 		public string io_value { get; set; }
 		/**{
 			get 

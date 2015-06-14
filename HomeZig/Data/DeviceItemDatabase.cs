@@ -32,16 +32,71 @@ namespace HomeZig
 			database.CreateTableAsync<NameByUser>();
 			database.CreateTableAsync<RemoteData>();
 			database.CreateTableAsync<ProfileData>();
+			database.CreateTableAsync<Profile_IO_Data>();
 
 			//prevent [node_addr] AND [node_io_p] duplicate
 			database.QueryAsync<NameByUser>("CREATE UNIQUE INDEX ix_uq ON [NameByUser] ([node_addr], [node_io_p])");
+			database.QueryAsync<Profile_IO_Data>("CREATE UNIQUE INDEX ix_uq2 ON [Profile_IO_Data] ([profileName], [node_addr], [node_io_p])");
 		
 		}
+		#region Profile_IO_Data
+		public async Task<IEnumerable<Profile_IO_Data>> Insert_Profile_IO_Data (string profileName, string node_addr, string node_io_p, string io_value, string alert_mode, string io_name_by_user, string node_deviceType) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("INSERT INTO [Profile_IO_Data] ([profileName], [node_addr], [node_io_p], [io_value], [alert_mode], [io_name_by_user], [node_deviceType]) VALUES (?, ?, ?, ?, ?, ?, ?)",profileName, node_addr, node_io_p, io_value, alert_mode, io_name_by_user, node_deviceType);
+		}
+
+		public async Task<IEnumerable<Profile_IO_Data>> Update_Profile_IO_Data (string profileName, string node_addr, string node_io_p, string io_value, string alert_mode) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("UPDATE [Profile_IO_Data] SET [io_value] = ? , [alert_mode] = ? WHERE [node_addr] = ? AND [node_io_p] = ? AND [profileName] = ?",io_value, alert_mode, node_addr, node_io_p, profileName);
+		}
+
+		public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_Addr (string node_addr, string profileName) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [node_addr] = ? AND [profileName] = ?",node_addr, profileName);
+		}
+
+		public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data () 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data]");
+		}
+
+		public async Task<IEnumerable<Profile_IO_Data>> Update_Profile_IO_Data_SecurityMode (string profileName, string node_addr, string alert_mode) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("UPDATE [Profile_IO_Data] SET [alert_mode] = ? WHERE [node_addr] = ? AND [profileName] = ?",alert_mode, node_addr, profileName);
+		}
+
+		public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_PrpfileName (string profileName) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [profileName] = ?", profileName);
+		}
+
+		/**public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_Addr_And_Type (string node_addr, string profileName, string deviceType) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [node_addr] = ? AND [profileName] = ? AND [node_deviceType] = ?",node_addr, profileName, deviceType);
+		}**/
+
+		#endregion 
+
 		#region ProfileData
-		public async Task<IEnumerable<ProfileData>> Insert_ProfileData_Item (string profileName)
+		public async Task<int> Insert_ProfileData_Item (List<ProfileData> profileData)
+		{
+			return await database.InsertAllAsync (profileData);
+		}
+
+		public async Task<IEnumerable<ProfileData>> Get_ProfileName_GroupBy_Addr () 
+		{
+			return await database.QueryAsync<ProfileData>("SELECT DISTINCT [profileName] FROM [ProfileData]");
+		}
+
+		public async Task<IEnumerable<ProfileData>> Get_Node_For_Profile (string profileName) 
+		{
+			return await database.QueryAsync<ProfileData>("SELECT * FROM [ProfileData] WHERE [profileName] = ?",profileName);
+		}
+
+		/**public async Task<IEnumerable<ProfileData>> Insert_ProfileData_Item (string profileName)
 		{
 			return await database.QueryAsync<ProfileData>("INSERT INTO [ProfileData] ([profileName]) VALUES (?)",profileName);
-		}
+		}**/
 
 		public async Task<IEnumerable<ProfileData>> Edit_ProfileData_Item (string profileName, int id)
 		{
@@ -144,14 +199,19 @@ namespace HomeZig
 			return await database.QueryAsync<NameByUser>("SELECT * FROM [NameByUser] WHERE node_addr = ?", addr);
 		}
 
+		public async Task<IEnumerable<NameByUser>> Get_NameByUser_GroupBy_Addr () 
+		{
+			return await database.QueryAsync<NameByUser>("SELECT DISTINCT [node_addr], [node_name_by_user], [node_deviceType] FROM [NameByUser]");
+		}
+
 		public async Task<IEnumerable<NameByUser>> Get_NameByUser () 
 		{
-			return await database.QueryAsync<NameByUser>("SELECT * from [NameByUser]");
+			return await database.QueryAsync<NameByUser>("SELECT * FROM [NameByUser]");
 		}
 
 		public async Task<IEnumerable<NameByUser>> Save_NameByUser (Db_allnode item, string ioName, string node_io_p, string io_value)
 		{
-			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_name_by_user], [node_io], [io_name_by_user], [node_io_p], [io_value]) VALUES (?, ?, ?, ?, ?, ?)",item.node_addr, item.name_by_user, item.node_io, ioName, node_io_p, io_value);
+			return await database.QueryAsync<NameByUser>("INSERT INTO [NameByUser] ([node_addr], [node_deviceType], [node_name_by_user], [node_io], [io_name_by_user], [node_io_p], [io_value]) VALUES (?, ?, ?, ?, ?, ?, ?)",item.node_addr, item.node_deviceType, item.node_addr, item.node_io, ioName, node_io_p, io_value);
 		}
 
 		public async Task<IEnumerable<NameByUser>> Update_NameByUser_ioValue (string nodeio, string addr)
@@ -266,7 +326,7 @@ namespace HomeZig
 		}
 
 		public async Task<IEnumerable<Db_allnode>> Update_Node_NameByUser(string name, string addr)
-		{
+		{			
 			return await database.QueryAsync<Db_allnode>("UPDATE Db_allnode SET name_by_user = ? WHERE node_addr = ?",name, addr);
 		}
 

@@ -6,9 +6,8 @@ namespace HomeZig
 	public class Connectivity
 	{
 		public Connectivity ()
-		{
+		{			
 			
-
 		}
 	}
 }
