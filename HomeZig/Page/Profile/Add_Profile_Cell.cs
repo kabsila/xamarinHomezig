@@ -23,7 +23,7 @@ namespace HomeZig
 
 			var layout = new StackLayout 
 			{
-				Padding = new Thickness(30, 0, 30, 0),
+				//Padding = new Thickness(30, 0, 30, 0),
 				Orientation = StackOrientation.Horizontal,
 				HorizontalOptions = LayoutOptions.StartAndExpand,
 				//VerticalOptions = LayoutOptions.CenterAndExpand,

@@ -3,9 +3,9 @@ using Xamarin.Forms;
 
 namespace HomeZig
 {
-	public class Edit_Profile_Name_Page : ContentPage
+	public class Edit_Profile_Page : ContentPage
 	{
-		public Edit_Profile_Name_Page ()
+		public Edit_Profile_Page ()
 		{
 			var nameLabel = new Label { Text = "Profile Name" };
 			var nameEntry = new Entry ();
@@ -16,9 +16,9 @@ namespace HomeZig
 
 			var saveButton = new Button { Text = "Save" };
 			saveButton.Clicked += async (sender, e) => {
-				var todoItem = (ProfileData)BindingContext;
-				//todoItem.profileName = nameEntry.Text;
-				await App.Database.Edit_ProfileData_Item(nameEntry.Text, todoItem.ID);
+				//var todoItem = (ProfileData)BindingContext;
+				await App.Database.Edit_ProfileData_Item(nameEntry.Text, Profile_Page.profileName);
+				Profile_Page.profileName = string.Empty;
 				await Navigation.PopAsync();
 			};
 

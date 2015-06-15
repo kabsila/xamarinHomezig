@@ -15,15 +15,21 @@ namespace HomeZig
 			ProfileGpdIoListView = new ListView ();
 			ProfileGpdIoListView.ItemTemplate = new DataTemplate(typeof (Profile_GPD_IO_Setting_Cell));
 
+
 			NameOfNode = new Label
 			{				
 				Text = "Name of node", // Change in OnAppearing
 				FontAttributes = FontAttributes.Bold,
 				FontSize = Device.GetNamedSize (NamedSize.Large, typeof(Label)),
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				VerticalOptions = LayoutOptions.CenterAndExpand
+				VerticalOptions = LayoutOptions.CenterAndExpand,
 			};
 
+			ContentView cv = new ContentView
+			{
+				Content = NameOfNode,
+				Padding = new Thickness(0, 10, 0, 0)
+			};
 			SwitchCell alert_mode = new SwitchCell
 			{
 				Text = "Security Mode",
@@ -45,10 +51,10 @@ namespace HomeZig
 
 			TableView alert_mode_tableView = new TableView
 			{				
-				///Intent = TableIntent.Form,
+				//Intent = TableIntent.Form,
 				Root = new TableRoot
-				{			
-					new TableSection
+				{					
+					new TableSection(" ")
 					{						
 						alert_mode,
 					}
@@ -63,7 +69,8 @@ namespace HomeZig
 				Children = 
 				{
 					IOLabel,
-					NameOfNode,
+					//NameOfNode,
+					cv,
 					alert_mode_tableView,
 					//test,
 					//ProfileGpdIoListView,
@@ -79,13 +86,13 @@ namespace HomeZig
 			var item = (ProfileData)BindingContext;
 			NameOfNode.Text = item.NameByUserNodeOfProfile;
 
-			var alert_mode = "0";
+			/**var alert_mode = "0";
 			nodeAddr = item.nodeAddrOfProfile;
 			var tempData = await App.Database.Get_NameByUser_by_addr(item.nodeAddrOfProfile);
 			foreach (var data in tempData)
 			{
 				await App.Database.Insert_Profile_IO_Data (Profile_Page.profileName, data.node_addr, data.node_io_p, data.io_value, alert_mode, data.io_name_by_user, data.node_deviceType);
-			}
+			}**/
 
 			ProfileGpdIoListView.ItemsSource = await App.Database.Get_Profile_IO_Data_By_Addr(item.nodeAddrOfProfile, Profile_Page.profileName);
 		}

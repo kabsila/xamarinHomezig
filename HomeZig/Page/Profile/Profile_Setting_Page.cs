@@ -45,6 +45,19 @@ namespace HomeZig
 			Profile_Page.profileName = item.profileName;
 			listOfNodeProfile.ItemsSource = await App.Database.Get_Node_For_Profile(item.profileName);
 
+			var addr = await App.Database.Get_Addr_Of_ProfileName (item.profileName);
+			var alert_mode = "0";
+			foreach (var dataAddr in addr)
+			{
+				var tempData = await App.Database.Get_NameByUser_by_addr(dataAddr.nodeAddrOfProfile);
+				foreach (var data in tempData)
+				{
+					await App.Database.Update_IO_Name (data.io_name_by_user, data.node_io_p, data.node_addr);
+					await App.Database.Insert_Profile_IO_Data (Profile_Page.profileName, data.node_addr, data.node_io_p, data.io_value, alert_mode, data.io_name_by_user, data.node_deviceType);
+				}
+			}
+
+
 			/**System.Diagnostics.Debug.WriteLine ("nodeAddrOfProfile =>" + item.nodeAddrOfProfile);
 			var alert_mode = "0";
 			var tempData = await App.Database.Get_NameByUser_by_addr(item.nodeAddrOfProfile);

@@ -25,6 +25,12 @@ namespace HomeZig
 				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 
+			ContentView cv = new ContentView
+			{
+				Content = NameOfNode,
+				Padding = new Thickness(0, 10, 0, 10)
+			};
+
 			SwitchCell alert_mode = new SwitchCell
 			{
 				Text = "Security Mode",
@@ -47,7 +53,8 @@ namespace HomeZig
 				Children = 
 				{
 					IOLabel,
-					NameOfNode,
+					//NameOfNode,
+					cv,
 					//test,
 					ProfileInwallIoListView,
 
@@ -62,12 +69,12 @@ namespace HomeZig
 			var item = (ProfileData)BindingContext;
 			NameOfNode.Text = item.NameByUserNodeOfProfile;
 
-			var alert_mode = "0";
+			/**var alert_mode = "0";
 			var tempData = await App.Database.Get_NameByUser_by_addr(item.nodeAddrOfProfile);
 			foreach (var data in tempData)
 			{
 				await App.Database.Insert_Profile_IO_Data (Profile_Page.profileName, data.node_addr, data.node_io_p, data.io_value, alert_mode, data.io_name_by_user, data.node_deviceType);
-			}
+			}**/
 
 			ProfileInwallIoListView.ItemsSource = await App.Database.Get_Profile_IO_Data_By_Addr(item.nodeAddrOfProfile, Profile_Page.profileName);
 		}

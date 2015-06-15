@@ -4,11 +4,12 @@ using HomeZig.Android;
 using WebSocket4Net;
 using Newtonsoft.Json;
 using System.Linq;
+using System.ComponentModel;
 
 [assembly: Dependency (typeof (Profile_Page_Action))]
 namespace HomeZig.Android
 {
-	public class Profile_Page_Action : I_Profile
+	public class Profile_Page_Action : ContentPage, I_Profile
 	{
 		public Profile_Page_Action ()
 		{
@@ -33,25 +34,46 @@ namespace HomeZig.Android
 		}
 
 		public async void profile_Toggled(object sender, ToggledEventArgs e)
-		{
-			var b = (Switch)sender;
-			var ProfileData = (ProfileData)b.BindingContext;
-			if (e.Value) {
-				var data = await App.Database.Get_Profile_IO_Data_By_PrpfileName (ProfileData.profileName);
-				foreach(var item in data)
-				{
-					item.node_command = "Profile_Open";
+		{			
+
+			if(Profile_Page.preventLoop){
+				var b = (Switch)sender;
+				var ProfileData = (ProfileData)b.BindingContext;
+				if (e.Value) {
+					
+					var data = await App.Database.Get_Profile_IO_Data_By_PrpfileName (ProfileData.profileName);
+					if (!data.Any ()) { //check list is not null
+						await DisplayAlert ("Validation Error", "Profile not setting", "OK");
+					} else {
+						foreach (var item in data) {
+							item.node_command = "Profile_Open";
+						}
+						string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
+						await App.Database.Set_profile_Status (ProfileData.profileName, e.Value.ToString (), (!e.Value).ToString ());
+
+
+						new System.Threading.Thread (new System.Threading.ThreadStart (() => {							
+							Device.BeginInvokeOnMainThread (async () => {
+								Profile_Page.preventLoop = false;
+								Profile_Page.ProfileListview.ItemsSource = await App.Database.Get_ProfileName_GroupBy_Addr ();
+							});
+						})).Start ();
+						
+
+						WebsocketManager.websocketMaster.Send (jsonProfile);
+						System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
+					}
 				}
-				string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
-				WebsocketManager.websocketMaster.Send (jsonProfile);
-				System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
-			} else {				
-				var data = new ProfileData();
-				data.node_command = "Profile_Close";
-				data.profileName = ProfileData.profileName;
-				string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
-				WebsocketManager.websocketMaster.Send (jsonProfile);
-				System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
+				else {				
+					/**var data = new ProfileData();
+					data.node_command = "Profile_Close";
+					data.profileName = ProfileData.profileName;
+					string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
+					WebsocketManager.websocketMaster.Send (jsonProfile);
+					System.Diagnostics.Debug.WriteLine ("jsonProfile_Close", jsonProfile);**/
+
+					//server must close another profile
+				}
 			}
 		}
 

@@ -39,6 +39,7 @@ namespace HomeZig
 					foreach(var item in ProfileDataList)
 					{
 						item.profileName = nameEntry.Text;
+						item.profile_status = "False";
 					}
 
 					//await App.Database.Insert_ProfileData_Item(nameEntry.Text);
@@ -57,7 +58,7 @@ namespace HomeZig
 			};
 
 			Content = new StackLayout {
-				Padding = new Thickness(40, 10, 40, 10),
+				Padding = new Thickness(30, 10, 30, 10),
 				VerticalOptions = LayoutOptions.StartAndExpand,
 				Children = {
 					nameLabel, nameEntry, deviceListview,

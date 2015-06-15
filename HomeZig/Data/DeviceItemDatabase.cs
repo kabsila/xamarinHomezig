@@ -40,9 +40,19 @@ namespace HomeZig
 		
 		}
 		#region Profile_IO_Data
+		public async Task<IEnumerable<Profile_IO_Data>> Delete_IO_Profile_By_ProfileName (string profileName) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("DELETE FROM [Profile_IO_Data] WHERE [profileName] = ?", profileName);
+		}
+
 		public async Task<IEnumerable<Profile_IO_Data>> Insert_Profile_IO_Data (string profileName, string node_addr, string node_io_p, string io_value, string alert_mode, string io_name_by_user, string node_deviceType) 
 		{
 			return await database.QueryAsync<Profile_IO_Data>("INSERT INTO [Profile_IO_Data] ([profileName], [node_addr], [node_io_p], [io_value], [alert_mode], [io_name_by_user], [node_deviceType]) VALUES (?, ?, ?, ?, ?, ?, ?)",profileName, node_addr, node_io_p, io_value, alert_mode, io_name_by_user, node_deviceType);
+		}
+
+		public async Task<IEnumerable<Profile_IO_Data>> Update_IO_Name (string io_name_by_user, string node_io_p, string node_addr) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("UPDATE [Profile_IO_Data] SET [io_name_by_user] = ? WHERE [node_addr] = ? AND [node_io_p] = ?", io_name_by_user, node_addr, node_io_p);
 		}
 
 		public async Task<IEnumerable<Profile_IO_Data>> Update_Profile_IO_Data (string profileName, string node_addr, string node_io_p, string io_value, string alert_mode) 
@@ -70,6 +80,8 @@ namespace HomeZig
 			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [profileName] = ?", profileName);
 		}
 
+
+
 		/**public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_Addr_And_Type (string node_addr, string profileName, string deviceType) 
 		{
 			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [node_addr] = ? AND [profileName] = ? AND [node_deviceType] = ?",node_addr, profileName, deviceType);
@@ -83,9 +95,14 @@ namespace HomeZig
 			return await database.InsertAllAsync (profileData);
 		}
 
+		public async Task<IEnumerable<ProfileData>> Get_Addr_Of_ProfileName (string profileName) 
+		{
+			return await database.QueryAsync<ProfileData>("SELECT DISTINCT [nodeAddrOfProfile] FROM [ProfileData] WHERE [profileName] = ?", profileName);
+		}
+
 		public async Task<IEnumerable<ProfileData>> Get_ProfileName_GroupBy_Addr () 
 		{
-			return await database.QueryAsync<ProfileData>("SELECT DISTINCT [profileName] FROM [ProfileData]");
+			return await database.QueryAsync<ProfileData>("SELECT DISTINCT [profileName], [profile_status] FROM [ProfileData]");
 		}
 
 		public async Task<IEnumerable<ProfileData>> Get_Node_For_Profile (string profileName) 
@@ -93,19 +110,36 @@ namespace HomeZig
 			return await database.QueryAsync<ProfileData>("SELECT * FROM [ProfileData] WHERE [profileName] = ?",profileName);
 		}
 
+		public async Task<IEnumerable<ProfileData>> Delete_Profile_By_ProfileName (string profileName) 
+		{
+			return await database.QueryAsync<ProfileData>("DELETE FROM [ProfileData] WHERE [profileName] = ?", profileName);
+		}
+
+		public async Task<IEnumerable<ProfileData>> Update_NameByUser_Profile () 
+		{
+			//return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [ProfileData].[profileName] = [NameByUser].[node_name_by_user] FROM [ProfileData], [NameByUser] WHERE [ProfileData].[nodeAddrOfProfile] = [NameByUser].[node_addr]");
+			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [NameByUserNodeOfProfile] = (SELECT node_name_by_user FROM [NameByUser] WHERE [node_addr] = [nodeAddrOfProfile])");
+		}
+
 		/**public async Task<IEnumerable<ProfileData>> Insert_ProfileData_Item (string profileName)
 		{
 			return await database.QueryAsync<ProfileData>("INSERT INTO [ProfileData] ([profileName]) VALUES (?)",profileName);
 		}**/
 
-		public async Task<IEnumerable<ProfileData>> Edit_ProfileData_Item (string profileName, int id)
+		public async Task<IEnumerable<ProfileData>> Edit_ProfileData_Item (string newProfileName, string oldProfileName)
 		{
-			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [profileName] = ? WHERE [ID] = ?",profileName, id);
+			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [profileName] = ? WHERE [profileName] = ?",newProfileName, oldProfileName);
 		}
 
 		public async Task<IEnumerable<ProfileData>> Get_profileName ()
 		{
 			return await database.QueryAsync<ProfileData>("SELECT * FROM [ProfileData]");
+		}
+
+		public async Task<IEnumerable<ProfileData>> Set_profile_Status (string profileName, string onStatus, string offStatus)
+		{
+			await database.QueryAsync<ProfileData> ("UPDATE [ProfileData] SET [profile_status] = ? WHERE [profileName] != ?",offStatus, profileName);
+			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [profile_status] = ? WHERE [profileName] = ?",onStatus, profileName);
 		}
 		#endregion 
 		#region RemoteData

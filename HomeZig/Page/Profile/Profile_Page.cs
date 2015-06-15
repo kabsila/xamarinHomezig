@@ -1,12 +1,14 @@
 ﻿using System;
 using Xamarin.Forms;
-
+using System.Threading.Tasks;
 namespace HomeZig
 {
 	public class Profile_Page : ContentPage
 	{
-		ListView ProfileListview;
+		public static ListView ProfileListview;
 		public static string profileName = string.Empty;
+		public static bool preventLoop = true;
+		public static bool bindingChange = false;
 		public Profile_Page ()
 		{
 			ProfileListview = new ListView ();
@@ -25,9 +27,19 @@ namespace HomeZig
 			};
 
 			MessagingCenter.Subscribe<ContentPage, ProfileData> (new ContentPage(), "Profile_Name_EditActionClicked", (sender, arg) => {
-				var profileList = new Edit_Profile_Name_Page ();
+				var profileList = new Edit_Profile_Page ();
 				profileList.BindingContext = arg;
+				profileName =  arg.profileName;
 				Navigation.PushAsync (profileList);
+			});
+
+			MessagingCenter.Subscribe<ContentPage, ProfileData> (new ContentPage(), "Profile_Name_DeleteActionClicked", (sender, arg) => {				
+				Task.Run(() => 
+				{
+					Device.BeginInvokeOnMainThread (async () => {
+						ProfileListview.ItemsSource = await App.Database.Get_ProfileName_GroupBy_Addr();
+					});		
+				});
 			});
 
 			ProfileListview.ItemTapped += (sender, e) => 
@@ -58,6 +70,8 @@ namespace HomeZig
 			//NameOfNode.Text = item.name_by_user;
 			//SetSwitchByNodeIo (item.node_io);
 			ProfileListview.ItemsSource = await App.Database.Get_ProfileName_GroupBy_Addr();
+
+			await App.Database.Update_NameByUser_Profile ();
 		}
 	}
 }

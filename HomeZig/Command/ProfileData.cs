@@ -17,6 +17,7 @@ namespace HomeZig
 		public string nodeAddrOfProfile { get; set; }
 		public string node_deviceType { get; set; }
 		public string node_command { get; set; }
+		public string profile_status { get; set; }
 	}
 }
 
