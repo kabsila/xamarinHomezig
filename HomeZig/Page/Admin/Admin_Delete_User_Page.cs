@@ -19,12 +19,12 @@ namespace HomeZig
 
 			usernameForDelete.ItemTapped += DependencyService.Get<I_Admin_Delete_User> ().userForDelete_Tapped;
 
-			Button queryButton = new Button
+			/**Button queryButton = new Button
 			{
 				Text = "List of Username",
 				Font = Font.SystemFontOfSize(NamedSize.Large),
 				BorderWidth = 1	
-			};
+			};**/
 			//queryButton.Clicked += DependencyService.Get<I_Admin_Delete_User> ().queryUser;
 
 			Label deleteUserHeader = new Label 

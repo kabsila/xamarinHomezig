@@ -31,10 +31,10 @@ namespace HomeZig
 				Padding = new Thickness(0, 10, 0, 10)
 			};
 
-			SwitchCell alert_mode = new SwitchCell
+			/**SwitchCell alert_mode = new SwitchCell
 			{
 				Text = "Security Mode",
-			};
+			};**/
 
 			Button test = new Button {Text = "TEST"};
 			test.Clicked += async (sender, e) => 

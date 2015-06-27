@@ -22,27 +22,27 @@ using Toasts.Forms.Plugin.Abstractions;
 namespace HomeZig.Android
 {
 	[Activity (Label = "HomeZig.Android.Android", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : FormsApplicationActivity, IPageManager
+	public class MainActivity : FormsApplicationActivity
 	{
-		static App ap = null;
-		static MenuTabPage mt = null;
-		public static IPageManager ipm;
-		static DeviceItemDatabase dvi = null;
+		//static App ap = null;
+		//static MenuTabPage mt = null;
+		//public static IPageManager ipm;
+		//static DeviceItemDatabase dvi = null;
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 			Log.Debug ("OnCreate", "OnCreateeeeeeeeee");
-			Xamarin.Forms.Forms.Init (this, bundle);
+			Forms.Init (this, bundle);
 			ToastNotificatorImplementation.Init();
 
-			dvi = new DeviceItemDatabase ();
+			new DeviceItemDatabase ();
 			App.Database.Delete_RemoteData_Item ();
 			App.Database.Delete_All_Login_Username_Show_For_Del ();
 
-			ipm = this;
-			ap = new App();
+			//ipm = this;
+			//ap = new App();
 			//LoadApplication (ap);
-			mt = new MenuTabPage (ipm);				
+			//mt = new MenuTabPage (ipm);				
 
 			CrossConnectivity.Current.ConnectivityChanged += (sender, args) =>
 			{				
@@ -58,11 +58,13 @@ namespace HomeZig.Android
 						LoginPage.ConnectButton.IsEnabled = true;
 
 					})).Start();
-					LoadApplication (ap);
+					//LoadApplication (ap);
 				}else{
-					LoadApplication (ap);
+					//LoadApplication (ap);
 				}
 			};
+
+			LoadApplication (new App());
 
 
 			//ap = new App();
@@ -86,7 +88,8 @@ namespace HomeZig.Android
 			try
 			{			
 				if( WebsocketManager.websocketMaster.State == WebSocketState.Open) {					
-					LoadApplication (mt);
+					//LoadApplication (mt);
+					App.current.showMenuTabPage();
 				}else{
 
 				}
@@ -133,43 +136,7 @@ namespace HomeZig.Android
 
 		}
 
-		public void showLoginPage ()
-		{		
-			LoadApplication (ap);
 
-			//Login_Page_Action.nws = null;
-			Log.Info ("showLoginPage" ,"GGGGGGGGGGGGGGGGG");
-		}
-
-		public void showLoginPageDis ()
-		{
-			//SetPage (App.GetLoginPage ());
-			WebsocketManager.websocketMaster.Close ();
-			//WebsocketManager.websocketMaster.Dispose ();
-			//LoginPage.ConnectButton.IsEnabled = true;
-			//ap.Dispose();
-			//ap = new App();
-			LoadApplication (ap);
-
-			
-			//ap = new App ();
-			//LoadApplication (ap);
-			 
-		}
-		public void showMenuTabPage (IPageManager ipm)
-		{
-			//App.Navigation.PushAsync(new MenuTabPage(ipm));
-			//mt = new MenuTabPage(ipm);
-			LoadApplication (mt);
-			Login_Page_Action.nws = null;
-			Log.Info ("prevent_other_change_page" ,"GGGGGGGGGGGGGGGGG");
-			//LoadApplication (new MenuTabPage(ipm));
-		}
-
-		public void showHomePage()
-		{
-			//SetPage (App.GetMainPage ()); 
-		}
 
 	}
 

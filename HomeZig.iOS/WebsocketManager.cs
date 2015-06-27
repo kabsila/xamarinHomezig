@@ -1,6 +1,5 @@
 using System;
 using WebSocket4Net;
-using Android.Util;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Xamarin.Forms;
@@ -10,20 +9,22 @@ using System.Text;
 using Toasts.Forms.Plugin.Abstractions;
 using System.Threading.Tasks;
 using Connectivity.Plugin;
+using MessageBar;
 
-namespace HomeZig.Android
+
+namespace HomeZig.iOS
 {
 	public class WebsocketManager : ContentPage
 	{
 		public static WebSocket websocketMaster;
-		//public static IPageManager ipm1;
+		public static IPageManager ipm1;
 		IToastNotificator global_notificator = DependencyService.Get<IToastNotificator>();
 		//string dataBasePath;
 		public WebsocketManager()
 		{
 			
-			//ipm1 = MainActivity.ipm;
-			Log.Info ("WebsocketManager","Connecting");
+			//ipm1 = App.AppIpm;
+			Console.WriteLine ("WebsocketManager Connecting");
 			try{
 				websocketMaster = new WebSocket(LoginPage.websocketUrl.Text);			
 				websocketMaster.Opened += new EventHandler(websocket_Opened);
@@ -32,13 +33,13 @@ namespace HomeZig.Android
 				websocketMaster.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived);
 			}catch{			
 
-				new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+				/**new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 					Device.BeginInvokeOnMainThread (async () => {
 						var notificator = DependencyService.Get<IToastNotificator>();
 						await notificator.Notify(ToastNotificationType.Error, 
 							"Error", "Somethings Wrongs", TimeSpan.FromSeconds(3));
 					});
-				})).Start();
+				})).Start();**/
 			}
 
 			//var sqliteFilename = "HomezigSQLite.db3";
@@ -50,14 +51,15 @@ namespace HomeZig.Android
 		{	
 
 			Login_Page_Action.tmr.Stop ();
-			Log.Info("websocket", "Websocket_Connected");
+
+			Console.WriteLine ("websocket Websocket_Connected");
 
 			new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-				Device.BeginInvokeOnMainThread (async () => {
+				Device.BeginInvokeOnMainThread (() => {
 					//var notificator = DependencyService.Get<IToastNotificator>();
-					await global_notificator.Notify(ToastNotificationType.Success, 
-						"Connection complete", "Here we go !", TimeSpan.FromSeconds(2));
-
+					//await global_notificator.Notify(ToastNotificationType.Success, 
+						//"Connection complete", "Here we go !", TimeSpan.FromSeconds(2));
+					MessageBarManager.SharedInstance.ShowMessage("Connect", "Connect Completeed", MessageType.Success);
 					LoginPage.ConnectButton.IsEnabled = false;
 					LoginPage.loginButton.IsEnabled = true;
 					LoginPage.activityIndicator.IsRunning = false;
@@ -100,19 +102,23 @@ namespace HomeZig.Android
 				LoginPage.activityIndicator.IsRunning = false;
 			});
 			string tag = "Errorrrrrrrrrrrrrrrrrrrrrrrrrrr";
-			Log.Info (tag,e.ToString());
+
+			Console.WriteLine (tag);
+
 		}
 
 		public void websocket_Closed(object sender, EventArgs e)
 		{
-			Log.Info("websocket_Closed", "WebsocketClosed");
+			
+			Console.WriteLine ("websocket_Closed");
 			//websocketMaster.Dispose ();
-			Device.BeginInvokeOnMainThread (async () => {
-				await global_notificator.Notify(ToastNotificationType.Error, 
-					"Error code: 101", "Websocket disconnected", TimeSpan.FromSeconds(2));
+			Device.BeginInvokeOnMainThread (() => {
+				//await global_notificator.Notify(ToastNotificationType.Error, 
+				//	"Error code: 101", "Websocket disconnected", TimeSpan.FromSeconds(2));
+				MessageBarManager.SharedInstance.ShowMessage("Websocket Connection", "Websocket disconnected", MessageType.Error);
 				LoginPage.activityIndicator.IsRunning = false;
 				LoginPage.ConnectButton.IsEnabled = true;
-				//MainActivity.ipm.showLoginPage();
+				//AppDelegate.ipm.showLoginPage();
 				App.current.showLoginPage();
 				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin {0}", "Go to login page");
 			});
@@ -121,8 +127,8 @@ namespace HomeZig.Android
 		public async void websocket_MessageReceived(object sender, MessageReceivedEventArgs  e)
 		{
 
-			Log.Info ("websocket_MessageReceived" , e.Message);
-
+			//Log.Info ("websocket_MessageReceived" , e.Message);
+			Console.WriteLine ("websocket_MessageReceived \n {0}", e.Message);
 			//string json = "{'employees': [{  'firstName':'John' , 'lastName':'Doe' },{  'firstName':'Anna' , 'lastName':'Smith' }, { 'firstName': 'Peter' ,  'lastName': 'Jones' }]}";
 			//Log.Info ("MessageReceivedddddddddddd" , e.Message);
 			try
@@ -131,8 +137,8 @@ namespace HomeZig.Android
 				//Db_allnode cmd = JsonConvert.DeserializeObject<Db_allnode>(e.Message);
 
 				if(cmd.cmd_db_allnode != null){			
-					Log.Info ("node_change_detected" , "node_change_detected");
-
+					
+					Console.WriteLine("node_change_detected");
 					foreach(var data in cmd.cmd_db_allnode)
 					{
 						bool isUpdate = false;
@@ -143,7 +149,7 @@ namespace HomeZig.Android
 						catch (Exception exx)
 						{
 							isUpdate = true;
-							Log.Info ("Exception" , exx.ToString());
+							Console.WriteLine("Exception {0}", exx.ToString());
 						}
 
 						if (isUpdate)
@@ -188,7 +194,8 @@ namespace HomeZig.Android
 						}
 						catch (Exception exx)
 						{
-							Log.Info ("Exception2" , exx.ToString());
+							
+							Console.WriteLine("Exception2 {0}", exx.ToString());
 						}
 					}
 					foreach(var i in await App.Database.GetItems())
@@ -200,7 +207,8 @@ namespace HomeZig.Android
 					foreach(var i in await App.Database.Get_NameByUser())
 					{
 						//System.Diagnostics.Debug.WriteLine("=====> {0}, {1}, {2}", i.node_addr, i.io_name_by_user, i.target_io);
-						Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.node_io_p, i.io_value));
+						//Log.Info ("From Get_NameByUser" , String.Format("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.node_io_p, i.io_value));
+						Console.WriteLine("=====> {0}, ->{1}<-, {2}, {3}, {4}, {5}", i.node_addr, i.node_name_by_user, i.node_io, i.io_name_by_user, i.node_io_p, i.io_value);
 						//Log.Info ("From Get_NameByUser" , i.node_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.io_name_by_user);
 						//Log.Info ("From Get_NameByUser" , i.target_io);
@@ -223,7 +231,8 @@ namespace HomeZig.Android
 						Node_io_ItemPage.doSwitch = false;
 						//must use message center
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
-							Log.Info ("io_change_detected" , "InWallSwitch_ChangeSwitchDetect");
+							
+							Console.WriteLine("io_change_detected  InWallSwitch_ChangeSwitchDetect");
 							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 								Device.BeginInvokeOnMainThread ( async () => {									
 									Node_io_ItemPage.doSwitch = false;
@@ -232,7 +241,8 @@ namespace HomeZig.Android
 							})).Start();
 							//MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
 						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
-							Log.Info ("io_change_detected" , "GeneralPurposeDetector_ChangeSwitchDetect");
+							
+							Console.WriteLine("io_change_detected  GeneralPurposeDetector_ChangeSwitchDetect");
 							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 								Device.BeginInvokeOnMainThread ( async () => {									
 									System.Diagnostics.Debug.WriteLine ("Gpd_Change_Detectedvvvvvvvvvvvvvvvvvv");
@@ -244,20 +254,18 @@ namespace HomeZig.Android
 
 						}
 
-						Log.Info ("io_change_detected" , "ChangeSwitchDetect");
+						Console.WriteLine("io_change_detected  ChangeSwitchDetect");
 						break;
 
 					case "db_allnode":
-						Log.Info ("MessageReceived4" , "db_allnode");
+						
+						Console.WriteLine("MessageReceived4  db_allnode");
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-							Device.BeginInvokeOnMainThread ( () => {
-
-								//MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
-								App.current.showMenuTabPage();
-								Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
-
+							Device.BeginInvokeOnMainThread (() => {
+								//AppDelegate.ipm.showMenuTabPage(AppDelegate.ipm);
 							});
 						})).Start();
+					
 
 						break;
 						/**new System.Threading.Thread (new System.Threading.ThreadStart (() => {
@@ -268,24 +276,25 @@ namespace HomeZig.Android
 						break;**/
 
 					case "prevent_other_change_page":
-						Log.Info ("prevent_other_change_page" ,"UUUUUUUUUUUUUUUUUUU");
+						
+						Console.WriteLine("prevent_other_change_page2");
+
+
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
-							Device.BeginInvokeOnMainThread (() => {								
-								//MainActivity.ipm.showMenuTabPage(MainActivity.ipm);
+							Device.BeginInvokeOnMainThread (() => {
 								App.current.showMenuTabPage();
-								Log.Info ("prevent_other_change_page" ,"CCCCCCCCCCCCCCCCCCCC");
 							});
 						})).Start();
 						break;
 
 					case "listview_request":						
 						IEnumerable<Db_allnode> dataSource = new List<Db_allnode>();
-						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
-							Log.Info ("listview_request" ,"GeneralPurposeDetector");
+						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){							
+							Console.WriteLine("listview_request  GeneralPurposeDetector");
 							dataSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector));
 
-						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
-							Log.Info ("listview_request" ,"InWallSwitch");
+						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){							
+							Console.WriteLine("listview_request  InWallSwitch");
 							dataSource = await App.Database.GetItemByDeviceType(EnumtoString.EnumString(DeviceType.InWallSwitch));
 						}
 
@@ -330,8 +339,8 @@ namespace HomeZig.Android
 						})).Start();
 						break;**/
 
-					default:
-						Log.Info ("MessageReceived_default" , e.Message);
+					default:						
+						Console.WriteLine("MessageReceived_default  {0}", e.Message);
 						break;
 					}
 
@@ -362,7 +371,7 @@ namespace HomeZig.Android
 					foreach(var data in cmd.cmd_login)
 					{
 						#region cmd_login
-						Log.Info ("cmd_login" , "cmd_login");
+						Console.WriteLine("cmd_login");
 						#endregion
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
@@ -383,7 +392,7 @@ namespace HomeZig.Android
 							db.node_io_p = "";
 							//db.name;
 							var FirstSend = JsonConvert.SerializeObject(db);
-							websocketMaster.Send (FirstSend);
+							//websocketMaster.Send (FirstSend);
 							#endregion
 						}else if (data.flagForLogin.Equals("not_pass")){
 							//DisplayAlert("Validation Error", "Username and Password are required", "Re-try");
@@ -451,7 +460,7 @@ namespace HomeZig.Android
 
 					foreach(var data in cmd.cmd_remote)
 					{
-						Log.Info ("cmd_remote" , "cmd_remote");
+						//Log.Info ("cmd_remote" , "cmd_remote");
 
 						foreach (var checkUser in await App.Database.Get_flag_Login())  
 						{
@@ -676,8 +685,8 @@ namespace HomeZig.Android
 				//Log.Info (tag , name2);
 			}
 			catch (Exception ex)
-			{
-				Log.Info ("ExceptionMessageReceived" , ex.Message);
+			{				
+				Console.WriteLine ("ExceptionMessageReceived  {0}", ex.Message);
 			}
 
 

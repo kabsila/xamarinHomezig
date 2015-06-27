@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using Xamarin.Forms;
-using HomeZig.Android;
+using HomeZig.iOS;
 using WebSocket4Net;
 using Newtonsoft.Json;
 using System.Text;
@@ -10,7 +10,7 @@ using Toasts.Forms.Plugin.Abstractions;
 
 
 [assembly: Dependency (typeof (Login_Page_Action))]
-namespace HomeZig.Android
+namespace HomeZig.iOS
 {
 	
 	public class Login_Page_Action : ContentPage, I_Login

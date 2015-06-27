@@ -60,7 +60,10 @@ namespace HomeZig
 
 					await App.Database.Delete_RemoteData_Item();
 					await App.Database.Delete_All_Login_Username_Show_For_Del ();
-					ipm.showLoginPageDis();
+					DependencyService.Get<IOption> ().logOut();
+
+
+					//ipm.showLoginPageDis();
 					//Page page = (Page)Activator.CreateInstance(pageType);
 					//await this.Navigation.PushAsync(page);
 				});

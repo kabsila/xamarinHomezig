@@ -1,19 +1,19 @@
 ﻿using System;
 using HomeZig;
 using Xamarin.Forms;
-using HomeZig.Android;
+using HomeZig.iOS;
 using System.IO;
 using SQLite.Net;
 using SQLite.Net.Async;
 using System.Threading.Tasks;
 
-[assembly: Dependency (typeof (SQLite_Android))]
+[assembly: Dependency (typeof (SQLite_iOS))]
 
-namespace HomeZig.Android
+namespace HomeZig.iOS
 {
-	public class SQLite_Android : ISQLite
+	public class SQLite_iOS : ISQLite
 	{
-		public SQLite_Android ()
+		public SQLite_iOS ()
 		{
 		}
 
@@ -37,7 +37,8 @@ namespace HomeZig.Android
 				//ReadWriteStream(s, writeStream);
 			}
 
-			var plat = new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid();
+			//var plat = new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid();
+			var plat = new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS();
 			//var conn = new SQLite.Net.Async.SQLiteAsyncConnection(plat, path);
 
 			var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(plat, new SQLiteConnectionString(path, storeDateTimeAsTicks: false)));

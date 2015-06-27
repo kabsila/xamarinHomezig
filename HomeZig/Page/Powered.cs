@@ -28,7 +28,7 @@ namespace HomeZig
 				Order = ToolbarItemOrder.Primary
 			};
 
-			Edit.Activated += (sender, args) =>
+			Edit.Clicked += (sender, args) =>
 			{
 				//Log.Info("toolbar","toolbar");
 			};

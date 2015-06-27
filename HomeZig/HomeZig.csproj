@@ -48,7 +48,6 @@
     <Compile Include="Command\NameByUser.cs" />
     <Compile Include="Command\RemoteData.cs" />
     <Compile Include="Command\Login.cs" />
-    <Compile Include="Page\Option_Page.cs" />
     <Compile Include="Command\LoginUsernameForDel.cs" />
     <Compile Include="Command\DeviceType.cs" />
     <Compile Include="Page\Node_io_Item\Node_io_Item_Cell.cs" />
@@ -97,6 +96,9 @@
     <Compile Include="Page\Profile\Profile_Gpd\Profile_GPD_IO_Setting_Cell.cs" />
     <Compile Include="Page\Profile\Add_Profile_Page.cs" />
     <Compile Include="Page\Profile\Edit_Profile_Page.cs" />
+    <Compile Include="testMenuTapPage.cs" />
+    <Compile Include="Page\Option\Option_Page.cs" />
+    <Compile Include="Page\Option\IOption.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.1.4.2.6359\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.4.2.6359\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
@@ -113,6 +115,7 @@
     <Folder Include="Page\Profile\" />
     <Folder Include="Page\Profile\Profile_Inwall\" />
     <Folder Include="Page\Profile\Profile_Gpd\" />
+    <Folder Include="Page\Option\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Toasts.Forms.Plugin.Abstractions">

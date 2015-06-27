@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace HomeZig
 {
-	public class App : Application, IDisposable
+	public class App : Application, IDisposable, IPageManager
 	{
 		static DeviceItemDatabase database;
-		//static IPageManager ListMainPage;
+		static IPageManager AppIpm;
 		static LoginPage lg = new LoginPage();
+		public static App current;
 		public App()
-		{			
+		{	
+			AppIpm = this;
+			current = this;
 			MainPage = lg;//new LoginPage ();		
 		}
 		public static INavigation Navigation 
@@ -27,6 +30,15 @@ namespace HomeZig
 			GC.SuppressFinalize(this);           
 		}
 
+		public void showMenuTabPage ()
+		{	
+			MainPage = new MenuTabPage (AppIpm);
+		}
+
+		public void showLoginPage ()
+		{		
+			MainPage = lg;
+		}
 		/**public static async void Check_flag_Login()
 		{
 			string flag = "";

@@ -29,17 +29,17 @@ namespace HomeZig
 				Order = ToolbarItemOrder.Primary
 			};
 
-			Edit.Activated += (sender, args) =>
+			Edit.Clicked += (sender, args) =>
 			{
 				//Log.Info("toolbar","toolbar");
 			};
 			this.ToolbarItems.Add(Edit);
 
-			connect.Clicked += async (sender, e) => 
+			connect.Clicked += (sender, e) => 
 			{
-				var notificator = DependencyService.Get<IToastNotificator>();
-				bool tapped = await notificator.Notify(ToastNotificationType.Error, 
-					"Error", "Something went wrong", TimeSpan.FromSeconds(2));
+				//var notificator = DependencyService.Get<IToastNotificator>();
+				//bool tapped = await notificator.Notify(ToastNotificationType.Error, 
+					//"Error", "Something went wrong", TimeSpan.FromSeconds(2));
 			};
 			this.Content = new StackLayout
 			{
