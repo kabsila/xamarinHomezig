@@ -61,7 +61,8 @@ namespace HomeZig.Android
 						
 
 						WebsocketManager.websocketMaster.Send (jsonProfile);
-						System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
+						//System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
+						Console.WriteLine (jsonProfile);
 					}
 				}
 				else {				

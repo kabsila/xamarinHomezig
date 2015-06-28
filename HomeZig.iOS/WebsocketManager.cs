@@ -6,7 +6,7 @@ using Xamarin.Forms;
 using System.Reflection;
 using System.IO;
 using System.Text;
-using Toasts.Forms.Plugin.Abstractions;
+//using Toasts.Forms.Plugin.Abstractions;
 using System.Threading.Tasks;
 using Connectivity.Plugin;
 using MessageBar;
@@ -18,7 +18,7 @@ namespace HomeZig.iOS
 	{
 		public static WebSocket websocketMaster;
 		public static IPageManager ipm1;
-		IToastNotificator global_notificator = DependencyService.Get<IToastNotificator>();
+
 		//string dataBasePath;
 		public WebsocketManager()
 		{
@@ -401,10 +401,7 @@ namespace HomeZig.iOS
 								LoginPage.logoutButton.IsEnabled = true;
 								LoginPage.activityIndicator.IsRunning = false;
 								LoginPage.loginFail.IsVisible = true;
-
-								var notificator = DependencyService.Get<IToastNotificator>();
-								await notificator.Notify(ToastNotificationType.Warning, 
-									"Waring", "Username or Password is Invalid", TimeSpan.FromSeconds(2));
+								MessageBarManager.SharedInstance.ShowMessage("Waring", "Username or Password is Invalid", MessageType.Error);
 							});
 
 						}else if (data.flagForLogin.Equals("add_user_success")){
@@ -413,17 +410,13 @@ namespace HomeZig.iOS
 							Device.BeginInvokeOnMainThread (async () => {
 								//Admin_Add_User_Page.username.BackgroundColor = Color.Green;
 								//Admin_Add_User_Page.password.BackgroundColor = Color.Green;
-								var notificator = DependencyService.Get<IToastNotificator>();
-								await notificator.Notify(ToastNotificationType.Success, 
-									"Success", data.username + " Added", TimeSpan.FromSeconds(2));
+								MessageBarManager.SharedInstance.ShowMessage("Account", data.username + " Added" , MessageType.Success);
 							});
 						}else if (data.flagForLogin.Equals("user_exits")){
 							Device.BeginInvokeOnMainThread (async () => {
 								//Admin_Add_User_Page.username.BackgroundColor = Color.Red;
 								//Admin_Add_User_Page.password.BackgroundColor = Color.Red;
-								var notificator = DependencyService.Get<IToastNotificator>();
-								await notificator.Notify(ToastNotificationType.Warning, 
-									"Warning", data.username + " Already in use", TimeSpan.FromSeconds(2));
+								MessageBarManager.SharedInstance.ShowMessage("Account", data.username + " Already in use" , MessageType.Error);
 							});
 
 						}else if (data.flagForLogin.Equals("user_password_change")){
@@ -435,9 +428,7 @@ namespace HomeZig.iOS
 							}
 							Device.BeginInvokeOnMainThread (async () => {
 								//Change_Password_Page.newPassword.BackgroundColor = Color.Green;
-								var notificator = DependencyService.Get<IToastNotificator>();
-								await notificator.Notify(ToastNotificationType.Success, 
-									"Success", "New Password is Changed", TimeSpan.FromSeconds(2));
+								MessageBarManager.SharedInstance.ShowMessage("Password", "\"New Password is Changed" , MessageType.Success);
 							});
 						}else if (data.flagForLogin.Equals("query_user")){
 
@@ -448,9 +439,7 @@ namespace HomeZig.iOS
 							await App.Database.Delete_Login_Username_Show_For_Del(data.username);
 							Device.BeginInvokeOnMainThread (async () => {
 								Admin_Delete_User_Page.usernameForDelete.ItemsSource = await App.Database.Get_Login_Username_Show_For_Del();
-								var notificator = DependencyService.Get<IToastNotificator>();
-								await notificator.Notify(ToastNotificationType.Success, 
-									"Success", data.username + " is Deleted", TimeSpan.FromSeconds(2));
+								MessageBarManager.SharedInstance.ShowMessage("Account", data.username + " is Deleted" , MessageType.Success);
 							});	
 						}
 					}
@@ -468,9 +457,9 @@ namespace HomeZig.iOS
 								if(data.node_command.Equals("remote_code_success")){
 									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name);
 									Device.BeginInvokeOnMainThread (async () => {
-										var notificator = DependencyService.Get<IToastNotificator>();
-										await notificator.Notify(ToastNotificationType.Success, 
-											"Success", " Remote code saved", TimeSpan.FromSeconds(2));
+										//var notificator = DependencyService.Get<IToastNotificator>();
+										//await notificator.Notify(ToastNotificationType.Success, 
+										//	"Success", " Remote code saved", TimeSpan.FromSeconds(2));
 									});
 									/**Device.BeginInvokeOnMainThread (() => {
 										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Green;
@@ -493,9 +482,9 @@ namespace HomeZig.iOS
 
 								}else if(data.node_command.Equals("remote_code_fail")){
 									Device.BeginInvokeOnMainThread (async () => {
-										var notificator = DependencyService.Get<IToastNotificator>();
-										await notificator.Notify(ToastNotificationType.Error, 
-											"Warning", "Try Again", TimeSpan.FromSeconds(2));
+										//var notificator = DependencyService.Get<IToastNotificator>();
+										//await notificator.Notify(ToastNotificationType.Error, 
+										//	"Warning", "Try Again", TimeSpan.FromSeconds(2));
 									});
 									/**Device.BeginInvokeOnMainThread (() => {
 										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
@@ -514,9 +503,9 @@ namespace HomeZig.iOS
 									});**/
 								}else if(data.node_command.Equals("name_exist")){
 									Device.BeginInvokeOnMainThread (async () => {
-										var notificator = DependencyService.Get<IToastNotificator>();
-										await notificator.Notify(ToastNotificationType.Warning, 
-											"Warning", "This name is already in use", TimeSpan.FromSeconds(2));
+										//var notificator = DependencyService.Get<IToastNotificator>();
+										//await notificator.Notify(ToastNotificationType.Warning, 
+										//	"Warning", "This name is already in use", TimeSpan.FromSeconds(2));
 									});
 									/**	Device.BeginInvokeOnMainThread (() => {
 										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
@@ -536,9 +525,9 @@ namespace HomeZig.iOS
 								}else if(data.node_command.Equals("remote_code_continue")){
 									if(data.remote_code.Equals("1")){
 										Device.BeginInvokeOnMainThread (async () => {
-											var notificator = DependencyService.Get<IToastNotificator>();
-											await notificator.Notify(ToastNotificationType.Success, 
-												"Next button", "button 1 saved", TimeSpan.FromSeconds(2));
+											//var notificator = DependencyService.Get<IToastNotificator>();
+											//await notificator.Notify(ToastNotificationType.Success, 
+											//	"Next button", "button 1 saved", TimeSpan.FromSeconds(2));
 										});
 										/**Device.BeginInvokeOnMainThread (() => {
 											Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = false;
@@ -554,9 +543,9 @@ namespace HomeZig.iOS
 										});**/
 									}else{
 										Device.BeginInvokeOnMainThread (async () => {
-											var notificator = DependencyService.Get<IToastNotificator>();
-											await notificator.Notify(ToastNotificationType.Success, 
-												"Next button", "button 2 saved", TimeSpan.FromSeconds(2));
+											//var notificator = DependencyService.Get<IToastNotificator>();
+											//await notificator.Notify(ToastNotificationType.Success, 
+											//	"Next button", "button 2 saved", TimeSpan.FromSeconds(2));
 										});
 										/**Device.BeginInvokeOnMainThread (() => {
 											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = false;
@@ -569,9 +558,9 @@ namespace HomeZig.iOS
 								}else if(data.node_command.Equals("delete_remote_success")){
 									await App.Database.Delete_RemoteData_Custom_Item(data.remote_button_name);
 									Device.BeginInvokeOnMainThread (async () => {
-										var notificator = DependencyService.Get<IToastNotificator>();
-										await notificator.Notify(ToastNotificationType.Success, 
-											"Success", "Item Deleted", TimeSpan.FromSeconds(2));
+										//var notificator = DependencyService.Get<IToastNotificator>();
+										//await notificator.Notify(ToastNotificationType.Success, 
+										//	"Success", "Item Deleted", TimeSpan.FromSeconds(2));
 									});
 									/**Device.BeginInvokeOnMainThread (async () => {
 										Delete_Remote_Page.deleteStatus.TextColor = Color.Green;

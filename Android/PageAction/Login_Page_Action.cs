@@ -49,9 +49,9 @@ namespace HomeZig.Android
 				//no await App.Database.Save_Login_Item (loginData.username, LoginPage.password.Text, "pass", loginData.lastConnectWebscoketUrl);
 
 				string jsonCommandLogin = JsonConvert.SerializeObject(loginData, Formatting.Indented);
-				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin" , jsonCommandLogin);
-				//WebsocketManager.websocketMaster.Send (jsonCommandLogin);
-				WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
+				Console.WriteLine (jsonCommandLogin);
+				WebsocketManager.websocketMaster.Send (jsonCommandLogin);
+				//WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
 				// no ipm1.showMenuTabPage ();
 			}
 		}
