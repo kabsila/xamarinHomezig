@@ -70,12 +70,17 @@ namespace HomeZig
 			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data]");
 		}
 
+		public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_Addr2 (string node_addr) 
+		{
+			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [node_addr] = ?",node_addr);
+		}
+
 		public async Task<IEnumerable<Profile_IO_Data>> Update_Profile_IO_Data_SecurityMode (string profileName, string node_addr, string alert_mode) 
 		{
 			return await database.QueryAsync<Profile_IO_Data>("UPDATE [Profile_IO_Data] SET [alert_mode] = ? WHERE [node_addr] = ? AND [profileName] = ?",alert_mode, node_addr, profileName);
 		}
 
-		public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_PrpfileName (string profileName) 
+		public async Task<IEnumerable<Profile_IO_Data>> Get_Profile_IO_Data_By_ProfileName (string profileName) 
 		{
 			return await database.QueryAsync<Profile_IO_Data>("SELECT * FROM [Profile_IO_Data] WHERE [profileName] = ?", profileName);
 		}
@@ -110,6 +115,11 @@ namespace HomeZig
 			return await database.QueryAsync<ProfileData>("SELECT * FROM [ProfileData] WHERE [profileName] = ?",profileName);
 		}
 
+		public async Task<IEnumerable<ProfileData>> Get_Profile_Name_Is_Open (string profileStatus) 
+		{
+			return await database.QueryAsync<ProfileData>("SELECT [profileName] FROM [ProfileData] WHERE [profile_status] = ?",profileStatus);
+		}
+
 		public async Task<IEnumerable<ProfileData>> Delete_Profile_By_ProfileName (string profileName) 
 		{
 			return await database.QueryAsync<ProfileData>("DELETE FROM [ProfileData] WHERE [profileName] = ?", profileName);
@@ -140,6 +150,12 @@ namespace HomeZig
 		{
 			await database.QueryAsync<ProfileData> ("UPDATE [ProfileData] SET [profile_status] = ? WHERE [profileName] != ?",offStatus, profileName);
 			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [profile_status] = ? WHERE [profileName] = ?",onStatus, profileName);
+		}
+
+		public async Task<IEnumerable<ProfileData>> Set_profile_Status_Off (string profileName, string offStatus)
+		{
+			//await database.QueryAsync<ProfileData> ("UPDATE [ProfileData] SET [profile_status] = ? WHERE [profileName] != ?",offStatus, profileName);
+			return await database.QueryAsync<ProfileData>("UPDATE [ProfileData] SET [profile_status] = ? WHERE [profileName] = ?",offStatus, profileName);
 		}
 		#endregion 
 		#region RemoteData

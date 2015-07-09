@@ -19,7 +19,7 @@ namespace HomeZig.Android
 		{
 			var b = (Switch)sender;
 			var IO_ProfileData = (Profile_IO_Data)b.BindingContext;
-			var alert_mode = "0";
+			var alert_mode = "False";
 			//IO_ProfileData.io_value = Convert.ToByte (e.Value).ToString ();
 			IO_ProfileData.io_value = e.Value.ToString();
 			try
@@ -41,14 +41,21 @@ namespace HomeZig.Android
 				var ProfileData = (ProfileData)b.BindingContext;
 				if (e.Value) {
 					
-					var data = await App.Database.Get_Profile_IO_Data_By_PrpfileName (ProfileData.profileName);
-					if (!data.Any ()) { //check list is not null
+					var data = await App.Database.Get_Profile_IO_Data_By_ProfileName (ProfileData.profileName);
+					if (!data.Any ()) 
+					{
+						//check list is not null
 						await DisplayAlert ("Validation Error", "Profile not setting", "OK");
-					} else {
-						foreach (var item in data) {
+					} 
+					else 
+					{
+						foreach (var item in data) {							
 							item.node_command = "Profile_Open";
+							string jsonProfile = JsonConvert.SerializeObject (item, Formatting.Indented);
+							WebsocketManager.websocketMaster.Send (jsonProfile);
+							Console.WriteLine (jsonProfile);
 						}
-						string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
+						//string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
 						await App.Database.Set_profile_Status (ProfileData.profileName, e.Value.ToString (), (!e.Value).ToString ());
 
 
@@ -60,12 +67,21 @@ namespace HomeZig.Android
 						})).Start ();
 						
 
-						WebsocketManager.websocketMaster.Send (jsonProfile);
+						//WebsocketManager.websocketMaster.Send (jsonProfile);
 						//System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
-						Console.WriteLine (jsonProfile);
+						//Console.WriteLine (jsonProfile);
 					}
 				}
-				else {				
+				else {
+
+					await App.Database.Set_profile_Status_Off (ProfileData.profileName, e.Value.ToString ());
+
+					new System.Threading.Thread (new System.Threading.ThreadStart (() => {							
+						Device.BeginInvokeOnMainThread (async () => {
+							Profile_Page.preventLoop = false;
+							Profile_Page.ProfileListview.ItemsSource = await App.Database.Get_ProfileName_GroupBy_Addr ();
+						});
+					})).Start ();
 					/**var data = new ProfileData();
 					data.node_command = "Profile_Close";
 					data.profileName = ProfileData.profileName;

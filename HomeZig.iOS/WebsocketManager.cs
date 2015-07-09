@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Connectivity.Plugin;
 using MessageBar;
 
+using MonoTouch.UIKit;
+using MonoTouch.Foundation;
 
 namespace HomeZig.iOS
 {
@@ -575,6 +577,40 @@ namespace HomeZig.iOS
 
 
 					}
+				}else if(cmd.cmd_alert != null){
+
+					#region alert
+					#endregion
+					new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+						Device.BeginInvokeOnMainThread (() => {
+							foreach(var data in cmd.cmd_alert)
+							{
+								var notification = new UILocalNotification();
+
+								//---- set the fire date (the date time in which it will fire)
+								notification.FireDate = NSDate.FromTimeIntervalSinceNow(15);
+
+								//---- configure the alert stuff
+								notification.AlertAction = "View Alert";
+								notification.AlertBody = "Your 15 second alert has fired!";
+
+								//---- modify the badge
+								notification.ApplicationIconBadgeNumber = 1;
+
+								//---- set the sound to be the default sound
+								notification.SoundName = UILocalNotification.DefaultSoundName;
+
+								//---- schedule it
+								UIApplication.SharedApplication.ScheduleLocalNotification(notification);
+
+								Console.WriteLine(data.node_command);
+								break;
+							}
+						});
+					})).Start();
+						
+
+
 				}
 
 

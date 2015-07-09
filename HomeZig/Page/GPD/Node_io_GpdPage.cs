@@ -5,16 +5,13 @@ namespace HomeZig
 {
 	public class Node_io_GpdPage : ContentPage
 	{
-		//static SwitchCell switchCell_01; 
-		//static SwitchCell switchCell_02;
-		//static SwitchCell switchCell_03; 
-		//static SwitchCell switchCell_04;
+		
 		public static Db_allnode item;
 		public static NameByUser NBitem;
-
 		public static ListView ioListView;
 		//public static bool doSwitch = false;
 		Label NameOfNode;
+
 		public Node_io_GpdPage ()
 		{
 			System.Diagnostics.Debug.WriteLine ("= new Node_io_GpdPage ()");
@@ -32,7 +29,7 @@ namespace HomeZig
 		
 			Button test = new Button 
 			{
-				Text = "Test"
+				Text = "Test GPD"
 			};
 			test.Clicked += DependencyService.Get<I_Node_io_Gpd> ().testClick;
 
@@ -42,55 +39,6 @@ namespace HomeZig
 				Navigation.PushAsync (DeviceList);
 			});
 
-			/**MessagingCenter.Subscribe<Node_io_GpdPage, string> (this, "Node_io_Gpd_Change_Detected", (sender, addr) => {
-
-				//check address for avoid switchChange wrong page  
-				if(item.node_addr.Equals(addr)){
-					Device.BeginInvokeOnMainThread (async () => {
-						System.Diagnostics.Debug.WriteLine ("Gpd_Change_Detectedvvvvvvvvvvvvvvvvvv");
-						ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(addr);
-					});
-				}
-			});**/
-
-			/**switchCell_01 = new SwitchCell
-			{
-				Text = "01"				
-			};
-			//switchCell_01.OnChanged += DependencyService.Get<IGpd_Call> ().switch01_OnChange;
-
-			switchCell_02 = new SwitchCell
-			{
-				Text = "02"				
-			};
-			//switchCell_02.OnChanged += DependencyService.Get<IGpd_Call> ().switch02_OnChange;
-
-			switchCell_03 = new SwitchCell
-			{
-				Text = "03"				
-			};
-			//switchCell_03.OnChanged += DependencyService.Get<IGpd_Call> ().switch03_OnChange;
-
-			switchCell_04 = new SwitchCell
-			{
-				Text = "04"				
-			};
-			//switchCell_04.OnChanged += DependencyService.Get<IGpd_Call> ().switch04_OnChange;
-
-			TableView tableView = new TableView
-			{
-				Intent = TableIntent.Form,
-				Root = new TableRoot
-				{
-					new TableSection
-					{
-						switchCell_01,
-						switchCell_02,
-						switchCell_03,
-						switchCell_04
-					}
-				}
-			};**/
 			var layout = new StackLayout 
 			{
 				Children = 
@@ -103,14 +51,7 @@ namespace HomeZig
 			};
 			Content = layout;
 
-			/**MessagingCenter.Subscribe<ContentPage> (this, "ChangeSwitchDetect", (sender) => 
-				{
-					item = (Db_allnode)BindingContext;
-					Device.BeginInvokeOnMainThread (() => {
-						setSwitchIo(item.node_addr);
-					});
 
-				});**/
 		}
 
 		/**async void setSwitchIo(string node_addr)
@@ -165,10 +106,21 @@ namespace HomeZig
 		protected override async void OnAppearing ()
 		{
 			base.OnAppearing ();
-			item = (Db_allnode)BindingContext;
-			NameOfNode.Text = item.name_by_user;
-			//SetSwitchByNodeIo (item.node_io);
-			ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(item.node_addr);
+
+			if (Config.addr.Equals (string.Empty))
+			{
+				item = (Db_allnode)BindingContext;
+				NameOfNode.Text = item.name_by_user;
+				//SetSwitchByNodeIo (item.node_io);
+				ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr (item.node_addr);
+			} else 
+			{			
+				NameOfNode.Text = Config.nameAddr;	
+				ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr (Config.addr);
+				Config.addr = string.Empty;
+				Config.nameAddr = string.Empty;
+			}
+
 		}
 
 		protected override void OnDisappearing ()

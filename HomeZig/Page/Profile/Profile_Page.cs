@@ -11,6 +11,7 @@ namespace HomeZig
 		public static bool bindingChange = false;
 		public Profile_Page ()
 		{
+			//new Node_io_ItemPage (); // prevent null exception
 			ProfileListview = new ListView ();
 			ProfileListview.ItemTemplate = new DataTemplate(typeof (Profile_Cell));
 
@@ -34,12 +35,13 @@ namespace HomeZig
 			});
 
 			MessagingCenter.Subscribe<ContentPage, ProfileData> (new ContentPage(), "Profile_Name_DeleteActionClicked", (sender, arg) => {				
-				Task.Run(() => 
-				{
+				//Task.Run(() => 
+				//{
+				System.Diagnostics.Debug.WriteLine("Profile_Name_DeleteActionClicked");
 					Device.BeginInvokeOnMainThread (async () => {
 						ProfileListview.ItemsSource = await App.Database.Get_ProfileName_GroupBy_Addr();
 					});		
-				});
+				//});
 			});
 
 			ProfileListview.ItemTapped += (sender, e) => 

@@ -20,6 +20,7 @@ namespace HomeZig
 		public string node_command { get; set; }
 		public string node_deviceType { get; set; }
 		public string io_value { get; set; }
+		public string node_io_p {get; set;}
 		/**{
 			get 
 			{ 
@@ -75,7 +76,7 @@ namespace HomeZig
 				ni = value;
 			}
 		}**/
-		public string node_io_p {get; set;}
+
 		//public string this_is_togle {get; set;}
 
 

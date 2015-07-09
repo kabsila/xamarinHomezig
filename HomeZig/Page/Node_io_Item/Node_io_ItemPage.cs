@@ -44,7 +44,7 @@ namespace HomeZig
 
 			Button test = new Button 
 			{
-				Text = "Test"
+				Text = "TestIO"
 			};
 			test.Clicked += DependencyService.Get<I_Node_io_Item> ().testClick;
 

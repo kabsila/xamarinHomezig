@@ -12,6 +12,13 @@ namespace HomeZig
 		static IPageManager AppIpm;
 		static LoginPage lg = new LoginPage();
 		public static App current;
+
+		public App(Page mPage)
+		{	
+			
+			MainPage = mPage;
+		}
+
 		public App()
 		{	
 			AppIpm = this;

@@ -46,7 +46,7 @@ namespace HomeZig
 			listOfNodeProfile.ItemsSource = await App.Database.Get_Node_For_Profile(item.profileName);
 
 			var addr = await App.Database.Get_Addr_Of_ProfileName (item.profileName);
-			var alert_mode = "0";
+			var alert_mode = "False";
 			foreach (var dataAddr in addr)
 			{
 				var tempData = await App.Database.Get_NameByUser_by_addr(dataAddr.nodeAddrOfProfile);

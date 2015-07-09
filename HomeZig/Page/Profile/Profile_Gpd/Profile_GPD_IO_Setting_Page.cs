@@ -8,6 +8,7 @@ namespace HomeZig
 		ListView ProfileGpdIoListView;
 		Label NameOfNode;
 		string nodeAddr = string.Empty;
+		SwitchCell alert_mode;
 		public Profile_GPD_IO_Setting_Page ()
 		{
 			var IOLabel = new Label { Text = "Setting Detector IO Profile" };
@@ -30,14 +31,15 @@ namespace HomeZig
 				Content = NameOfNode,
 				Padding = new Thickness(0, 10, 0, 0)
 			};
-			SwitchCell alert_mode = new SwitchCell
+			alert_mode = new SwitchCell
 			{
 				Text = "Security Mode",
 			};
 
 			alert_mode.OnChanged += async (sender, e) => 
 			{
-				var secureMode = Convert.ToByte(e.Value).ToString();
+				var secureMode = Convert.ToString(e.Value);//.ToString();
+				System.Diagnostics.Debug.WriteLine("{0}", secureMode);
 				await App.Database.Update_Profile_IO_Data_SecurityMode(Profile_Page.profileName, nodeAddr, secureMode);
 			};
 			Button test = new Button {Text = "TEST"};
@@ -72,7 +74,7 @@ namespace HomeZig
 					//NameOfNode,
 					cv,
 					alert_mode_tableView,
-					//test,
+					test,
 					//ProfileGpdIoListView,
 
 				}
@@ -85,7 +87,7 @@ namespace HomeZig
 			base.OnAppearing ();
 			var item = (ProfileData)BindingContext;
 			NameOfNode.Text = item.NameByUserNodeOfProfile;
-
+			nodeAddr = item.nodeAddrOfProfile;
 			/**var alert_mode = "0";
 			nodeAddr = item.nodeAddrOfProfile;
 			var tempData = await App.Database.Get_NameByUser_by_addr(item.nodeAddrOfProfile);
@@ -94,7 +96,14 @@ namespace HomeZig
 				await App.Database.Insert_Profile_IO_Data (Profile_Page.profileName, data.node_addr, data.node_io_p, data.io_value, alert_mode, data.io_name_by_user, data.node_deviceType);
 			}**/
 
-			ProfileGpdIoListView.ItemsSource = await App.Database.Get_Profile_IO_Data_By_Addr(item.nodeAddrOfProfile, Profile_Page.profileName);
+			foreach(var data in await App.Database.Get_Profile_IO_Data_By_Addr(item.nodeAddrOfProfile, Profile_Page.profileName))
+			{
+				alert_mode.On = Convert.ToBoolean(data.alert_mode);
+				break;
+			}
+
+
+			//ProfileGpdIoListView.ItemsSource = await App.Database.Get_Profile_IO_Data_By_Addr(item.nodeAddrOfProfile, Profile_Page.profileName);
 		}
 
 		protected override void OnDisappearing ()

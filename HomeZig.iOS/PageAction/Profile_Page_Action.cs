@@ -40,15 +40,20 @@ namespace HomeZig.iOS
 				var b = (Switch)sender;
 				var ProfileData = (ProfileData)b.BindingContext;
 				if (e.Value) {
-					
-					var data = await App.Database.Get_Profile_IO_Data_By_PrpfileName (ProfileData.profileName);
+
+					var data = await App.Database.Get_Profile_IO_Data_By_ProfileName (ProfileData.profileName);
 					if (!data.Any ()) { //check list is not null
 						await DisplayAlert ("Validation Error", "Profile not setting", "OK");
-					} else {
-						foreach (var item in data) {
+					} else {			
+
+
+						foreach (var item in data) {							
 							item.node_command = "Profile_Open";
+							string jsonProfile = JsonConvert.SerializeObject (item, Formatting.Indented);
+							WebsocketManager.websocketMaster.Send (jsonProfile);
+							Console.WriteLine (jsonProfile);
 						}
-						string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
+						//string jsonProfile = JsonConvert.SerializeObject (data, Formatting.Indented);
 						await App.Database.Set_profile_Status (ProfileData.profileName, e.Value.ToString (), (!e.Value).ToString ());
 
 
@@ -58,10 +63,11 @@ namespace HomeZig.iOS
 								Profile_Page.ProfileListview.ItemsSource = await App.Database.Get_ProfileName_GroupBy_Addr ();
 							});
 						})).Start ();
-						
 
-						WebsocketManager.websocketMaster.Send (jsonProfile);
-						System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
+
+						//WebsocketManager.websocketMaster.Send (jsonProfile);
+						//System.Diagnostics.Debug.WriteLine ("jsonProfile", jsonProfile);
+						//Console.WriteLine (jsonProfile);
 					}
 				}
 				else {				

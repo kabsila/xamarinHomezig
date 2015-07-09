@@ -35,7 +35,9 @@ namespace HomeZig.Android
 			Forms.Init (this, bundle);
 			ToastNotificatorImplementation.Init();
 
+			WebsocketManager.getService = this;
 			new DeviceItemDatabase ();
+			new InitializePage ();
 			App.Database.Delete_RemoteData_Item ();
 			App.Database.Delete_All_Login_Username_Show_For_Del ();
 

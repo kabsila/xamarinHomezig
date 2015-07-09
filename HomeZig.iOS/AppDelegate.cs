@@ -52,16 +52,61 @@ namespace HomeZig.iOS
 					//LoadApplication (new App());	
 
 				}else{
-					//LoadApplication (new App());	
+					//LoadApplication (new App());
+
 					MessageBarManager.SharedInstance.ShowMessage("Success", "This is success", MessageType.Success);
 
 				}
 
 			};
 			LoadApplication (new App());
+
+			if (options != null)
+			{
+				// check for a local notification
+				if (options.ContainsKey(UIApplication.LaunchOptionsLocalNotificationKey))
+				{
+					var localNotification = options[UIApplication.LaunchOptionsLocalNotificationKey] as UILocalNotification;
+					if (localNotification != null)
+					{
+						UIAlertController okayAlertController = UIAlertController.Create (localNotification.AlertAction, localNotification.AlertBody, UIAlertControllerStyle.Alert);
+						okayAlertController.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+						//viewController.PresentViewController (okayAlertController, true, null);
+						// reset our badge
+						UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
+					}
+				}
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
+				var notificationSettings = UIUserNotificationSettings.GetSettingsForTypes (
+					UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound, null
+				);
+
+				app.RegisterUserNotificationSettings (notificationSettings);
+			}
+
 			return base.FinishedLaunching (app, options);
 
 
+		}
+
+		public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
+		{
+			Console.WriteLine ("Alert notification");
+
+			//ContentPage a = new ContentPage ();
+			//Page a =  new Page();
+			//a.DisplayAlert ("aa","vv","bb");
+			//var action = await DisplayActionSheet ("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook");
+
+			// show an alert
+			//UIAlertController okayAlertController = UIAlertController.Create (notification.AlertAction, notification.AlertBody, UIAlertControllerStyle.Alert);
+			//okayAlertController.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+			//viewController.PresentViewController (okayAlertController, true, null);
+
+			// reset our badge
+			//UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
 		}
 
 		public override void OnActivated(UIApplication application)

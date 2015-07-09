@@ -28,11 +28,11 @@ namespace HomeZig
 
 				var Item = (Db_allnode)e.Item;
 				if (Item.node_deviceType.Equals (EnumtoString.EnumString(DeviceType.GeneralPurposeDetector)) && Item.node_status.Equals("0")) {
-					var DeviceList = new Node_io_GpdPage ();
+					var DeviceList = InitializePage.ni_gpd;//new Node_io_GpdPage ();
 					DeviceList.BindingContext = Item;
 					Navigation.PushAsync (DeviceList);
 				} else if (Item.node_deviceType.Equals (EnumtoString.EnumString(DeviceType.InWallSwitch)) && Item.node_status.Equals("0")) {
-					var DeviceList = new Node_io_ItemPage ();
+					var DeviceList = InitializePage.ni_iw;//new Node_io_ItemPage ();
 					DeviceList.BindingContext = Item;
 					Navigation.PushAsync (DeviceList);
 				} else if (Item.node_deviceType.Equals (EnumtoString.EnumString(DeviceType.RemoteControl)) && Item.node_status.Equals("0")) {

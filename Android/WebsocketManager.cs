@@ -1,6 +1,12 @@
 using System;
 using WebSocket4Net;
+
+using Android.App;
+using Android.Content;
+using Android.OS;
 using Android.Util;
+using androidSupport = Android.Support.V4.App;
+
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Xamarin.Forms;
@@ -19,6 +25,8 @@ namespace HomeZig.Android
 		//public static IPageManager ipm1;
 		IToastNotificator global_notificator = DependencyService.Get<IToastNotificator>();
 		//string dataBasePath;
+		public static Context getService;
+
 		public WebsocketManager()
 		{
 			
@@ -219,6 +227,8 @@ namespace HomeZig.Android
 						break;
 
 					case "io_change_detected":
+						#region io_change_detected
+						#endregion
 						//MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
 						Node_io_ItemPage.doSwitch = false;
 						//must use message center
@@ -233,12 +243,32 @@ namespace HomeZig.Android
 							//MessagingCenter.Send<Node_io_ItemPage, string> (new Node_io_ItemPage(), "Node_io_Item_Change_Detected", cmd.cmd_db_allnode[0].node_addr);
 						}else if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.GeneralPurposeDetector))){
 							Log.Info ("io_change_detected" , "GeneralPurposeDetector_ChangeSwitchDetect");
+
 							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 								Device.BeginInvokeOnMainThread ( async () => {									
 									System.Diagnostics.Debug.WriteLine ("Gpd_Change_Detectedvvvvvvvvvvvvvvvvvv");
 									Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);										
 								});
 							})).Start();
+
+							//var alertmode = await App.Database.Get_Profile_IO_Data_By_Addr2(cmd.cmd_db_allnode[0].node_addr);
+							var profileStatus = await App.Database.Get_Profile_Name_Is_Open("True");
+
+							foreach(var data in profileStatus)
+							{
+								foreach(var item in await App.Database.Get_Profile_IO_Data_By_Addr(cmd.cmd_db_allnode[0].node_addr, data.profileName))
+								{										
+									if(item.alert_mode.Equals("True"))
+									{
+										foreach(var nodeName in await App.Database.Get_NameByUser_by_addr(item.node_addr))
+										{
+											showNotify(nodeName.node_name_by_user, item.node_addr);
+											break;
+										}
+									}
+									break;
+								}
+							}
 
 						}else{
 
@@ -577,6 +607,49 @@ namespace HomeZig.Android
 
 
 					}
+				}else if(cmd.cmd_alert != null){
+
+					/**#region alert
+					#endregion
+					if(getService == null){
+						Console.WriteLine("Arkkkkkkkk");
+					}
+					foreach(var data in cmd.cmd_alert)
+					{
+						// These are the values that we want to pass to the next activity
+						Bundle valuesForActivity = new Bundle ();
+						valuesForActivity.PutString (DataActivity.activityAddr, data.node_addr);
+
+						// Create the PendingIntent with the back stack             
+						// When the user clicks the notification, SecondActivity will start up.
+						Intent resultIntent = new Intent (getService, typeof(IO_Activity));
+						resultIntent.PutExtras (valuesForActivity); // Pass some values to SecondActivity.
+
+						androidSupport.TaskStackBuilder stackBuilder = androidSupport.TaskStackBuilder.Create (getService);
+						stackBuilder.AddParentStack (Java.Lang.Class.FromType (typeof(IO_Activity)));
+						stackBuilder.AddNextIntent (resultIntent);
+
+						PendingIntent resultPendingIntent = stackBuilder.GetPendingIntent (0, (int)PendingIntentFlags.CancelCurrent);
+
+						Console.WriteLine(data.node_command);
+						// Build the notification
+						androidSupport.NotificationCompat.Builder builder = new androidSupport.NotificationCompat.Builder (getService)
+						.SetAutoCancel (true) // dismiss the notification from the notification area when the user clicks on it
+						.SetContentIntent (resultPendingIntent) // start up this activity when the user clicks the intent.
+						.SetContentTitle ("Button Clicked") // Set the title
+						//.SetNumber (_count) // Display the count in the Content Info
+						.SetSmallIcon (Resource.Drawable.Icon) // This is the icon to display
+						.SetContentText (String.Format (data.node_command)); // the message to display.
+
+						//Notification notification = builder.Build();
+						// Finally publish the notification
+						NotificationManager notificationManager = (NotificationManager)getService.GetSystemService (Context.NotificationService) as NotificationManager;
+						const int notificationId = 0;
+						notificationManager.Notify (notificationId, builder.Build ());
+
+						Console.WriteLine(data.node_command);
+						break;
+					}**/
 				}
 
 
@@ -737,6 +810,59 @@ namespace HomeZig.Android
 			}
 
 			return io_state;
+		}
+
+		void showNotify(string addr_Name, string addr)
+		{
+			#region showNotify
+			#endregion
+			if(getService == null){
+				Console.WriteLine("Arkkkkkkkk");
+			}
+			//foreach(var data in cmd.cmd_alert)
+			//{
+			// These are the values that we want to pass to the next activity
+			Bundle valuesForActivity = new Bundle ();
+			valuesForActivity.PutString(DataActivity.activityNameAddr, addr_Name);
+			valuesForActivity.PutString(DataActivity.activityAddr, addr);
+
+				// Create the PendingIntent with the back stack             
+				// When the user clicks the notification, SecondActivity will start up.
+			Intent resultIntent = new Intent (getService, typeof(IO_Activity));
+			resultIntent.PutExtras (valuesForActivity); // Pass some values to SecondActivity.
+			
+			androidSupport.TaskStackBuilder stackBuilder = androidSupport.TaskStackBuilder.Create (getService);
+			stackBuilder.AddParentStack (Java.Lang.Class.FromType (typeof(IO_Activity)));
+			stackBuilder.AddNextIntent (resultIntent);
+
+			const int pendingIntentId = 0;
+			PendingIntent resultPendingIntent =
+				stackBuilder.GetPendingIntent (pendingIntentId, (int)PendingIntentFlags.OneShot);
+			//PendingIntent resultPendingIntent = stackBuilder.GetPendingIntent (0, (int)PendingIntentFlags.CancelCurrent);
+
+				
+				// Build the notification
+			androidSupport.NotificationCompat.Builder builder = new androidSupport.NotificationCompat.Builder (getService)
+				.SetAutoCancel (true) // dismiss the notification from the notification area when the user clicks on it
+				.SetContentIntent (resultPendingIntent) // start up this activity when the user clicks the intent.
+				.SetContentTitle ("Change Detected") // Set the title
+				//.SetNumber (_count) // Display the count in the Content Info
+				.SetDefaults ((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate) // sound and Vibrate
+				.SetPriority ((int)NotificationPriority.Max) //NotificationPriority.Max
+				.SetSmallIcon (Resource.Drawable.Icon) // This is the icon to display
+				.SetContentText (String.Format ("{0} risk detected", addr_Name)); // the message to display.
+					//builder.SetDefaults (0x1 | 0x2);
+			
+
+			//Notification notification = builder.Build();
+			// Finally publish the notification
+			NotificationManager notificationManager = (NotificationManager)getService.GetSystemService (Context.NotificationService) as NotificationManager;
+			const int notificationId = 0;
+			notificationManager.Notify (notificationId, builder.Build ());
+
+			Console.WriteLine(addr_Name);
+				
+			//}
 		}
 
 	}
