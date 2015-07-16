@@ -33,6 +33,7 @@ namespace HomeZig.iOS
 			
 			Forms.Init ();
 
+			new InitializePage ();
 			new DeviceItemDatabase ();
 			App.Database.Delete_RemoteData_Item ();
 			App.Database.Delete_All_Login_Username_Show_For_Del ();							
@@ -59,6 +60,7 @@ namespace HomeZig.iOS
 				}
 
 			};
+
 			LoadApplication (new App());
 
 			if (options != null)
@@ -69,8 +71,9 @@ namespace HomeZig.iOS
 					var localNotification = options[UIApplication.LaunchOptionsLocalNotificationKey] as UILocalNotification;
 					if (localNotification != null)
 					{
-						UIAlertController okayAlertController = UIAlertController.Create (localNotification.AlertAction, localNotification.AlertBody, UIAlertControllerStyle.Alert);
-						okayAlertController.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+						new UIAlertView(localNotification.AlertAction, localNotification.AlertBody, null, "OK", null).Show();
+						//UIAlertController okayAlertController = UIAlertController.Create (localNotification.AlertAction, localNotification.AlertBody, UIAlertControllerStyle.Alert);
+						//okayAlertController.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
 						//viewController.PresentViewController (okayAlertController, true, null);
 						// reset our badge
 						UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
@@ -94,19 +97,8 @@ namespace HomeZig.iOS
 		public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
 		{
 			Console.WriteLine ("Alert notification");
-
-			//ContentPage a = new ContentPage ();
-			//Page a =  new Page();
-			//a.DisplayAlert ("aa","vv","bb");
-			//var action = await DisplayActionSheet ("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook");
-
-			// show an alert
-			//UIAlertController okayAlertController = UIAlertController.Create (notification.AlertAction, notification.AlertBody, UIAlertControllerStyle.Alert);
-			//okayAlertController.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
-			//viewController.PresentViewController (okayAlertController, true, null);
-
-			// reset our badge
-			//UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
+			new UIAlertView(notification.AlertAction, notification.AlertBody, null, "OK", null).Show();
+			UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
 		}
 
 		public override void OnActivated(UIApplication application)

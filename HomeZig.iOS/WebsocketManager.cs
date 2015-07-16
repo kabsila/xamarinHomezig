@@ -222,7 +222,7 @@ namespace HomeZig.iOS
 					case "db_allnode2":
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
-								App.Navigation.PushAsync(new DeviceAddressListPage());
+								//App.Navigation.PushAsync(new DeviceAddressListPage());
 							});
 						})).Start();
 						//Log.Info ("MessageReceived" , typeof(CmdDbAllnode).GetProperties()[0].Name);
@@ -230,6 +230,9 @@ namespace HomeZig.iOS
 
 					case "io_change_detected":
 						//MessagingCenter.Send<ContentPage> (new ContentPage(), "ChangeSwitchDetect");
+
+						#region io_change_detected
+						#endregion
 						Node_io_ItemPage.doSwitch = false;
 						//must use message center
 						if(cmd.cmd_db_allnode[0].node_deviceType.Equals(EnumtoString.EnumString(DeviceType.InWallSwitch))){
@@ -248,9 +251,36 @@ namespace HomeZig.iOS
 							new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 								Device.BeginInvokeOnMainThread ( async () => {									
 									System.Diagnostics.Debug.WriteLine ("Gpd_Change_Detectedvvvvvvvvvvvvvvvvvv");
-									Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);										
+									Node_io_GpdPage.ioListView.ItemsSource = await App.Database.Get_NameByUser_by_addr(cmd.cmd_db_allnode[0].node_addr);
 								});
 							})).Start();
+
+
+							var profileStatus = await App.Database.Get_Profile_Name_Is_Open("True");
+
+							foreach(var data in profileStatus)
+							{
+								
+								foreach(var item in await App.Database.Get_Profile_IO_Data_By_Addr(cmd.cmd_db_allnode[0].node_addr, data.profileName))
+								{										
+									if(item.alert_mode.Equals("True"))
+									{
+										foreach(var nodeName in await App.Database.Get_NameByUser_by_addr(item.node_addr))
+										{
+											
+											new System.Threading.Thread (new System.Threading.ThreadStart (() => {
+												Device.BeginInvokeOnMainThread ( async () => {
+													
+													showNotify(nodeName.node_name_by_user, item.node_addr);										
+												});
+											})).Start();
+
+											break;
+										}
+									}
+									break;
+								}
+							}
 
 						}else{
 
@@ -264,7 +294,7 @@ namespace HomeZig.iOS
 						Console.WriteLine("MessageReceived4  db_allnode");
 						new System.Threading.Thread (new System.Threading.ThreadStart (() => {
 							Device.BeginInvokeOnMainThread (() => {
-								//AppDelegate.ipm.showMenuTabPage(AppDelegate.ipm);
+								App.current.showMenuTabPage();
 							});
 						})).Start();
 					
@@ -377,7 +407,7 @@ namespace HomeZig.iOS
 						#endregion
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ab]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"}, {\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ab]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"}, {\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
@@ -394,7 +424,7 @@ namespace HomeZig.iOS
 							db.node_io_p = "";
 							//db.name;
 							var FirstSend = JsonConvert.SerializeObject(db);
-							//websocketMaster.Send (FirstSend);
+							websocketMaster.Send (FirstSend);
 							#endregion
 						}else if (data.flagForLogin.Equals("not_pass")){
 							//DisplayAlert("Validation Error", "Username and Password are required", "Re-try");
@@ -771,6 +801,35 @@ namespace HomeZig.iOS
 			}
 
 			return io_state;
+		}
+
+		void showNotify(string addr_Name, string addr)
+		{
+			
+			#region showNotify
+			Console.WriteLine("showNotify method");
+			#endregion
+
+			var notification = new UILocalNotification();
+
+			//---- set the fire date (the date time in which it will fire)
+			notification.FireDate = NSDate.FromTimeIntervalSinceNow(15);
+
+			//---- configure the alert stuff
+			notification.AlertAction = "Security Alert";
+			notification.AlertBody = String.Format ("{0} risk detected", addr_Name);
+
+			//notification.
+
+			//---- modify the badge
+			notification.ApplicationIconBadgeNumber = 1;
+
+			//---- set the sound to be the default sound
+			notification.SoundName = UILocalNotification.DefaultSoundName;
+
+			//---- schedule it
+			UIApplication.SharedApplication.ScheduleLocalNotification(notification);
+
 		}
 
 	}

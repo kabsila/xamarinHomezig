@@ -12,6 +12,7 @@ namespace HomeZig
 		static IPageManager AppIpm;
 		static LoginPage lg = new LoginPage();
 		public static App current;
+		public static ContentPage popup;
 
 		public App(Page mPage)
 		{	
@@ -21,9 +22,10 @@ namespace HomeZig
 
 		public App()
 		{	
+			popup = new ContentPage();
 			AppIpm = this;
 			current = this;
-			MainPage = lg;//new LoginPage ();		
+			MainPage = lg;//lg;//new LoginPage ();		
 		}
 		public static INavigation Navigation 
 		{

@@ -84,7 +84,8 @@ namespace HomeZig.iOS
 		public void testClick(object sender, EventArgs e)
 		{
 			//WebsocketManager.websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"FF\",\"node_command\":\"io_change_detected\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FE\",\"node_command\":\"io_change_detected\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"io_change_detected\"}]}");
-			WebsocketManager.websocketMaster.Send ("{\"cmd_alert\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FF\",\"node_command\":\"io_Alert\"}]}");
+			//WebsocketManager.websocketMaster.Send ("{\"cmd_alert\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FF\",\"node_command\":\"io_Alert\"}]}");
+			WebsocketManager.websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"FF\",\"node_command\":\"io_change_detected\"}]}");
 		}
 
 	}

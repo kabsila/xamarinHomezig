@@ -50,8 +50,8 @@ namespace HomeZig.iOS
 
 				string jsonCommandLogin = JsonConvert.SerializeObject(loginData, Formatting.Indented);
 				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin" , jsonCommandLogin);
-				//WebsocketManager.websocketMaster.Send (jsonCommandLogin);
-				WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
+				WebsocketManager.websocketMaster.Send (jsonCommandLogin);
+				//WebsocketManager.websocketMaster.Send("{\"cmd_login\":[{\"username\":\"admin\",\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]}");
 				// no ipm1.showMenuTabPage ();
 			}
 		}

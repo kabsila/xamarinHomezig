@@ -7,6 +7,7 @@ namespace HomeZig
 	{
 
 		//IPageManager ipm2;
+
 		public MenuTabPage (IPageManager ipm)
 		{
 			//ipm2 = ipm;
