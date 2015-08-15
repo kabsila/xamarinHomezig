@@ -36,8 +36,8 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARMv7</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer: Chanon Jangkajit (KARHNCKX3T)</CodesignKey>
-    <CodesignProvision>e5a632d0-1a1d-4af8-856c-07840411e632</CodesignProvision>
+    <CodesignKey>iPhone Distribution: Chanon Jangkajit (8WP8CJ3WXF)</CodesignKey>
+    <CodesignProvision>0feac6f2-2984-4119-9f70-7b58a2548cec</CodesignProvision>
     <MtouchI18n>
     </MtouchI18n>
     <IpaPackageName>
@@ -92,9 +92,6 @@
     <Reference Include="Toasts.Forms.Plugin.Abstractions">
       <HintPath>..\packages\Toasts.Forms.Plugin.1.0.6.18\lib\portable-net45+wp8+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Toasts.Forms.Plugin.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="WebSocket4Net">
-      <HintPath>..\packages\WebSocket4Net.0.12\lib\monotouch10\WebSocket4Net.dll</HintPath>
-    </Reference>
     <Reference Include="Connectivity.Plugin">
       <HintPath>..\packages\Xam.Plugin.Connectivity.1.0.2\lib\MonoTouch10\Connectivity.Plugin.dll</HintPath>
     </Reference>
@@ -105,16 +102,28 @@
       <HintPath>..\Components\MessageBar-ios-1.1.1\lib\ios\MessageBarLib.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Platform.iOS.Classic">
-      <HintPath>..\packages\Xamarin.Forms.1.4.3.6376\lib\MonoTouch10\Xamarin.Forms.Platform.iOS.Classic.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Forms.1.4.4.6392\lib\MonoTouch10\Xamarin.Forms.Platform.iOS.Classic.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Core">
-      <HintPath>..\packages\Xamarin.Forms.1.4.3.6376\lib\MonoTouch10\Xamarin.Forms.Core.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Forms.1.4.4.6392\lib\MonoTouch10\Xamarin.Forms.Core.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Xaml">
-      <HintPath>..\packages\Xamarin.Forms.1.4.3.6376\lib\MonoTouch10\Xamarin.Forms.Xaml.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Forms.1.4.4.6392\lib\MonoTouch10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Platform">
-      <HintPath>..\packages\Xamarin.Forms.1.4.3.6376\lib\MonoTouch10\Xamarin.Forms.Platform.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Forms.1.4.4.6392\lib\MonoTouch10\Xamarin.Forms.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.13.1\lib\monotouch10\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Splat">
+      <HintPath>..\packages\Splat.1.6.2\lib\monotouch\Splat.dll</HintPath>
+    </Reference>
+    <Reference Include="Acr.UserDialogs">
+      <HintPath>..\packages\Acr.UserDialogs.4.0.5\lib\portable-win+net45+wp8+win8+wpa81\Acr.UserDialogs.dll</HintPath>
+    </Reference>
+    <Reference Include="Acr.UserDialogs.Interface">
+      <HintPath>..\packages\Acr.UserDialogs.4.0.5\lib\portable-win+net45+wp8+win8+wpa81\Acr.UserDialogs.Interface.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +138,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="PageAction\Add_Remote_Double_Action.cs" />
     <Compile Include="PageAction\Add_Remote_Single_Page_Action.cs" />
-    <Compile Include="PageAction\Add_Remote_Triple_Page_Action.cs" />
     <Compile Include="PageAction\Admin_Add_User_Page_Action.cs" />
     <Compile Include="PageAction\Admin_Delete_User_Page_Action.cs" />
     <Compile Include="PageAction\Change_Password_Page_Action.cs" />
@@ -147,7 +154,7 @@
     <Compile Include="PageAction\Option_Page_Action.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
-  <Import Project="..\packages\Xamarin.Forms.1.4.3.6376\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.4.3.6376\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
+  <Import Project="..\packages\Xamarin.Forms.1.4.4.6392\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.4.4.6392\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
   <ItemGroup>
     <ProjectReference Include="..\HomeZig\HomeZig.csproj">
       <Project>{17CD886E-F2E7-463B-80F3-109FD76DA493}</Project>

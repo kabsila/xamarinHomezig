@@ -20,6 +20,11 @@ namespace HomeZig.iOS
 			if (String.IsNullOrEmpty (Add_Remote_Single_Page.instructionRemoteName_value.Text)) {
 				await DisplayAlert ("Validation Error", "Remote name are required", "Re-try");
 			}else{
+				string remoteButtonNmae = Add_Remote_Single_Page.instructionRemoteName_value.Text;
+				if(Add_Remote_Single_Page.instructionRemoteName_value.Text.Contains(" ")){					
+					remoteButtonNmae = Add_Remote_Single_Page.instructionRemoteName_value.Text;
+					remoteButtonNmae = remoteButtonNmae.Replace(" ", "_");
+				}
 				RemoteData rd = new RemoteData();
 				foreach (var data in await App.Database.Get_flag_Login())
 				{
@@ -29,7 +34,7 @@ namespace HomeZig.iOS
 
 				rd.ID = 0;
 				rd.node_addr = Add_Remote_Single_Page.item.node_addr;
-				rd.remote_button_name = Add_Remote_Single_Page.instructionRemoteName_value.Text;
+				rd.remote_button_name = remoteButtonNmae;//Add_Remote_Single_Page.instructionRemoteName_value.Text;
 				rd.remote_code = "single";
 				rd.node_command = "add_button_remote";
 				string jsonCommandaddRemoteButton = JsonConvert.SerializeObject(rd, Formatting.Indented);
@@ -37,7 +42,7 @@ namespace HomeZig.iOS
 				WebsocketManager.websocketMaster.Send (jsonCommandaddRemoteButton.ToString());
 
 				Device.BeginInvokeOnMainThread (() => {
-					Add_Remote_Single_Page.addRemotePageLayout.Children.Add (Add_Remote_Single_Page.plsWaitText);
+					//Add_Remote_Single_Page.addRemotePageLayout.Children.Add (Add_Remote_Single_Page.plsWaitText);
 					Add_Remote_Single_Page.plsWaitText.TextColor = Color.Default;
 					Add_Remote_Single_Page.plsWaitText.Text = "Push remote command";
 					Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = true;
@@ -50,10 +55,13 @@ namespace HomeZig.iOS
 		public void cancelRemoteButton_Click(object sender, EventArgs e)
 		{
 			Device.BeginInvokeOnMainThread (() => {
-				Add_Remote_Single_Page.addRemotePageLayout.Children.Remove (Add_Remote_Single_Page.plsWaitText);
+				//Add_Remote_Single_Page.addRemotePageLayout.Children.Remove (Add_Remote_Single_Page.plsWaitText);
 				Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 				Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
+				//await this.Navigation.PopAsync();
+
 			});
+
 		}
 	}
 }

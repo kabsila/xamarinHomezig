@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Gestures;
 using Android.Util;
 
+using Acr.UserDialogs;
 using WebSocket4Net;
 using Newtonsoft.Json;
 using Xamarin.Forms.Platform.Android;
@@ -18,10 +19,10 @@ using System.Threading.Tasks;
 using Toasts.Forms.Plugin.Droid;
 using Connectivity.Plugin;
 using Toasts.Forms.Plugin.Abstractions;
-
+//using Syncfusion.SfChart.XForms;
 namespace HomeZig.Android
 {
-	[Activity (Label = "HomeZig.Android.Android", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+	[Activity (Theme = "@android:style/Theme.Material.Light", Label = "HomeZig.Android.Android", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : FormsApplicationActivity
 	{
 		//static App ap = null;
@@ -34,7 +35,7 @@ namespace HomeZig.Android
 			Log.Debug ("OnCreate", "OnCreateeeeeeeeee");
 			Forms.Init (this, bundle);
 			ToastNotificatorImplementation.Init();
-
+			UserDialogs.Init(() => (Activity)Forms.Context);
 			WebsocketManager.getService = this;
 			new DeviceItemDatabase ();
 			new InitializePage ();

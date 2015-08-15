@@ -9,10 +9,10 @@ namespace HomeZig
 		public static ListView remoteButtonListName;
 		public static Button addSingleControl = new Button 
 		{
-			Text = "ADD Single"
+			Text = "Add Remote Button"
 		};
 
-		public static Button addDoubleControl = new Button 
+		/**public static Button addDoubleControl = new Button 
 		{
 			Text = "ADD Double"
 		};
@@ -20,7 +20,7 @@ namespace HomeZig
 		public static Button addTripleControl = new Button 
 		{
 			Text = "ADD Triple"
-		};
+		};**/
 
 		public static Button DeleteControl = new Button 
 		{
@@ -32,15 +32,22 @@ namespace HomeZig
 
 			remoteButtonListName = new ListView ();
 			//listView.ItemTemplate = new DataTemplate(typeof (DeviceItemCell));
-			remoteButtonListName.ItemTemplate = new DataTemplate(typeof (TextCell));
-			remoteButtonListName.ItemTemplate.SetBinding (TextCell.TextProperty, "remote_button_name");
+			remoteButtonListName.ItemTemplate = new DataTemplate(typeof (Node_io_RemoteControl_Cell));
+			//remoteButtonListName.ItemTemplate.SetBinding (TextCell.TextProperty, "remote_button_name");
 
 			remoteButtonListName.ItemTapped += DependencyService.Get<I_Node_io_RemoteControl> ().NodeIoRemoteControl_Tapped;
 
 			addSingleControl.Clicked += addSingleControl_Click;
-			addDoubleControl.Clicked += addDoubleControl_Click;
-			addTripleControl.Clicked += addTripleControl_Click;
-			DeleteControl.Clicked += DeleteControl_Click;
+
+			//DeleteControl.Clicked += DeleteControl_Click;
+
+			MessagingCenter.Subscribe<ContentPage, RemoteData> (new ContentPage(), "RenameRemote_Clicked", async (sender, arg) => {
+				var renameRemote = new Rename_Remote_Page ();
+				renameRemote.BindingContext = arg;
+				//await Navigation.PushAsync (renameRemote);
+				await Navigation.PushModalAsync(renameRemote);
+			});
+
 
 			var layout = new StackLayout 
 			{
@@ -50,9 +57,7 @@ namespace HomeZig
 				//HorizontalOptions = LayoutOptions.StartAndExpand,
 				Children = {
 					addSingleControl,
-					addDoubleControl,
-					addTripleControl,
-					DeleteControl,
+					//DeleteControl,
 					remoteButtonListName,
 				}
 			};
@@ -71,20 +76,6 @@ namespace HomeZig
 		void addSingleControl_Click(object sender, EventArgs e)
 		{
 			var DeviceList = new Add_Remote_Single_Page ();
-			DeviceList.BindingContext = item;
-			Navigation.PushAsync (DeviceList);
-		}
-
-		void addDoubleControl_Click(object sender, EventArgs e)
-		{
-			var DeviceList = new Add_Remote_Double_Page ();
-			DeviceList.BindingContext = item;
-			Navigation.PushAsync (DeviceList);
-		}
-
-		void addTripleControl_Click(object sender, EventArgs e)
-		{
-			var DeviceList = new Add_Remote_Triple_Page ();
 			DeviceList.BindingContext = item;
 			Navigation.PushAsync (DeviceList);
 		}

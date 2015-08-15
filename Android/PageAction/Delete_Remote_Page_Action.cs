@@ -15,7 +15,7 @@ namespace HomeZig.Android
 		{
 		}
 
-		public async void deleteRemote_Tapped(object sender, ItemTappedEventArgs e)
+		/**public async void deleteRemote_Tapped(object sender, ItemTappedEventArgs e)
 		{
 			foreach (var data in await App.Database.Get_flag_Login())
 			{
@@ -26,6 +26,22 @@ namespace HomeZig.Android
 				System.Diagnostics.Debug.WriteLine (jsonCommandLogin);
 				WebsocketManager.websocketMaster.Send (jsonCommandLogin.ToString());
 				break;
+			}
+
+		}**/
+
+		public async void deleteRemote_Tapped(RemoteData rd)
+		{
+			var answer = await DisplayAlert ("Confirm?", "Would you like to delete " + rd.remote_button_name, "Yes", "No");
+			//System.Diagnostics.Debug.WriteLine("Answer: " + answer);
+			if (answer.Equals (true)) {
+				rd.remote_button_name = rd.remote_button_name;
+				rd.node_command = "delete_button_remote";
+				string jsonCommandaddRemoteButton = JsonConvert.SerializeObject(rd, Formatting.Indented);
+				System.Diagnostics.Debug.WriteLine ("{0}",jsonCommandaddRemoteButton);
+				WebsocketManager.websocketMaster.Send (jsonCommandaddRemoteButton.ToString());
+			} else {
+				
 			}
 
 		}

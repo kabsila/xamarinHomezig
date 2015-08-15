@@ -10,6 +10,7 @@ namespace HomeZig
 		{
 			Placeholder = "Example: ws://echo.websocket.org",
 			//Text = "ws://echo.websocket.org",
+			//Text = "ws://192.168.0.111:8888/ws",
 			//Text = "ws://homezigth.ddns.net:8888/ws",
 			Text = "ws://118.175.28.23:8888/ws",
 			//HorizontalOptions = LayoutOptions.Center

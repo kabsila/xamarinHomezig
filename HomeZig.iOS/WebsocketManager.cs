@@ -124,6 +124,9 @@ namespace HomeZig.iOS
 				App.current.showLoginPage();
 				System.Diagnostics.Debug.WriteLine ("jsonCommandLogin {0}", "Go to login page");
 			});
+
+			App.Database.Delete_RemoteData_Item ();
+			App.Database.Delete_All_Login_Username_Show_For_Del ();
 		}
 
 		public async void websocket_MessageReceived(object sender, MessageReceivedEventArgs  e)
@@ -407,7 +410,7 @@ namespace HomeZig.iOS
 						#endregion
 
 						if(data.flagForLogin.Equals("pass") && data.username.Equals(LoginPage.username.Text)){
-							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ab]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"}, {\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
+							//websocketMaster.Send ("{\"cmd_db_allnode\":[{\"node_type\":\"0x3ff20\",\"node_addr\":\"[00:13:a2:00:40:ad:58:rm]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ab]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"}, {\"node_type\":\"0x3ff01\",\"node_addr\":\"[00:13:a2:00:40:ad:58:ae]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:ad:58:kk]!\",\"node_status\":\"0\",\"node_io\":\"F8\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0x3ff11\",\"node_addr\":\"[00:13:a2:00:40:b2:16:5a]!\",\"node_status\":\"0\",\"node_io\":\"FC\",\"node_command\":\"prevent_other_change_page\"},{\"node_type\":\"0xa001a\",\"node_addr\":\"[00:13:a2:00:40:ad:57:e3]!\",\"node_status\":\"0\",\"node_io\":\"FA\",\"node_command\":\"prevent_other_change_page\"}]}");
 							////no websocketMaster.Send("{\"cmd_login\":[{\"flagForLogin\":\"pass\",\"lastConnectWebscoketUrl\":\"ws://echo.websocket.org\"}]})");
 
 							await App.Database.Save_Login_Item (LoginPage.username.Text, LoginPage.password.Text, data.flagForLogin, data.lastConnectWebscoketUrl);
@@ -487,30 +490,25 @@ namespace HomeZig.iOS
 						{
 							if(checkUser.username == data.remote_username){
 								if(data.node_command.Equals("remote_code_success")){
-									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name);
+									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name, data.remote_username);
 									Device.BeginInvokeOnMainThread (async () => {
 										//var notificator = DependencyService.Get<IToastNotificator>();
 										//await notificator.Notify(ToastNotificationType.Success, 
 										//	"Success", " Remote code saved", TimeSpan.FromSeconds(2));
 									});
-									/**Device.BeginInvokeOnMainThread (() => {
+
+									Device.BeginInvokeOnMainThread (() => {
 										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Green;
 										Add_Remote_Single_Page.plsWaitText.Text = "Remote code saved";
 										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
-										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Green;
-										Add_Remote_Double_Page.plsWaitText.Text = "Remote code saved";
-										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
-										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Green;
-										Add_Remote_Triple_Page.plsWaitText.Text = "Remote code saved";
-										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
-										Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
-									});**/
+
+									});
+
 
 								}else if(data.node_command.Equals("remote_code_sync_database")){
 
-									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name);
+									await App.Database.Save_RemoteData_Item(data.node_addr, data.remote_button_name, data.remote_username);
 
 								}else if(data.node_command.Equals("remote_code_fail")){
 									Device.BeginInvokeOnMainThread (async () => {
@@ -518,87 +516,58 @@ namespace HomeZig.iOS
 										//await notificator.Notify(ToastNotificationType.Error, 
 										//	"Warning", "Try Again", TimeSpan.FromSeconds(2));
 									});
-									/**Device.BeginInvokeOnMainThread (() => {
+									Device.BeginInvokeOnMainThread (() => {
 										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
 										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Red;
 										Add_Remote_Single_Page.plsWaitText.Text = "Try Again";
 										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
-										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Red;
-										Add_Remote_Double_Page.plsWaitText.Text = "Try Again";
-										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
-										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Red;
-										Add_Remote_Triple_Page.plsWaitText.Text = "Try Again";
-										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
-										Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
-									});**/
+
+									});
 								}else if(data.node_command.Equals("name_exist")){
 									Device.BeginInvokeOnMainThread (async () => {
 										//var notificator = DependencyService.Get<IToastNotificator>();
 										//await notificator.Notify(ToastNotificationType.Warning, 
 										//	"Warning", "This name is already in use", TimeSpan.FromSeconds(2));
 									});
-									/**	Device.BeginInvokeOnMainThread (() => {
+										Device.BeginInvokeOnMainThread (() => {
 										//Add_Remote_Page.addRemotePageLayout.Children.Remove (Add_Remote_Page.plsWaitText);
 										Add_Remote_Single_Page.plsWaitText.TextColor = Color.Olive;
 										Add_Remote_Single_Page.plsWaitText.Text = "This name is already in use";
 										Add_Remote_Single_Page.AddRemoteIndicator.IsRunning = false;
 										Add_Remote_Single_Page.addRemoteSubmitButton.IsEnabled = true;
-										Add_Remote_Double_Page.plsWaitText.TextColor = Color.Olive;
-										Add_Remote_Double_Page.plsWaitText.Text = "This name is already in use";
-										Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
-										Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-										Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
-										Add_Remote_Triple_Page.plsWaitText.Text = "This name is already in use";
-										Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
-										Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
-									});**/
-								}else if(data.node_command.Equals("remote_code_continue")){
-									if(data.remote_code.Equals("1")){
-										Device.BeginInvokeOnMainThread (async () => {
-											//var notificator = DependencyService.Get<IToastNotificator>();
-											//await notificator.Notify(ToastNotificationType.Success, 
-											//	"Next button", "button 1 saved", TimeSpan.FromSeconds(2));
-										});
-										/**Device.BeginInvokeOnMainThread (() => {
-											Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = false;
-											Add_Remote_Double_Page.plsWaitText.TextColor = Color.Olive;
-											Add_Remote_Double_Page.plsWaitText.Text = "Next button 2";
-											Add_Remote_Double_Page.AddRemoteIndicator.IsRunning = false;
-											Add_Remote_Double_Page.addRemoteSubmitButton.IsEnabled = true;
-											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = false;
-											Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
-											Add_Remote_Triple_Page.plsWaitText.Text = "Next button 2";
-											Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
-											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
-										});**/
-									}else{
-										Device.BeginInvokeOnMainThread (async () => {
-											//var notificator = DependencyService.Get<IToastNotificator>();
-											//await notificator.Notify(ToastNotificationType.Success, 
-											//	"Next button", "button 2 saved", TimeSpan.FromSeconds(2));
-										});
-										/**Device.BeginInvokeOnMainThread (() => {
-											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = false;
-											Add_Remote_Triple_Page.plsWaitText.TextColor = Color.Olive;
-											Add_Remote_Triple_Page.plsWaitText.Text = "Next button 3";
-											Add_Remote_Triple_Page.AddRemoteIndicator.IsRunning = false;
-											Add_Remote_Triple_Page.addRemoteSubmitButton.IsEnabled = true;
-										});**/
-									}
+
+									});
+								}else if(data.node_command.Equals("remote_send_success")){
+
+									Device.BeginInvokeOnMainThread (async () => {
+										//var notificator = DependencyService.Get<IToastNotificator>();
+										//await notificator.Notify(ToastNotificationType.Success, 
+										//	"Success", " Remote code success", TimeSpan.FromSeconds(1));
+									});
+
 								}else if(data.node_command.Equals("delete_remote_success")){
-									await App.Database.Delete_RemoteData_Custom_Item(data.remote_button_name);
+									await App.Database.Delete_RemoteData_Custom_Item(data.remote_button_name, data.remote_username);
 									Device.BeginInvokeOnMainThread (async () => {
 										//var notificator = DependencyService.Get<IToastNotificator>();
 										//await notificator.Notify(ToastNotificationType.Success, 
 										//	"Success", "Item Deleted", TimeSpan.FromSeconds(2));
+										Node_io_RemoteControl_Page.remoteButtonListName.ItemsSource = await App.Database.Get_RemoteData_Item();
 									});
 									/**Device.BeginInvokeOnMainThread (async () => {
 										Delete_Remote_Page.deleteStatus.TextColor = Color.Green;
 										Delete_Remote_Page.deleteStatus.Text = "Item Deleted";
 										Delete_Remote_Page.remoteButtonListName.ItemsSource = await App.Database.Get_RemoteData_Item();
 									});**/
+
+								}else if(data.node_command.Equals("rename_remote_success")){
+									await App.Database.Rename_RemoteData_Item(data.remote_button_name, data.new_button_name, data.remote_username);
+									Device.BeginInvokeOnMainThread (async () => {
+										//var notificator = DependencyService.Get<IToastNotificator>();
+										//await notificator.Notify(ToastNotificationType.Success, 
+										//	"Success", " Rename Remote success", TimeSpan.FromSeconds(2));
+										Node_io_RemoteControl_Page.remoteButtonListName.ItemsSource = await App.Database.Get_RemoteData_Item();
+									});
 
 								}
 							}

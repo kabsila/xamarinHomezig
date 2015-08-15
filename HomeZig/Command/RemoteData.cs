@@ -17,6 +17,8 @@ namespace HomeZig
 		public string node_command { get; set; }
 		public string remote_button_name { get; set; }
 		public string remote_code { get; set; }
+		public string new_button_name { get; set; }
+
 	}
 }
 

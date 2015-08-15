@@ -27,7 +27,7 @@ namespace HomeZig
 			HorizontalOptions = LayoutOptions.CenterAndExpand
 		};
 
-		public static StackLayout addRemotePageLayout = new StackLayout();
+		//public static StackLayout addRemotePageLayout = new StackLayout();
 
 		public static Label plsWaitText = new Label 
 		{
@@ -55,8 +55,10 @@ namespace HomeZig
 		public Add_Remote_Single_Page ()
 		{
 
-
+			addRemoteSubmitButton.Clicked -= DependencyService.Get<I_Add_Remote_Single> ().submitRemoteButton_Click;
 			addRemoteSubmitButton.Clicked += DependencyService.Get<I_Add_Remote_Single> ().submitRemoteButton_Click;
+
+			cancelRemoteButton.Clicked += DependencyService.Get<I_Add_Remote_Single> ().cancelRemoteButton_Click;
 			/**saveButton.Clicked += async (sender, e) => {
 				//var todoItem = (Db_allnode)BindingContext;
 				//todoItem.name_by_user = nameEntry.Text;
@@ -76,9 +78,9 @@ namespace HomeZig
 				//var todoItem = (Db_allnode)BindingContext;
 				//await Navigation.PopAsync();
 			};**/
-		cancelRemoteButton.Clicked += DependencyService.Get<I_Add_Remote_Single> ().cancelRemoteButton_Click;
 
-			addRemotePageLayout.Padding = new Thickness (40, 40, 40, 10);
+
+			/**addRemotePageLayout.Padding = new Thickness (40, 40, 40, 10);
 			addRemotePageLayout.VerticalOptions = LayoutOptions.StartAndExpand;
 			addRemotePageLayout.Children.Add (addRemoteButtonHeader);
 			addRemotePageLayout.Children.Add (instructionRemoteName_Label);
@@ -88,8 +90,8 @@ namespace HomeZig
 			addRemotePageLayout.Children.Add (AddRemoteIndicator);
 			
 			instructionRemoteName_value.Text = "";
-			this.Content = addRemotePageLayout;
-			/**
+			this.Content = addRemotePageLayout;**/
+			
 			Content = new StackLayout {
 				Padding = new Thickness (40, 40, 40, 10),
 				//Spacing = 10,
@@ -100,10 +102,11 @@ namespace HomeZig
 					addRemoteButtonHeader,
 					instructionRemoteName_Label,
 					instructionRemoteName_value,
-					saveButton,
+				    addRemoteSubmitButton,
+				    cancelRemoteButton,					
 					AddRemoteIndicator
 				}
-			};**/
+			};
 		}
 
 		protected override void OnAppearing ()
@@ -111,14 +114,16 @@ namespace HomeZig
 			base.OnAppearing ();
 			item = (Db_allnode)BindingContext;
 
-		Add_Remote_Single_Page.plsWaitText.BackgroundColor = Color.Default;
-		Add_Remote_Single_Page.plsWaitText.Text = "";
+			Add_Remote_Single_Page.plsWaitText.BackgroundColor = Color.Default;
+			Add_Remote_Single_Page.plsWaitText.Text = "";
+			instructionRemoteName_value.Text = "";
+			
 		}
 
 		protected override void OnDisappearing()
 		{
 			base.OnDisappearing ();
-			Device.BeginInvokeOnMainThread (() => {
+			/**Device.BeginInvokeOnMainThread (() => {
 				addRemotePageLayout.Children.Remove (addRemoteButtonHeader);
 				addRemotePageLayout.Children.Remove (instructionRemoteName_Label);
 				addRemotePageLayout.Children.Remove (instructionRemoteName_value);
@@ -130,7 +135,7 @@ namespace HomeZig
 				addRemotePageLayout.Children.Remove (Add_Remote_Single_Page.plsWaitText);
 				AddRemoteIndicator.IsRunning = false;
 				addRemoteSubmitButton.IsEnabled = true;
-			});
+			});**/
 
 			//MessagingCenter.Send<ContentPage> (new ContentPage(), "BackFromEdit");
 		}

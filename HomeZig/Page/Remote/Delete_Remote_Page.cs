@@ -17,7 +17,7 @@ namespace HomeZig
 			remoteButtonListName.ItemTemplate = new DataTemplate(typeof (TextCell));
 			remoteButtonListName.ItemTemplate.SetBinding (TextCell.TextProperty, "remote_button_name");
 
-			remoteButtonListName.ItemTapped += DependencyService.Get<I_Delete_Remote> ().deleteRemote_Tapped;
+			//remoteButtonListName.ItemTapped += DependencyService.Get<I_Delete_Remote> ().deleteRemote_Tapped;
 
 			this.Content = new StackLayout {
 				Padding = new Thickness (40, 40, 40, 10),

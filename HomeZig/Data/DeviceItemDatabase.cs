@@ -159,9 +159,9 @@ namespace HomeZig
 		}
 		#endregion 
 		#region RemoteData
-		public async Task<IEnumerable<RemoteData>> Save_RemoteData_Item (string node_addr, string remote_button_name)
+		public async Task<IEnumerable<RemoteData>> Save_RemoteData_Item (string node_addr, string remote_button_name, string remote_username)
 		{
-			return await database.QueryAsync<RemoteData>("INSERT INTO [RemoteData] ([node_addr], [remote_button_name]) VALUES (?, ?)",node_addr, remote_button_name);
+			return await database.QueryAsync<RemoteData>("INSERT INTO [RemoteData] ([node_addr], [remote_button_name], [remote_username]) VALUES (?, ?, ?)",node_addr, remote_button_name, remote_username);
 		}
 
 		public async Task<IEnumerable<RemoteData>> Get_RemoteData_Item ()
@@ -174,9 +174,14 @@ namespace HomeZig
 			return await database.QueryAsync<RemoteData>("DELETE FROM [RemoteData]");
 		}
 
-		public async Task<IEnumerable<RemoteData>> Delete_RemoteData_Custom_Item (string remoteName)
+		public async Task<IEnumerable<RemoteData>> Rename_RemoteData_Item (string oldName, string newName, string remote_username)
 		{
-			return await database.QueryAsync<RemoteData>("DELETE FROM [RemoteData] WHERE [remote_button_name] = ?", remoteName);
+			return await database.QueryAsync<RemoteData>("UPDATE [RemoteData] SET [remote_button_name] = ? WHERE [remote_button_name] = ? AND [remote_username] = ?",newName, oldName, remote_username);
+		}
+
+		public async Task<IEnumerable<RemoteData>> Delete_RemoteData_Custom_Item (string remoteName, string remoteUsername)
+		{
+			return await database.QueryAsync<RemoteData>("DELETE FROM [RemoteData] WHERE [remote_button_name] = ? AND [remote_username] = ?", remoteName, remoteUsername);
 		}
 		#endregion 
 
